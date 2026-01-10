@@ -1,9 +1,9 @@
 ## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-plugin-menu
-*display SimHub plugin menu in OpenKneeboard*
+*display a SimHub plugin menu in OpenKneeboard*
 
 ### background
 Currently, SimHub (and its plugin menus) access from SteamVR is by e.g.
-- its Desktop utility
+- SteamVR's Desktop utility
 - [Desktop+](https://steamcommunity.com/app/1494460)
 
 While SimHub lacks VR overlay support, [its overlays can be displayed using OpenKneeboard](https://www.madmikeplays.com/free-downloads#block-yui_3_17_2_1_1742822224076_6340) via HTTP.
@@ -15,22 +15,20 @@ for tweaking e.g. harness tensioner or haptics settings (properties).
 	- directly manipulate HTML table of numeric values
 	- scroll the table and increment/decrement table values by e.g. rotary encoders or MIDI control surface
 
+HTML table cell updates should have lower processing overhead than graphical overlay..
+
 ### resources
 - [JSONio](https://github.com/blekenbleu/JSONio)
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
 
 ### Server-Sent Event (SSE) HTML table cell updates
-- use JavaScript to update table cells
+- Update &lt;table&gt; cells using JavaScript
 	- https://www.htmlgoodies.com/html5/updating-html-table-content-using-javascript/
 	- https://stackoverflow.com/questions/27859976/how-to-dynamically-change-html-table-content-using-javascript
 	- https://www.geeksforgeeks.org/html/how-to-add-edit-and-delete-data-in-html-table-using-javascript/
 	- [2015 JavaScript live table update](https://datatables.net/forums/discussion/26983/how-to-do-live-table-updates-with-html5-sse)
 - [Set up table with id](https://www.w3schools.com/htmL/html_id.asp)
 	- [then access table by id in javascript](https://www.w3schools.com/jsref/dom_obj_table.asp)
-- [Javascript has table object methods for `deleteRow()` and `InsertRow()`](https://www.w3schools.com/jsref/dom_obj_table.asp)
-	- [Example: `table.rows[r].cells[0].innerHTML = itemType;`](https://stackoverflow.com/questions/27870671/how-do-i-change-an-html-table-cell-value-by-a-dynamically-added-button-in-each-r)
-
-- [w3schools HTML SSE API:  receive and server side examples](https://w3schools.w3schoolsapp.com/html/html5_serversentevents.html)  
 
 Invoke that table cell change javascript in registered event listener  
 ```
@@ -39,19 +37,22 @@ source.onmessage = function (event) {
     alert(event.data);
 };
 ```
+
+## [Real-Time Updates with SSE in C# .NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)
+
+[w3schools HTML SSE API:  receive and server side examples](https://w3schools.w3schoolsapp.com/html/html5_serversentevents.html)  
+
 [HTML Living Standard SSE](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events)
 
 - [SSE data as JSON sent and received](https://codelucky.com/javascript-onmessage-event-sse/)  
 
-- [**.NET 8 WebApplication C# SSE server** 2023](https://medium.com/@kova98/server-sent-events-in-net-7f700b21cdb7)  
-
 #### [.NET 9 WebApplication SSE tutorial and source (2024)](https://www.strathweb.com/2024/07/built-in-support-for-server-sent-events-in-net-9/)
+
+- [**.NET 8 WebApplication C# SSE server** 2023](https://medium.com/@kova98/server-sent-events-in-net-7f700b21cdb7)  
 
 - stackoverflow [Implement sending Server Sent Events in C# (no ASP.NET / MVC / ...)](https://stackoverflow.com/questions/44851970/implement-sending-server-sent-events-in-c-sharp-no-asp-net-mvc)  
 
-## [Real-Time Updates with SSE in C# .NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)
-
-[EventSource.cs *2014* (569 lines)](https://gist.github.com/igolaizola/3ad45ea8135ad8e5fd06)
+- [EventSource.cs *2014* (569 lines)](https://gist.github.com/igolaizola/3ad45ea8135ad8e5fd06)
 
 ### [Server Side Event implementation *Python* source using `FastAPI`](https://malnossi.github.io/blog/server-side-events/)
 
@@ -109,11 +110,11 @@ rows[line].scrollIntoView({
 
 ```
 
-## [`scrollIntoView` is now a "Baseline Widely available*" feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView)
+### [`scrollIntoView` is now a "Baseline Widely available*" feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView)
 ```
 var elem = document.querySelector("#tableID").children[0].children[row];  
 elem.scrollIntoView(true);
 ```
 
-## [highlight selected row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
+### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
