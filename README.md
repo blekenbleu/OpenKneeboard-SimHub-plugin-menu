@@ -18,7 +18,11 @@ for tweaking e.g. harness tensioner or haptics settings (properties).
 HTML table cell updates should have lower processing overhead than graphical overlay..
 
 ### resources
-- [JSONio](https://github.com/blekenbleu/JSONio)
+- from [JSONio](https://github.com/blekenbleu/JSONio), in `OpenKneeboard-SimHub-plugin-menu.csproj`:
+	- could not get [ReferencePath](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/project-build/troubleshooting-broken-references)
+	 working;&nbsp; copied JSONio `HintPath`s  
+	- [installed nuget](https://learn.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-in-visual-studio)
+	`PhotoServiceLibrary` for icon to work with `<TargetFramework>net9.0-windows`
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
 
 ### Server-Sent Event (SSE) HTML table cell updates
