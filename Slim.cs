@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 // New slim JSON structure ------------------------------------------
 // These must all be declared public for JsonConvert.SerializeObject()

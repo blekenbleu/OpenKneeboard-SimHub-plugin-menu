@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	// programatically define DataGrid columns
 	// https://wpf-tutorial.com/datagrid-control/custom-columns/

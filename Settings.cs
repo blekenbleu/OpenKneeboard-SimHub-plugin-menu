@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public class Property	   // must be public for DataPluginSettings
 	{

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public partial class JSONio
 	{

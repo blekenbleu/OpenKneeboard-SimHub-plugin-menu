@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	[PluginDescription("NCalc configured properties to/from JSON")]
 	[PluginAuthor("blekenbleu")]

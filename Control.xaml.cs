@@ -7,7 +7,7 @@ using System.Windows.Controls;
  ;	alternatively, DataContext in XAML	https://dev.to/mileswatson/a-beginners-guide-to-mvvm-using-c-wpf-241b
  */
 
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	/// <summary>
 	/// Interaction code for Control.xaml

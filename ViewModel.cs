@@ -8,7 +8,7 @@ using System.Windows;
  ; https://learn.microsoft.com/en-us/archive/msdn-magazine/2009/february/patterns-wpf-apps-with-the-model-view-viewmodel-design-pattern
  ; https://scottlilly.com/c-design-patterns-mvvm-model-view-viewmodel/
  */
-namespace blekenbleu.jsonio
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
     /// <summary>
     /// define a class with Model-view-viewmodel pattern for dynamic UI

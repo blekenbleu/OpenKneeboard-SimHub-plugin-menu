@@ -127,4 +127,6 @@ from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlight
 - created a new Visual Studio .NET 9.0 WPF Class Library named `OpenKneeboard-SimHub-plugin-menu`
 	- copied those `OpenKneeboard-SimHub-plugin-menu.csproj  OpenKneeboard-SimHub-plugin-menu.sln` into this repository
 	- from `SimHub/PluginSdk/JSONio`, copied `Control.xaml  Control.xaml.cs  JSONio.cs Properties Settings.cs  Slim.cs  Values.cs  ViewModel.cs  bin  js.cs sdkmenuicon.png`
+	- renamed `namespace` to `blekenbleu.OpenKneeboard_SimHub_plugin_menu`
+	- deleted `GlobalSection(ExtensibilityGlobals)` in `OpenKneeboard-SimHub-plugin-menu.sln`
 
