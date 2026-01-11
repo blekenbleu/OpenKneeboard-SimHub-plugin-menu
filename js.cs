@@ -68,7 +68,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			int i;
 			List<string> New = new List<string> { };
 			for (i = 0; i < gCount; i++)
-				New.Add(string.Copy(simValues[i].Default));
+				New.Add(simValues[i].Default);
 			return New;
 		}
 
@@ -77,7 +77,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			int i;
 			List<string> New = new List<string> { };
 			for (i = 0; i < pCount; i++)
-				New.Add(string.Copy(simValues[i].Current));
+				New.Add(simValues[i].Current);
 			return New;
 		}
 
@@ -106,7 +106,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				gndx = slim.data.gList.Count;
 				slim.data.gList.Add(new GameList
 					{ cList = new List<CarL>
-						{ new CarL { Name = string.Copy(Gname),
+						{ new CarL { Name = Gname,
 									 Vlist = DefaultCopy()
 								   }
 						}
@@ -119,7 +119,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				write = true;			// add car
 				cndx = slim.data.gList[gndx].cList.Count;
 				slim.data.gList[gndx].cList.Add(new CarL
-					{ Name = string.Copy(CurrentCar),
+					{ Name = CurrentCar,
 					  Vlist = CurrentCopy()
 					}
 				);
@@ -258,7 +258,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			if (null !=cname && 0 < cname.Length && null != gnew && 0 < gnew.Length)	// valid?
 			{
-				GameList game = null;
+				GameList? game = null;
 				int i, count = 0, vcount = 0;
 
 				Msg = "Current Car: " + cname;
@@ -279,7 +279,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 				else cndx = -1;
 
-				if (0 > cndx)
+				if (0 > cndx && null != game)
 				{
 					NewCar = "true";
 					if (0 <= gndx)									// set at line 132
@@ -297,10 +297,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				else
 				{													// existing car
 						NewCar = "false";
-						if (cname != Settings.carid)				// previous car?
+						if (cname != Settings.carid && null != game)				// previous car?
 							for (i = 0; i < pCount; i++)
 								simValues[i].Current = game.cList[cndx].Vlist[i];
-						if (null == CurrentCar)						// first in this game instance?
+						if (null == CurrentCar && null != game)						// first in this game instance?
 						{											// restore game defaults
 							count = pCount > vcount ? vcount : pCount;
 							for (i = 0; i < count; i++)

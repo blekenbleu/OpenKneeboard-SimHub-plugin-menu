@@ -22,8 +22,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// global default property values
 		public List<Property> gDefaults = new List<Property>() {};
 
-		public string game;		// keep these properties if Gname matches
-		public string carid;	// replace per-car properties from JSON, if available and CarId mismatches
+		public string? game;		// keep these properties if Gname matches
+		public string? carid;	// replace per-car properties from JSON, if available and CarId mismatches
 		public int pcount = 0;	// per-car property count in properties
 		public int gcount = 0;	// per-game property count in properties
 	}

@@ -14,28 +14,23 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 	public class GameList
 	{
-		public List<CarL> cList;		// cList[0] is game Name + default per-car, then per-game property values
+		public List<CarL>? cList;		// cList[0] is game Name + default per-car, then per-game property values
 	}
 
 	public class GamesList
 	{
-		public string Plugin;			// Plugin Name ("JSONio")
-		public List<string> pList;		// per-car, then per-game property names, from JSONio.ini
-		public List<GameList> gList;
+		public string? Plugin;			// Plugin Name ("JSONio")
+		public List<string>? pList;		// per-car, then per-game property names, from JSONio.ini
+		public List<GameList>? gList;
 	}
 
-	public class Slim
-	{
-		public GamesList data;
-		readonly JSONio js;
+	public class Slim(JSONio plugin)
+    {
+		public GamesList? data;
+		public required JSONio js = plugin;
 
-		public Slim(JSONio plugin)
-		{
-			this.js = plugin;
-		}
-
-		// called in End()
-		public void Data()
+        // called in End()
+        public void Data()
 		{
 			data = new GamesList()
 			{
@@ -63,8 +58,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				int Index =  data.pList.FindIndex(j => j == js.simValues[i].Name);
 
 				if (-1 == Index || Index >= vList.Count)
-					New.Add(string.Copy(js.simValues[i].Default));
-				else New.Add(string.Copy(vList[Index]));	// reuse as many as possible
+					New.Add(js.simValues[i].Default);
+				else New.Add(vList[Index]);	// reuse as many as possible
 			}
 			return New;
 		}
@@ -117,11 +112,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			if (i == gCount)
 				for (g = 0; g < data.gList.Count; g++)
-					if(data.gList[g].cList.Count < 2 || data.gList[g].cList[0].Vlist.Count != gCount)
-					{ i--; break; }
-					else for (c = 0; c < data.gList[g].cList.Count; c++)
-						if (data.gList[g].cList[c].Vlist.Count != ((0 == c) ? gCount : pCount))
-						{ i--; g = data.gList.Count; break; }
+					if (null != data.gList[g].cList)
+					{
+						if (data.gList[g].cList.Count < 2 || data.gList[g].cList[0].Vlist.Count != gCount)
+						{ i--; break; }
+						else for (c = 0; c < data.gList[g].cList.Count; c++)
+								if (data.gList[g].cList[c].Vlist.Count != ((0 == c) ? gCount : pCount))
+								{ i--; g = data.gList.Count; break; }
+					}
 
 			if (i != gCount)
 			// repopulate car properties according to simValues
@@ -131,6 +129,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (i != pCount)
 					for (i = 0; i < data.gList.Count; i++)					// all games
 					{
+						if (null == data.gList[i].cList)
+							continue;
 						for (c = 0; c < data.gList[i].cList.Count; c++)	// all cars in game
 							if (null == data.gList[i].cList[c].Name)
 							{
@@ -141,7 +141,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					}
 				data.pList = new List<string> {};
 				for (i = 0; i < gCount; i++)
-					data.pList.Add(string.Copy(js.simValues[i].Name));
+					data.pList.Add(js.simValues[i].Name);
 			}
 			if (0 < nullcarID)
 				js.OOpa($"Slim.Load({path}): {nullcarID} null carIDs");

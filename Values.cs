@@ -8,12 +8,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		private string _Default = "default", _Current = "current", _Previous = "previous";
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 		private readonly PropertyChangedEventArgs Cevent = new PropertyChangedEventArgs("Current");
 		private readonly PropertyChangedEventArgs Devent = new PropertyChangedEventArgs("Default");
 		private readonly PropertyChangedEventArgs Pevent = new PropertyChangedEventArgs("Previous");
 
-		public string Name { get; set; }	// should not change
+		public string? Name { get; set; }	// should not change
 		public string Current
 		{
 			get { return _Current; }

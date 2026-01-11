@@ -328,7 +328,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// still-configured from most recent game instance
 			// Load existing JSON, using slim format
 			// JSON values for still-configured properties are supposed more current than .ini
-			slim = new Slim(this) {};
+			slim = new Slim(this) { js = this };
 			if (slim.Load(path = pluginManager.GetPropertyValue(Myni + "file")?.ToString()))
 			{
 				if (0 < Msg.Length)
