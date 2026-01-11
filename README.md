@@ -122,3 +122,9 @@ elem.scrollIntoView(true);
 
 ### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
+
+## Build process
+- created a new Visual Studio .NET 9.0 WPF Class Library named `OpenKneeboard-SimHub-plugin-menu`
+	- copied those `OpenKneeboard-SimHub-plugin-menu.csproj  OpenKneeboard-SimHub-plugin-menu.sln` into this repository
+	- from `SimHub/PluginSdk/JSONio`, copied `Control.xaml  Control.xaml.cs  JSONio.cs Properties Settings.cs  Slim.cs  Values.cs  ViewModel.cs  bin  js.cs sdkmenuicon.png`
+
