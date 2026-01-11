@@ -20,7 +20,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal int slider = -1;				// simValues index for configured JSONIO.properties
 		internal bool set = false;
 
-		private string CurrentCar;
+		private string? CurrentCar;
 		private string Gname = "";
 		private int gndx = -1, cndx = -1;						// current car slim.data.gList indices
 		private static readonly string My = "JSONio.";			// breaks Ini if not preceding
@@ -104,16 +104,16 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				for(i = 0; i < simValues.Count; i++)
 					if (null != simValues[i].Name &&  null != simValues[i].Current)
 						Settings.properties.Add(new Property()
-						{ Name  = string.Copy(simValues[i].Name),
-						  Value = string.Copy(simValues[i].Current)
+						{ Name  = simValues[i].Name,
+						  Value = simValues[i].Current
 						});
 
 				Settings.gDefaults = new List<Property> {};
 				for(i = gCount; i < simValues.Count; i++)
 					if (null != simValues[i].Name &&  null != simValues[i].Default)
 						Settings.gDefaults.Add(new Property()
-						{ Name  = string.Copy(simValues[i].Name),
-					  	  Value = string.Copy(simValues[i].Default)
+						{ Name  = simValues[i].Name,
+					  	  Value = simValues[i].Default
 						});
 
 				// capture per-game Default changes
@@ -212,15 +212,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			SettingsProps = new List<Property> {};			// deep copy
 			foreach(Property p in Settings.properties)
 				if (null != p.Name && null != p.Value)
-					SettingsProps.Add(new Property() { Name = string.Copy(p.Name),
-												  Value = string.Copy(p.Value) });
+					SettingsProps.Add(new Property() { Name = p.Name,
+												  Value = p.Value });
 
 			Steps = new List<int>() {};		// for Populate()
 
 			// property and setting names, default values and steps from JSONio.ini
-			string pts, ds = pluginManager.GetPropertyValue(pts = Myni + "properties")?.ToString();
-			string vts, vs = pluginManager.GetPropertyValue(vts = Myni + "values")?.ToString();
-			string sts, ss = pluginManager.GetPropertyValue(sts = Myni + "steps")?.ToString();
+			string? pts, ds = pluginManager.GetPropertyValue(pts = Myni + "properties")?.ToString();
+			string? vts, vs = pluginManager.GetPropertyValue(vts = Myni + "values")?.ToString();
+			string? sts, ss = pluginManager.GetPropertyValue(sts = Myni + "steps")?.ToString();
 			if ((!(null == ds && (0 == Settings.pcount || OOpa($"per-car properties not found"))))
 			 && (!(null == vs && OOpa($"'{vts}' not found")))
 			 && (!(null == ss && OOpa($"'{sts}' not found")))
@@ -244,11 +244,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			// JSONio.ini also optionally defines per-game Properties
 			string ptts = Myni + "gameprops";
-			string dss = pluginManager.GetPropertyValue(ptts)?.ToString();
+			string? dss = pluginManager.GetPropertyValue(ptts)?.ToString();
 			string vtts = Myni + "gamevals";
-			string vss = pluginManager.GetPropertyValue(vtts)?.ToString();
+			string? vss = pluginManager.GetPropertyValue(vtts)?.ToString();
 			string stts = Myni + "gamesteps";
-			string sss = pluginManager.GetPropertyValue(stts)?.ToString();
+			string? sss = pluginManager.GetPropertyValue(stts)?.ToString();
 			if ((!(null == dss && (0 == Settings.gcount || OOpa($"per-game properties not found"))))
 			 && (!(null == vss && OOpa($"'{vtts}' not found")))
 			 && (!(null == sss && OOpa($"'{stts}' not found")))
@@ -273,11 +273,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			// JSONio.ini also optionally defines global settings
 			string pgts = Myni + "settings";
-			string dgs = pluginManager.GetPropertyValue(pgts)?.ToString();
+			string? dgs = pluginManager.GetPropertyValue(pgts)?.ToString();
 			string vgts = Myni + "setvals";
-			string vgs = pluginManager.GetPropertyValue(vgts)?.ToString();
+			string? vgs = pluginManager.GetPropertyValue(vgts)?.ToString();
 			string sgts = Myni + "setsteps";
-			string sgs = pluginManager.GetPropertyValue(sgts)?.ToString();
+			string? sgs = pluginManager.GetPropertyValue(sgts)?.ToString();
 			if ((!(null == dgs && (0 == Settings.gDefaults.Count || OOpa($"global properties not found"))))
 			 && (!(null == vgs && OOpa($"'{vgts}' not found")))
 			 && (!(null == sgs && OOpa($"'{sgts}' not found")))
@@ -317,7 +317,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						simValues[Index].Default = Settings.gDefaults[gd].Value;
 				}
 
-				string sl = pluginManager.GetPropertyValue(Myni + "slider")?.ToString();
+				string? sl = pluginManager.GetPropertyValue(Myni + "slider")?.ToString();
 
 				if (null != sl)
 					slider = simValues.FindIndex(i => i.Name == sl);
