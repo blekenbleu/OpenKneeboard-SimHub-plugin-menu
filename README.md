@@ -1,4 +1,4 @@
-## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-plugin-menu
+## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-[plugin-menu](https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki)
 *display a SimHub plugin menu in OpenKneeboard*
 
 ### background
@@ -26,6 +26,7 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	`KSHmenu.ChangeProperties` needs its own `ExternalScript.CarChange` event trigger setting  
 	in **SimHub Controls and events**.
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
+- [SimHubPropertyServer SimHub plugin](https://github.com/pre-martin/SimHubPropertyServer/tree/main/PropertyServer.Plugin/PropertyServer) telnet server - networking proof of concept
 
 ### Server-Sent Event (SSE) HTML table cell updates
 - Update &lt;table&gt; cells using JavaScript
@@ -44,7 +45,6 @@ source.onmessage = function (event) {
 };
 ```
 
-## [Real-Time Updates with SSE in C# .NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)
 
 [w3schools HTML SSE API:  receive and server side examples](https://w3schools.w3schoolsapp.com/html/html5_serversentevents.html)  
 
@@ -52,13 +52,23 @@ source.onmessage = function (event) {
 
 - [SSE data as JSON sent and received](https://codelucky.com/javascript-onmessage-event-sse/)  
 
-#### [.NET 9 WebApplication SSE tutorial and source (2024)](https://www.strathweb.com/2024/07/built-in-support-for-server-sent-events-in-net-9/)
-
-- [**.NET 8 WebApplication C# SSE server** 2023](https://medium.com/@kova98/server-sent-events-in-net-7f700b21cdb7)  
-
-- stackoverflow [Implement sending Server Sent Events in C# (no ASP.NET / MVC / ...)](https://stackoverflow.com/questions/44851970/implement-sending-server-sent-events-in-c-sharp-no-asp-net-mvc)  
+## SimHub plugins are .NET Framework 4.8 WPF libraries
+### [.NET Framework 4.8 `System.Net.ServerSentEvents SseFormatter Class`](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter?view=netframework-4.8-pp)
+Writes source of server-sent events to destination stream.  
+- [SseFormatter.WriteAsync Method](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter.writeasync?view=netframework-4.8-pp)
+- [nuget](https://www.nuget.org/packages/System.Net.ServerSentEvents)
+- [.NET 9-10 `System.Net.ServerSentEvents` example solutions **using `WriteAsync` may** port](https://dev.to/mashrulhaque/server-sent-events-in-net-10-finally-a-native-solution-22kg)  
+	- [**Minimal API example**](https://fullstackcity.com/server-sent-events-in-net-10) sends web page
+	- [Real-Time Updates with SSE in C# ASP.NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)  
+	- [.NET 9 WebApplication SSE tutorial and source (2024)](https://www.strathweb.com/2024/07/built-in-support-for-server-sent-events-in-net-9/)  
+	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript)
+	- [Real-Time `ServerSentEvents` example](https://www.codemag.com/Article/2309051/Developing-Real-Time-Web-Applications-with-Server-Sent-Events-in-ASP.NET-7-Core)
+	- [Milan Jovanovic YouTube](https://www.youtube.com/watch?v=JKCyvlh0_mE)
+	- [.NET 9 example with `WriteAsync`](https://medium.com/@tomas.madajevas/server-sent-events-and-rx-for-requests-interception-3e6b2356a9b6)
+	- [.NET 8 WebApplication C# SSE server 2023 using WebApplication.CreateBuilder](https://medium.com/@kova98/server-sent-events-in-net-7f700b21cdb7) - [**GitHub**](https://github.com/kova98/BackendCommunicationPatterns.NET)
 
 - [EventSource.cs *2014* (569 lines)](https://gist.github.com/igolaizola/3ad45ea8135ad8e5fd06)
+
 
 ### [Server Side Event implementation *Python* source using `FastAPI`](https://malnossi.github.io/blog/server-side-events/)
 
