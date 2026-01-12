@@ -40,7 +40,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal void OOpsMB()
 		{
 			Model.StatusText = JSONio.Msg;
-			System.Windows.MessageBox.Show(JSONio.Msg, "JSONio");
+			System.Windows.Forms.MessageBox.Show(JSONio.Msg, "OKSHmenu");
 		}
 
 		// highlights selected property cell

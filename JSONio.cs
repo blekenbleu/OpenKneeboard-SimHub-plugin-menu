@@ -8,7 +8,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	[PluginDescription("NCalc configured properties to/from JSON")]
 	[PluginAuthor("blekenbleu")]
-	[PluginName("JSONio")]
+	[PluginName("OKSHmenu")]
 	public partial class JSONio : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
 		public DataPluginSettings Settings;
@@ -20,10 +20,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal int slider = -1;				// simValues index for configured JSONIO.properties
 		internal bool set = false;
 
-		private string? CurrentCar;
+		private string CurrentCar;
 		private string Gname = "";
 		private int gndx = -1, cndx = -1;						// current car slim.data.gList indices
-		private static readonly string My = "JSONio.";			// breaks Ini if not preceding
+		private static readonly string My = "OKSHpm.";			// breaks Ini if not preceding
 																// configuration source
 		private static readonly string Myni = "DataCorePlugin.ExternalScript." + My;
 		private string path;									// JSON file location
@@ -73,7 +73,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// <summary>
 		/// Short plugin title to show in left menu. Return null to use the PluginName attribute.
 		/// </summary>
-		public string LeftMenuTitle => "JSONio " + Control.version;
+		public string LeftMenuTitle => "OKSHmenu " + Control.version;
 
 		/// <summary>
 		/// Called one time per game data update, contains all normalized game data,
@@ -133,7 +133,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			else System.IO.File.WriteAllText(path, sjs);
 		}	// End()
 
-		// try CarChange() for Game already running when JSONio is (re)launched
+		// try CarChange() for Game already running when OKSHmenu is (re)launched
 		// https://ironpdf.com/blog/net-help/csharp-wait-for-seconds/
 		async Task AsyncRunningGame(PluginManager pm, int milliseconds)
 		{
@@ -174,7 +174,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			for (int c = 0; c < props.Count; c++)
 			{
 				// populate DisplayGrid ItemsSource
-				// JSONio.ini contents may not match saved car properties
+				// OKSHpm.ini contents may not match saved car properties
 				// default value from .ini
 				int Index = SettingsProps.FindIndex(i => i.Name == props[c]);
 				string ini = (c < vals.Count) ? vals[c] : (0 <= Index) ? SettingsProps[Index].Value : "0";
@@ -217,16 +217,16 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			Steps = new List<int>() {};		// for Populate()
 
-			// property and setting names, default values and steps from JSONio.ini
-			string? pts, ds = pluginManager.GetPropertyValue(pts = Myni + "properties")?.ToString();
-			string? vts, vs = pluginManager.GetPropertyValue(vts = Myni + "values")?.ToString();
-			string? sts, ss = pluginManager.GetPropertyValue(sts = Myni + "steps")?.ToString();
+			// property and setting names, default values and steps from OKSHpm.ini
+			string pts, ds = pluginManager.GetPropertyValue(pts = Myni + "properties")?.ToString();
+			string vts, vs = pluginManager.GetPropertyValue(vts = Myni + "values")?.ToString();
+			string sts, ss = pluginManager.GetPropertyValue(sts = Myni + "steps")?.ToString();
 			if ((!(null == ds && (0 == Settings.pcount || OOpa($"per-car properties not found"))))
 			 && (!(null == vs && OOpa($"'{vts}' not found")))
 			 && (!(null == ss && OOpa($"'{sts}' not found")))
 			   )
 			{
-				// JSONio.ini defines per-car Properties
+				// OKSHpm.ini defines per-car Properties
 				List<string> CarProps = new List<string>(ds.Split(','));
 				pCount = CarProps.Count;						// these are per-car
 				List<string> values = new List<string>(vs.Split(','));
@@ -242,13 +242,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				Settings.pcount = simValues.Count;
 			}
 
-			// JSONio.ini also optionally defines per-game Properties
+			// OKSHpm.ini also optionally defines per-game Properties
 			string ptts = Myni + "gameprops";
-			string? dss = pluginManager.GetPropertyValue(ptts)?.ToString();
+			string dss = pluginManager.GetPropertyValue(ptts)?.ToString();
 			string vtts = Myni + "gamevals";
-			string? vss = pluginManager.GetPropertyValue(vtts)?.ToString();
+			string vss = pluginManager.GetPropertyValue(vtts)?.ToString();
 			string stts = Myni + "gamesteps";
-			string? sss = pluginManager.GetPropertyValue(stts)?.ToString();
+			string sss = pluginManager.GetPropertyValue(stts)?.ToString();
 			if ((!(null == dss && (0 == Settings.gcount || OOpa($"per-game properties not found"))))
 			 && (!(null == vss && OOpa($"'{vtts}' not found")))
 			 && (!(null == sss && OOpa($"'{stts}' not found")))
@@ -271,13 +271,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				Settings.gcount = simValues.Count - Settings.pcount;
 			}			
 
-			// JSONio.ini also optionally defines global settings
+			// OKSHpm.ini also optionally defines global settings
 			string pgts = Myni + "settings";
-			string? dgs = pluginManager.GetPropertyValue(pgts)?.ToString();
+			string dgs = pluginManager.GetPropertyValue(pgts)?.ToString();
 			string vgts = Myni + "setvals";
-			string? vgs = pluginManager.GetPropertyValue(vgts)?.ToString();
+			string vgs = pluginManager.GetPropertyValue(vgts)?.ToString();
 			string sgts = Myni + "setsteps";
-			string? sgs = pluginManager.GetPropertyValue(sgts)?.ToString();
+			string sgs = pluginManager.GetPropertyValue(sgts)?.ToString();
 			if ((!(null == dgs && (0 == Settings.gDefaults.Count || OOpa($"global properties not found"))))
 			 && (!(null == vgs && OOpa($"'{vgts}' not found")))
 			 && (!(null == sgs && OOpa($"'{sgts}' not found")))
@@ -301,7 +301,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 == simValues.Count)
 			{
 				OOpa("Missing or invalid " + Myni
-					 + "properties from NCalcScripts/JSONio.ini");
+					 + "properties from NCalcScripts/OKSHpm.ini");
 				return;
 			}
 
@@ -317,7 +317,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						simValues[Index].Default = Settings.gDefaults[gd].Value;
 				}
 
-				string? sl = pluginManager.GetPropertyValue(Myni + "slider")?.ToString();
+				string sl = pluginManager.GetPropertyValue(Myni + "slider")?.ToString();
 
 				if (null != sl)
 					slider = simValues.FindIndex(i => i.Name == sl);
@@ -328,7 +328,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// still-configured from most recent game instance
 			// Load existing JSON, using slim format
 			// JSON values for still-configured properties are supposed more current than .ini
-			slim = new Slim(this) { js = this };
+			slim = new Slim(this) {};
 			if (slim.Load(path = pluginManager.GetPropertyValue(Myni + "file")?.ToString()))
 			{
 				if (0 < Msg.Length)

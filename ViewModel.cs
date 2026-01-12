@@ -22,7 +22,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// One event handler for all property changes
-		public event PropertyChangedEventHandler? PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
         // events to raise
         readonly PropertyChangedEventArgs Bevent = new PropertyChangedEventArgs("ButtonVisibility");

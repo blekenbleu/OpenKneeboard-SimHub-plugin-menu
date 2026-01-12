@@ -244,7 +244,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 /*--------------------------------------------------------------
- ;      invoked for CarId changes, based on this `NCalcScripts/JSONio.ini` entry:
+ ;      invoked for CarId changes, based on this `NCalcScripts/OKSHpm.ini` entry:
  ;          [ExportEvent]
  ;          name='CarChange'
  ;          trigger=changed(200, [DataCorePlugin.GameData.CarId])
@@ -258,7 +258,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			if (null !=cname && 0 < cname.Length && null != gnew && 0 < gnew.Length)	// valid?
 			{
-				GameList? game = null;
+				GameList game = null;
 				int i, count = 0, vcount = 0;
 
 				Msg = "Current Car: " + cname;

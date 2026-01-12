@@ -14,27 +14,32 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 	public class GameList
 	{
-		public List<CarL>? cList;		// cList[0] is game Name + default per-car, then per-game property values
+		public List<CarL> cList;		// cList[0] is game Name + default per-car, then per-game property values
 	}
 
 	public class GamesList
 	{
-		public string? Plugin;			// Plugin Name ("JSONio")
-		public List<string>? pList;		// per-car, then per-game property names, from JSONio.ini
-		public List<GameList>? gList;
+		public string Plugin;			// NCalcScripts/OKSHpm.ini identifies itself as "OKSHpm.file"
+		public List<string> pList;		// per-car, then per-game property names, from OKSHpm.ini
+		public List<GameList> gList;
 	}
 
-	public class Slim(JSONio plugin)
-    {
-		public GamesList? data;
-		public required JSONio js = plugin;
+	public class Slim
+	{
+		public GamesList data;
+		readonly JSONio js;
 
-        // called in End()
-        public void Data()
+		public Slim(JSONio plugin)
+		{
+			this.js = plugin;
+		}
+
+		// called in End()
+		public void Data()
 		{
 			data = new GamesList()
 			{
-				Plugin = "JSONio",
+				Plugin = "OKSHpm",
 				gList = new List<GameList>() { },	// GameList @ slim.cs line 16
 				// property names
 				pList = new List<string> { }		// per-car, then per-game
@@ -64,10 +69,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return New;
 		}
 
-		// load Slim .json and reconcile with CurrentCar-specific simValues from NCalcScripts/JSONio.ini
+		// load Slim .json and reconcile with CurrentCar-specific simValues from NCalcScripts/OKSHpm.ini
 		// return true if path fails or unrecoverable JSON
 		// .ini may have added, deleted or moved properties among per-car, per-game and global
-		// .json may be e.g. obsolete format, out-of-date or bad because JSONio code bugs.
+		// .json may be e.g. obsolete format, out-of-date or bad because code bugs.
 		internal bool Load(string path)
 		{
 			if (!File.Exists(path))
@@ -94,9 +99,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			// Now, can only return false, meaning data fully reconciled to simValues
 
-			if (null == data.Plugin || "JSONio" != data.Plugin) {
-				js.OOpa($"Slim.Load({path}) data.Plugin: {data.Plugin} != JSONio");
-				data.Plugin = "JSONio";	// user has at least been warned...
+			if (null == data.Plugin || "OKSHpm" != data.Plugin) {
+				js.OOpa($"Slim.Load({path}) data.Plugin: {data.Plugin} != OKSHpm");
+				data.Plugin = "OKSHpm";	// user has at least been warned...
 			}
 
 			int nullcarID = 0;
