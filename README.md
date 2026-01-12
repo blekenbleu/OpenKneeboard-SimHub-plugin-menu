@@ -26,7 +26,7 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	`KSHmenu.ChangeProperties` needs its own `ExternalScript.CarChange` event trigger setting  
 	in **SimHub Controls and events**.
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
-- [SimHubPropertyServer SimHub plugin](https://github.com/pre-martin/SimHubPropertyServer/tree/main/PropertyServer.Plugin/PropertyServer) telnet server - networking proof of concept
+- [SimHubPropertyServer plugin](https://github.com/pre-martin/SimHubPropertyServer/tree/main/PropertyServer.Plugin/PropertyServer) - networking proof of concept
 
 ### Server-Sent Event (SSE) HTML table cell updates
 - Update &lt;table&gt; cells using JavaScript
@@ -52,7 +52,7 @@ source.onmessage = function (event) {
 
 - [SSE data as JSON sent and received](https://codelucky.com/javascript-onmessage-event-sse/)  
 
-## SimHub plugins are .NET Framework 4.8 WPF libraries
+## SimHub plugins are .NET Framework 4.8 WPF User Control libraries
 ### [.NET Framework 4.8 `System.Net.ServerSentEvents SseFormatter Class`](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter?view=netframework-4.8-pp)
 Writes source of server-sent events to destination stream.  
 - [SseFormatter.WriteAsync Method](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter.writeasync?view=netframework-4.8-pp)
