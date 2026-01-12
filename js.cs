@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	public partial class JSONio
+	public partial class OKSHmenu
 	{
 		// check whether current properties differ from JSON
 		bool Changed()
@@ -336,5 +336,5 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			ToSlider();
 			View.Model.ButtonVisibility = System.Windows.Visibility.Visible;	// ready
 		}	// CarChange()
-	}		// public partial class JSONio
+	}		// public partial class OKSHmenu
 }

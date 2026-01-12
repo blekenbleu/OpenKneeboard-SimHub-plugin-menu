@@ -9,7 +9,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	[PluginDescription("NCalc configured properties to/from JSON")]
 	[PluginAuthor("blekenbleu")]
 	[PluginName("OKSHmenu")]
-	public partial class JSONio : IPlugin, IDataPlugin, IWPFSettingsV2
+	public partial class OKSHmenu : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
 		public DataPluginSettings Settings;
 		public string NewCar = "false";
@@ -43,7 +43,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// </summary>
 		internal static bool Info(string str)
 		{
-			SimHub.Logging.Current.Info(JSONio.My + str);   // bool Info()
+			SimHub.Logging.Current.Info(OKSHmenu.My + str);   // bool Info()
 			return true;
 		}
 
@@ -354,7 +354,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			this.AddAction("SwapCurrentPrevious",		(a, b) => Swap()		);
 			this.AddAction("CurrentAsDefaults",			(a, b) => SetDefault());
 			this.AddAction("SelectedAsSlider",			(a, b) => SelectSlider());
-			this.AddAction("ChangeProperties",			(a, b) => CarChange(
+			this.AddAction("ChangeProperties",			(a, b) => CarChange(	// SimHub triggers by ExternalScript.CarChange event
 					pluginManager.GetPropertyValue("CarID")?.ToString(),
 					pluginManager.GetPropertyValue("DataCorePlugin.CurrentGame")?.ToString(),
 					false
@@ -363,5 +363,5 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			Info($"JSONIO.Init():  simValues.Count = {simValues.Count}");
 		}	// Init()
-	}		// class JSONio
+	}		// class OKSHmenu
 }

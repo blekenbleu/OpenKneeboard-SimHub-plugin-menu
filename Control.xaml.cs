@@ -14,9 +14,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	/// </summary>
 	public partial class Control : UserControl
 	{
-		public JSONio JS { get; }
+		public OKSHmenu JS { get; }
 		public ViewModel Model;							// reference XAML controls
-		internal byte Selection;						// changes only in JSONio.Select() on UI thread
+		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
 		internal static string version = "1.60";
 
 		public Control() {								// called before simValues are initialized
@@ -25,9 +25,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			this.DataContext = Model;					// StaticControl events change Control.xaml binds
 		}
 
-		public Control(JSONio plugin) : this()
+		public Control(OKSHmenu plugin) : this()
 		{
-			this.JS = plugin;							// Control.xaml button events call JSONio methods
+			this.JS = plugin;							// Control.xaml button events call OKSHmenu methods
 			dg.ItemsSource = plugin.simValues;			// DataGrid values
 		}
 
@@ -39,8 +39,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		internal void OOpsMB()
 		{
-			Model.StatusText = JSONio.Msg;
-			System.Windows.Forms.MessageBox.Show(JSONio.Msg, "OKSHmenu");
+			Model.StatusText = OKSHmenu.Msg;
+			System.Windows.Forms.MessageBox.Show(OKSHmenu.Msg, "OKSHmenu");
 		}
 
 		// highlights selected property cell

@@ -18,9 +18,13 @@ for tweaking e.g. harness tensioner or haptics settings (properties).
 HTML table cell updates should have lower processing overhead than graphical overlay..
 
 ### resources
-- from [JSONio](https://github.com/blekenbleu/JSONio), in `OpenKneeboard-SimHub-plugin-menu.csproj`:
-	- could not get [ReferencePath](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/project-build/troubleshooting-broken-references)
+- from [JSONio](https://github.com/blekenbleu/JSONio):
+	- in `OpenKneeboard-SimHub-plugin-menu.csproj`:  
+	 could not get [ReferencePath](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/project-build/troubleshooting-broken-references)
 	 working;&nbsp; copied JSONio `HintPath`s  
+	- SimHub confused `OKSHmenu` with `JSONio` plugin until renaming `class JSONio`.  
+	`KSHmenu.ChangeProperties` needs its own `ExternalScript.CarChange` event trigger setting  
+	in **SimHub Controls and events**.
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
 
 ### Server-Sent Event (SSE) HTML table cell updates

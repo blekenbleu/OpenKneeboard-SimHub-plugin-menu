@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="js.cs" />
-    <Compile Include="JSONio.cs" />
+    <Compile Include="OKSHmenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Slim.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

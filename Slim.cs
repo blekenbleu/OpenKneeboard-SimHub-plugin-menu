@@ -27,9 +27,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	public class Slim
 	{
 		public GamesList data;
-		readonly JSONio js;
+		readonly OKSHmenu js;
 
-		public Slim(JSONio plugin)
+		public Slim(OKSHmenu plugin)
 		{
 			this.js = plugin;
 		}
@@ -44,7 +44,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				// property names
 				pList = new List<string> { }		// per-car, then per-game
 			};
-			for (int i = 0; i < JSONio.gCount; i++)
+			for (int i = 0; i < OKSHmenu.gCount; i++)
 				data.pList.Add(js.simValues[i].Name);
 		}
 
@@ -53,7 +53,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			List<string> New = new List<string> {};
 			// car[0] is per-game car default and per-game property values
-			int count = (0 == car) ? JSONio.gCount : JSONio.pCount;
+			int count = (0 == car) ? OKSHmenu.gCount : OKSHmenu.pCount;
 
 			if (count > js.simValues.Count)
 				count = js.simValues.Count;		// it happens 19 Feb 2025
@@ -81,19 +81,19 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			data = JsonConvert.DeserializeObject<GamesList>(File.ReadAllText(path));
 			if (null == data)
 			{
-				JSONio.Msg = "null data";
+				OKSHmenu.Msg = "null data";
 				return true;
 			}
 
 			if (null == data.pList)
 			{
-				JSONio.Msg = "null data.pList";
+				OKSHmenu.Msg = "null data.pList";
 				return true;
 			}
 
 			if (null == data.gList)
 			{
-				JSONio.Msg = "null data.gList";
+				OKSHmenu.Msg = "null data.gList";
 				return true;
 			}
 
@@ -105,8 +105,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 
 			int nullcarID = 0;
-			int pCount = JSONio.pCount;
-			int gCount = JSONio.gCount;
+			int pCount = OKSHmenu.pCount;
+			int gCount = OKSHmenu.gCount;
 			int i, g, c;
 
 			if (gCount != data.pList.Count)
