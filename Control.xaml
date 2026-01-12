@@ -15,7 +15,7 @@
 		<TextBlock Background="White" TextAlignment="Center" Height="20" Width="30"
 			HorizontalAlignment="Left" VerticalAlignment="Top" Margin="349,15,0,0">
 			<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
-			NavigateUri="https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu#resources">Help</Hyperlink>
+			NavigateUri="https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki">Help</Hyperlink>
 		</TextBlock>
 
 		<TextBlock x:Name="Status" Text="{Binding StatusText}" Height="74" Width="350"
