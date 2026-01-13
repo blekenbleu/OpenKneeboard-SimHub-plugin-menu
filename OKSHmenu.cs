@@ -131,6 +131,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 == sjs.Length || "{}" == sjs)
 				OOps("End():  Json Serializer failure");
 			else System.IO.File.WriteAllText(path, sjs);
+			if (HttpServer.runServer)
+			{
+				Info("Closing {HttpServer.url} listener");
+				HttpServer.listener.Close();
+			}
 		}	// End()
 
 		// try CarChange() for Game already running when OKSHmenu is (re)launched
@@ -362,6 +367,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			);
 
 			Info($"JSONIO.Init():  simValues.Count = {simValues.Count}");
+			HttpServer.Serve();
 		}	// Init()
 	}		// class OKSHmenu
 }

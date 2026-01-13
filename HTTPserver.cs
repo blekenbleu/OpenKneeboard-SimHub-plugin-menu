@@ -1,21 +1,21 @@
-// Filename:  HttpServer.cs        
+// https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
 // Author:    Benjamin N. Summerton <define-private-public>        
 // License:   Unlicense (http://unlicense.org/)
 
 using System;
-using System.IO;
 using System.Text;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace HttpListenerExample
+namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
     class HttpServer
     {
-        public static HttpListener listener;
-        public static string url = "http://localhost:8000/";
+        public static HttpListener listener = null;
+        public static string url = "http://localhost:8765/";
         public static int pageViews = 0;
         public static int requestCount = 0;
+        public static bool runServer = true;
         public static string pageData = 
             "<!DOCTYPE>" +
             "<html>" +
@@ -33,8 +33,6 @@ namespace HttpListenerExample
 
         public static async Task HandleIncomingConnections()
         {
-            bool runServer = true;
-
             // While a user hasn't visited the `shutdown` url, keep on handling requests
             while (runServer)
             {
@@ -46,17 +44,16 @@ namespace HttpListenerExample
                 HttpListenerResponse resp = ctx.Response;
 
                 // Print out some info about the request
-                Console.WriteLine("Request #: {0}", ++requestCount);
-                Console.WriteLine(req.Url.ToString());
-                Console.WriteLine(req.HttpMethod);
-                Console.WriteLine(req.UserHostName);
-                Console.WriteLine(req.UserAgent);
-                Console.WriteLine();
+                OKSHmenu.Info($"Request #: {++requestCount} "
+                    + req.Url.ToString() + "\n\t" 
+                    + req.HttpMethod + "\n\t"
+                    + req.UserHostName + "\n\t"
+                    + req.UserAgent);
 
                 // If `shutdown` url requested w/ POST, then shutdown the server after serving the page
                 if ((req.HttpMethod == "POST") && (req.Url.AbsolutePath == "/shutdown"))
                 {
-                    Console.WriteLine("Shutdown requested");
+                    OKSHmenu.Info($"{url} Shutdown requested");
                     runServer = false;
                 }
 
@@ -78,20 +75,26 @@ namespace HttpListenerExample
         }
 
 
-        public static void Main(string[] args)
+        public static void Serve()
         {
             // Create a Http server and start listening for incoming connections
-            listener = new HttpListener();
-            listener.Prefixes.Add(url);
-            listener.Start();
-            Console.WriteLine("Listening for connections on {0}", url);
+			if (null == listener)
+			{
+            	listener = new HttpListener();
+            	listener.Prefixes.Add(url);
+            	listener.Start();
+			}
+            OKSHmenu.Info("Listening for connections on " + url);
 
             // Handle requests
+			runServer = true;
             Task listenTask = HandleIncomingConnections();
-            listenTask.GetAwaiter().GetResult();
+/*          listenTask.GetAwaiter().GetResult();
 
             // Close the listener
+			OKSHmenu.Info("Closing {url} listener");
             listener.Close();
+ */
         }
     }
 }

@@ -64,6 +64,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HTTPserver.cs" />
     <Compile Include="js.cs" />
     <Compile Include="OKSHmenu.cs" />
     <Compile Include="Settings.cs" />
