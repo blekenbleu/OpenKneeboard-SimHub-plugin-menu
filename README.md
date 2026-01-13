@@ -102,8 +102,6 @@ for ( var i = 0; i<refTab.rows.length; i++ ) {
 
 // change it? r: row; c: column
 document.querySelector("#tableID").children[0].children[r].children[c].innerText = value;
-
-
 </script>
 </body>
 </html>
@@ -123,37 +121,33 @@ rows[line].scrollIntoView({
     behavior: 'smooth',
     block: 'center'
 });
-
 ```
 
 ### [`scrollIntoView` is now a "Baseline Widely available*" feature](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView)
-```
-var elem = document.querySelector("#tableID").children[0].children[row];  
-elem.scrollIntoView(true);
-```
+` var elem = document.querySelector("#tableID").children[0].children[row];`  
+` elem.scrollIntoView(true);`
 
 ### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
 
-## Build process
-#### .NET 9.0 WPF Class Library - doomed
-Unrecognized as a plugin by SimHubWPF.exe;&nbsp;  [.NET 8 and newer are cross-platform, open-source](https://dotnet.microsoft.com/en-us/download/visual-studio-sdks)
-- created a new Visual Studio .NET 9.0 WPF Class Library named `OpenKneeboard-SimHub-plugin-menu`
-	- copied those `OpenKneeboard-SimHub-plugin-menu.csproj  OpenKneeboard-SimHub-plugin-menu.sln` into this repository
-	- from `SimHub/PluginSdk/JSONio`, copied `Control.xaml  Control.xaml.cs  JSONio.cs Properties Settings.cs  Slim.cs  Values.cs  ViewModel.cs  bin  js.cs sdkmenuicon.png`
-	- renamed `namespace` to `blekenbleu.OpenKneeboard_SimHub_plugin_menu`
-	- deleted `GlobalSection(ExtensibilityGlobals)` in `OpenKneeboard-SimHub-plugin-menu.sln`
-- could not debug executible from Visual Studio UI; hacked into `.csproj`:
-```
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <OutputPath>$(SIMHUB_INSTALL_PATH)</OutputPath>
-    <StartAction>Program</StartAction>
-    <StartProgram>$(SIMHUB_INSTALL_PATH)SimHubWPF.exe</StartProgram>
-  </PropertyGroup>
-```
-
+## SimHub plugin build process
 ### .NET Framework v4.8
 Windows-only version of .NET for building client and server applications;  
-newest supported version is 4.8.1 (*August 9th, 2022*); SimHub uses 4.8  
+newest version supported by M$ is 4.8.1 (*August 9th, 2022*), but SimHub uses 4.8  
 In Visual Studio, `new project > WPF User Control Library (.NET Framework)`  
-- User Control has xaml
+- `WPF User Control Library` has xaml
+
+<details><summary><b>.NET 9.0 WPF Class Library - doomed for SimHub</b></summary>
+Unrecognized as a plugin by SimHubWPF.exe;&nbsp;  <a href=https://dotnet.microsoft.com/en-us/download/visual-studio-sdks>.NET 8 and newer are cross-platform, open-source</a><ul>
+<li> created a new Visual Studio .NET 9.0 WPF Class Library named <code>OpenKneeboard-SimHub-plugin-menu</code><ul>
+	<li> copied those <code>OpenKneeboard-SimHub-plugin-menu.csproj OpenKneeboard-SimHub-plugin-menu.sln</code> into this repository
+	<li>from <code>SimHub/PluginSdk/JSONio</code>, copied <code>Control.xaml  Control.xaml.cs  JSONio.cs Properties Settings.cs  Slim.cs  Values.cs  ViewModel.cs  bin  js.cs sdkmenuicon.png</code>
+	<li>renamed <code>namespace</code> to </code>blekenbleu.OpenKneeboard_SimHub_plugin_menu</coe>
+	<li>deleted <code>GlobalSection(ExtensibilityGlobals)</code> in <code>OpenKneeboard-SimHub-plugin-menu.sln</code></ul></ul>
+To debug executible from Visual Studio UI, hacked into <code>.csproj</code>:<br>
+<code>  &lt;PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"&gt;
+    &lt;OutputPath&gt;$(SIMHUB_INSTALL_PATH)&lt;/OutputPath&gt;
+    &lt;StartAction&gt;Program&lt;/StartAction&gt;
+    &lt;StartProgram&gt;$(SIMHUB_INSTALL_PATH)SimHubWPF.exe&lt;/StartProgram&gt;
+  &lt;/PropertyGroup&gt; </code>
+</details>
