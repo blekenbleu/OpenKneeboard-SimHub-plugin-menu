@@ -123,7 +123,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
-			if (!write)				// End()
+            HttpServer.listener.Prefixes.Clear();
+			Info("Closing {HttpServer.url} listener");
+			HttpServer.listener.Close();
+
+            if (!write)				// End()
 				return;
 
 			string sjs = Newtonsoft.Json.JsonConvert.SerializeObject(slim.data,
@@ -131,11 +135,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 == sjs.Length || "{}" == sjs)
 				OOps("End():  Json Serializer failure");
 			else System.IO.File.WriteAllText(path, sjs);
-			if (HttpServer.runServer)
-			{
-				Info("Closing {HttpServer.url} listener");
-				HttpServer.listener.Close();
-			}
 		}	// End()
 
 		// try CarChange() for Game already running when OKSHmenu is (re)launched
