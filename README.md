@@ -28,7 +28,7 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
 - [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-networking/02/) - proof of concept (not SSE) -
   [Gist](https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7)
-	- SSE [may be easier](https://stackoverflow.com/questions/17320754/server-sent-events-with-nancy/50658662#50658662) with [Nancy]() 
+	- [Server-sent event (SSE) with ASHX (.Net framework 4.6)](https://laucsharp.blogspot.com/2020/06/server-sent-event-sse-with-ashx-net.html)
 
 ### Server-Sent Event (SSE) HTML table cell updates
 - Update &lt;table&gt; cells using JavaScript
@@ -57,8 +57,26 @@ source.onmessage = function (event) {
 ## SimHub plugins are .NET Framework 4.8 WPF User Control libraries
 ### [.NET Framework 4.8 `System.Net.ServerSentEvents SseFormatter Class`](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter?view=netframework-4.8-pp)
 Writes source of server-sent events to destination stream.  
+- [**Practical ASP.NET Web API.pdf**](https://accorsi.net/docs/Practical%20ASP.NET%20Web%20API.pdf) - 12.2 Pushing Real-time Updates to the Client  
+- [.Net Server-Sent Events using IHttpHandler](https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working)
+- [C# ASP Generic Handler - problems with response inside of a callback](https://stackoverflow.com/questions/52243962/c-sharp-asp-generic-handler-problems-with-response-inside-of-a-callback)
+- [Server Sent Events not sent ASP.Net 4](https://stackoverflow.com/questions/25713016/server-sent-events-not-sent-asp-net-4)
+- [Server Sent Events (SSE) not working with ASHX Handler](https://stackoverflow.com/questions/29276147/asp-net-javascript-jquery-server-sent-events-sse-not-working-with-ashx-hand)
+- [Displaying Real Time Data using HTML5 and ASP.NET *Feb 7, 2013*](https://www.codeguru.com/csharp/displaying-real-time-data-using-html5-and-asp-net/)
 - [SseFormatter.WriteAsync Method](https://learn.microsoft.com/en-us/dotnet/api/system.net.serversentevents.sseformatter.writeasync?view=netframework-4.8-pp)
-- [nuget](https://www.nuget.org/packages/System.Net.ServerSentEvents)
+	- [nuget](https://www.nuget.org/packages/System.Net.ServerSentEvents)
+- [Katana - Microsoft Owin components](https://devblogs.microsoft.com/dotnet/katana-asp-net-5-and-bridging-the-gap/)
+- [Microsoft.Owin.Host.HttpListener](https://www.nuget.org/packages/Microsoft.Owin.Host.HttpListener) - nuget
+	- OWIN server built on the .NET Framework 4.5's HttpListener class.  
+		 Currently the default server used for self-hosting.
+	- [Use OWIN to Self-Host ASP.NET Web API](https://learn.microsoft.com/en-us/aspnet/web-api/overview/hosting-aspnet-web-api/use-owin-to-self-host-web-api) - learn.microsoft.com
+	- [Use OWIN to Self-Host ASP.NET Web API](https://www.learnonlineasp.net/2017/10/use-owin-to-self-host-aspnet-web-api.html) - learnonlineasp.net
+	- [Use OWIN to Self-Host ASP.NET Web API](https://github.com/dotnet/AspNetDocs/blob/main/aspnet/web-api/overview/hosting-aspnet-web-api/use-owin-to-self-host-web-api.md) - github.com/dotnet/AspNetDocs
+- [Microsoft.Owin.SelfHost](https://www.nuget.org/packages/Microsoft.Owin.SelfHost/) - nuget
+- [Microsoft.AspNet.SignalR](https://github.com/SignalR/SignalR) - nuget for use in .NET Framework applications using System.Web or Katana
+	- [Simple SignalR Server apps](https://www.codeproject.com/articles/Simple-SignalR-Server-and-Client-Applications-Demo) - [GitHub](https://github.com/nthdeveloper/SignalRSamples)
+	- [ASP.NET Core SignalR & SignalR Debugging Tool](https://medium.com/@dwivedi.gourav/asp-net-core-signalr-signalr-debugging-tool-a82dc5230035) - [**SignalR Debugging Tool**](https://gourav-d.github.io/SignalR-Web-Client/dist/)
+	- [Building a Real-Time Event Viewer in C# with SignalR and Server-Sent Events](https://en.ittrip.xyz/c-sharp/real-time-viewer-csharp)
 - [.NET 9-10 `System.Net.ServerSentEvents` example solutions **using `WriteAsync` may** port](https://dev.to/mashrulhaque/server-sent-events-in-net-10-finally-a-native-solution-22kg)  
 	- [**Minimal API example**](https://fullstackcity.com/server-sent-events-in-net-10) sends web page
 	- [Real-Time Updates with SSE in C# ASP.NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)  
