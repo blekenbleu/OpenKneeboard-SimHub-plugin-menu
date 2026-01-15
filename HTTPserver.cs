@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics.Tracing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
@@ -65,7 +66,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				HttpListenerResponse resp = ctx.Response;
 
 				requestCount++;
-				if (first)
+				if (true)
 				{
 					first = false;
 					// Print out some info about the request
@@ -84,9 +85,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 				else if ("/SSE" == req.Url.AbsolutePath)
 				{
-					SSEcontext = ctx;
-					Task<Timer> timerTask = (Task<Timer>)SSEtimer();	// keep-alive
-					continue;	// Server-Sent Events:  do no close this context
+					if (0 == foo)
+					{
+						SSEcontext = ctx;
+						Task<int> keepalive = KeepAliveAsync();
+					}
+					continue;	// Server-Sent Events:  do not close this context
 				}
 
 				// Make sure we don't increment the page views counter if `favicon.ico` is requested
@@ -104,6 +108,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				await resp.OutputStream.WriteAsync(data, 0, data.Length);
 				resp.Close();
 			}
+		}
+
+		// HandleIncomingConnections() continues after invoking this
+		private static async Task<int> KeepAliveAsync()
+		{
+			await SSEtimer();	// keep-alive
+			OKSHmenu.Info("KeepAliveAsync(): SSEtimer() ended.");
+			return 0;
 		}
 
 		// called in OKSHmenu.Init()
@@ -157,18 +169,23 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		public static async Task SSEtimer()
-		{
-			int foo = 0;
-
+		private static int foo = 0;
+		public async static Task SSEtimer()
+        {
+            OKSHmenu.Info("SSEtimer(): launched");
 			while (null != SSEcontext)
 			{
-				await Task.Delay(2000);
 				if (SSEtimeout)
-					SSEreponse($"foo {++foo}");
+				{
+					OKSHmenu.Info($"SSEtimer(foo = {++foo})");
+					SSEreponse($"foo {foo}");
+				}
 				SSEtimeout = true;
+				await Task.Delay(2000);
 			}
-		}
+			OKSHmenu.Info("SSEtimer(): null SSEContext");
+//          return Task.CompletedTask;
+        }
 		// GetContextAsync() with Cancellation Support
 		// https://stackoverflow.com/questions/69715297/getcontextasync-with-cancellation-support
 	}
