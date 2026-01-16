@@ -1,4 +1,5 @@
 // https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
+// https://16bpp.net/tutorials/csharp-networking/02/
 // Author:	Benjamin N. Summerton <define-private-public>		
 // License:   Unlicense (http://unlicense.org/)
 
@@ -178,13 +179,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (SSEtimeout)
 				{
 					OKSHmenu.Info($"SSEtimer(foo = {++foo})");
-					SSEreponse($"foo {foo}");
+					SSEreponse($"foo {foo}");	// this hangs for 2 == foo
 				}
 				SSEtimeout = true;
 				await Task.Delay(2000);
 			}
 			OKSHmenu.Info("SSEtimer(): null SSEContext");
-//          return Task.CompletedTask;
         }
 		// GetContextAsync() with Cancellation Support
 		// https://stackoverflow.com/questions/69715297/getcontextasync-with-cancellation-support
