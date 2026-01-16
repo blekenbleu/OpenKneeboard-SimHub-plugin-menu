@@ -13,8 +13,6 @@ using System.Web.Script.Serialization;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	internal class Timer { }
-
 	class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
 		public static HttpListener listener = null;
@@ -26,6 +24,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"<html>" +
 			"  <head>" +
 			"	<title>HttpListener Example</title>" +
+			"   <link rel=\"icon\" href=" +
+            "   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
+			"	type=\"image/x-icon\">" +
 			"  </head>" +
 			"  <body>" +
 			"	<p>Page Views: {0};&nbsp; Request Count: {1}</p>" +
@@ -162,10 +163,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			byte[] data = Encoding.UTF8.GetBytes(string.Format("data: " + js.Serialize(responseText) + "\n\n"));
 			response.ContentEncoding = Encoding.UTF8;
 			response.ContentLength64 = data.LongLength;
-			try
+			try	// if this takes "too long", call `response.Close()`
 			{
 //				response.Write(data, 0, data.Length);				// not in .NET 4.8
-				response.OutputStream.Write(data, 0, data.Length);
+//				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
+				response.OutputStream.Write(data, 0, data.Length);	// System.IO.Stream 
 				response.OutputStream.Flush();
 			}
 			catch (Exception e)
@@ -181,7 +183,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public async static Task SSEtimer()
         {
             OKSHmenu.Info("SSEtimer(): launched");
-			while (SSElistener.IsListening)
+			SSEcontext.Response.OutputStream.WriteTimeout = 1000;	// accepted, but seemingly ignored
+			while (null != SSElistener && SSElistener.IsListening)
 			{
 				if (SSEtimeout)
 				{
