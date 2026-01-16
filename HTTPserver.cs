@@ -35,6 +35,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"  </body>" +
 			"</html>";
 		private static bool SSEtimeout = true;
+		private static HttpListener SSElistener = null;
 		private static HttpListenerContext SSEcontext = null;
 
 		// should be a thread, instead of task..?
@@ -84,13 +85,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					OKSHmenu.Info("HandleIncomingConnections(): Shutdown requested");
 					runServer = false;
 				}
-				else if ("/SSE" == req.Url.AbsolutePath)
+				else if (req.Url.AbsolutePath.StartsWith("/SSE"))
 				{
-					if (0 == foo)
+					if (null == SSEcontext)
 					{
+						SSElistener = listener;
 						SSEcontext = ctx;
 						Task<int> keepalive = KeepAliveAsync();
 					}
+					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  SSElistener is {(SSElistener.IsListening ? "" : "NOT")} listening");
 					continue;	// Server-Sent Events:  do not close this context
 				}
 
@@ -122,6 +125,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// called in OKSHmenu.Init()
 		public static void Serve()
 		{
+			SSEcontext = null;
+			SSElistener = null;
 			// Create a Http server and start listening for incoming connections
 			listener = new HttpListener();
 			foreach (string url in urls)
@@ -159,7 +164,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			response.ContentLength64 = data.LongLength;
 			try
 			{
-				response.OutputStream.WriteAsync(data, 0, data.Length);
+//				response.Write(data, 0, data.Length);				// not in .NET 4.8
+				response.OutputStream.Write(data, 0, data.Length);
 				response.OutputStream.Flush();
 			}
 			catch (Exception e)
@@ -168,23 +174,25 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				SSEcontext.Response.Close();
 				SSEcontext = null;
 			}
+			OKSHmenu.Info($"SSEreponse(): foo = {foo}; IsListening = {(SSElistener.IsListening ? "true" : "false")}");
 		}
 
 		private static int foo = 0;
 		public async static Task SSEtimer()
         {
             OKSHmenu.Info("SSEtimer(): launched");
-			while (null != SSEcontext)
+			while (SSElistener.IsListening)
 			{
 				if (SSEtimeout)
 				{
 					OKSHmenu.Info($"SSEtimer(foo = {++foo})");
-					SSEreponse($"foo {foo}");	// this hangs for 2 == foo
+					SSEreponse($"foo {foo} not async");	// this hangs for 2 == foo
 				}
 				SSEtimeout = true;
 				await Task.Delay(2000);
 			}
-			OKSHmenu.Info("SSEtimer(): null SSEContext");
+			OKSHmenu.Info("SSEtimer(): client not listening");
+			SSEcontext = null;
         }
 		// GetContextAsync() with Cancellation Support
 		// https://stackoverflow.com/questions/69715297/getcontextasync-with-cancellation-support

@@ -150,6 +150,10 @@ rows[line].scrollIntoView({
 ### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
 
+### [Writing a Web Server using C# TcpListener](https://iamsimi.medium.com/writing-a-web-server-in-c-12b93134082bA)
+### [Writing a Web Server using C# HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
+### [SimpleHttpServer using C# `System.Net.Sockets`](https://www.codeproject.com/articles/Simple-HTTP-Server-in-C) - [GitHub](https://github.com/jeske/SimpleHttpServer)
+
 ## SimHub plugin build process
 ### .NET Framework v4.8
 Windows-only version of .NET for building client and server applications;  
