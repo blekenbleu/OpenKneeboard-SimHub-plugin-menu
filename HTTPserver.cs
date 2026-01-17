@@ -25,7 +25,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"  <head>" +
 			"	<title>HttpListener Example</title>" +
 			"   <link rel=\"icon\" href=" +
-            "   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
+			"   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
 			"	type=\"image/x-icon\">" +
 			"  </head>" +
 			"  <body>";
@@ -135,13 +135,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 //			listener.Prefixes.Add("http://192.168.1.147:8765/");	// needs elevated privileges
 			try
 			{
-            	listener.Start();
+				listener.Start();
 			}
 			catch (HttpListenerException hlex)
-        	{
-            	OKSHmenu.Info("Serve(): HttpListenerException transaction " + hlex);
-            	return;
-        	}
+			{
+				OKSHmenu.Info("Serve(): HttpListenerException transaction " + hlex);
+				return;
+			}
 			OKSHmenu.Info($"Serve(): Listening for connections on {urls[0]}");
 			// Handle requests
 			Task listenTask = HandleIncomingConnections();
@@ -174,7 +174,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 //					SSEcontext.Response.Close();
 //					SSErunning = false;
 				} else OKSHmenu.Info("SSEreponse()Task.Delay(1000): SSErunning NOT running");
-            });
+			});
 
 			try	// if this takes "too long", call `response.Close()`
 			{
@@ -195,8 +195,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		private static int foo = 0;
 		public async static Task SSEtimer()
-        {
-            OKSHmenu.Info("SSEtimer(): launched");
+		{
+			OKSHmenu.Info("SSEtimer(): launched");
 			while (null != SSElistener && SSElistener.IsListening)
 			{
 				if (SSEtimeout)
@@ -209,7 +209,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 			OKSHmenu.Info("SSEtimer(): client not listening");
 			SSEcontext = null;
-        }
+		}
 		// GetContextAsync() with Cancellation Support
 		// https://stackoverflow.com/questions/69715297/getcontextasync-with-cancellation-support
 	}
