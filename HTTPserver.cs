@@ -148,6 +148,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// Close listener in OKSHmenu.End().
 		}
 
+		static bool SSErunning;
 		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
 		public static void SSEreponse(string responseText)
 		{
@@ -163,10 +164,23 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			byte[] data = Encoding.UTF8.GetBytes(string.Format("data: " + js.Serialize(responseText) + "\n\n"));
 			response.ContentEncoding = Encoding.UTF8;
 			response.ContentLength64 = data.LongLength;
+			SSErunning = true;
+
+			var delay = Task.Delay(1000).ContinueWith(_ =>
+			{
+				if (SSErunning)
+				{
+					OKSHmenu.Info("SSEreponse()Task.Delay(1000): response.OutputStream.Write() incomplete");
+//					SSEcontext.Response.Close();
+//					SSErunning = false;
+				} else OKSHmenu.Info("SSEreponse()Task.Delay(1000): SSErunning NOT running");
+            });
+
 			try	// if this takes "too long", call `response.Close()`
 			{
 //				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
 				response.OutputStream.Write(data, 0, data.Length);	// System.IO.Stream 
+				SSErunning = false;
 				response.OutputStream.Flush();
 			}
 			catch (Exception e)
@@ -176,13 +190,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				SSEcontext = null;
 			}
 			OKSHmenu.Info($"SSEreponse(): foo = {foo}; IsListening = {(SSElistener.IsListening ? "true" : "false")}");
+			SSErunning = false;
 		}
 
 		private static int foo = 0;
 		public async static Task SSEtimer()
         {
             OKSHmenu.Info("SSEtimer(): launched");
-//			SSEcontext.Response.OutputStream.WriteTimeout = 1000;	// accepted, but seemingly ignored
 			while (null != SSElistener && SSElistener.IsListening)
 			{
 				if (SSEtimeout)
