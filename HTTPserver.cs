@@ -58,7 +58,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://stackoverflow.com/questions/6371741/production-ready-multi-threaded-c-sharp-http-server
 		public static async Task HandleIncomingConnections()
 		{
-			bool first = true;
 
 			// While a user hasn't visited the `shutdown` url, keep on handling requests
 			for (bool runServer = true; runServer;)
@@ -73,7 +72,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				requestCount++;
 				if (true)
 				{
-					first = false;
 					// Print out some info about the request
 					OKSHmenu.Info($"HandleIncomingConnections(): Request #: {requestCount} "
 						+ req.Url.ToString() + "\n\t"
@@ -167,7 +165,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			response.ContentLength64 = data.LongLength;
 			try	// if this takes "too long", call `response.Close()`
 			{
-//				response.Write(data, 0, data.Length);				// not in .NET 4.8
 //				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
 				response.OutputStream.Write(data, 0, data.Length);	// System.IO.Stream 
 				response.OutputStream.Flush();
@@ -185,7 +182,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public async static Task SSEtimer()
         {
             OKSHmenu.Info("SSEtimer(): launched");
-			SSEcontext.Response.OutputStream.WriteTimeout = 1000;	// accepted, but seemingly ignored
+//			SSEcontext.Response.OutputStream.WriteTimeout = 1000;	// accepted, but seemingly ignored
 			while (null != SSElistener && SSElistener.IsListening)
 			{
 				if (SSEtimeout)
