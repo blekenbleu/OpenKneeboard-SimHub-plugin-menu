@@ -19,7 +19,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/" };
 		public static int pageViews = 0;
 		public static int requestCount = 0;
-		public static string pageData =
+		public static string head = 
 			"<!DOCTYPE>" +
 			"<html>" +
 			"  <head>" +
@@ -28,11 +28,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
             "   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
 			"	type=\"image/x-icon\">" +
 			"  </head>" +
-			"  <body>" +
+			"  <body>";
+		public static string pageData =
 			"	<p>Page Views: {0};&nbsp; Request Count: {1}</p>" +
 			"	<form method=\"post\" action=\"shutdown\">" +
 			"	  <input type=\"submit\" value=\"Shutdown\" {2}>" +
-			"	</form>" +
+			"	</form>";
+		public static string end =
 			"  </body>" +
 			"</html>";
 		private static bool SSEtimeout = true;
@@ -104,7 +106,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 				// Write the response info
 				string disableSubmit = !runServer ? "disabled" : "";
-				byte[] data = Encoding.UTF8.GetBytes(String.Format(pageData, pageViews, requestCount, disableSubmit));
+				byte[] data = Encoding.UTF8.GetBytes(head + String.Format(pageData, pageViews, requestCount, disableSubmit) + end);
 				resp.ContentType = "text/html";
 				resp.ContentEncoding = Encoding.UTF8;
 				resp.ContentLength64 = data.LongLength;
