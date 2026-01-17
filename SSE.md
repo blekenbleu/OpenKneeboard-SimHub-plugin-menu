@@ -1,4 +1,4 @@
-## primitive .NET Framework 4.8 `HttpListener` Server-Sent Event handler
+## .NET Framework 4.8 `HttpListener` Server-Sent Event handler
 For "SSE" == `req.Url.AbsolutePath`, `HandleIncomingConnections()`
 - makes `SSEcontext` non-null  
 - kicks off a SSEkeep-alive Timer task
@@ -33,3 +33,17 @@ For "SSE" == `req.Url.AbsolutePath`, `HandleIncomingConnections()`
 		- [Open Web Interface for .NET (OWIN) with ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/owin?view=aspnetcore-1.0)
 	- [Setup Kestrel to use http2](https://stackoverflow.com/questions/58682933/how-do-i-enable-http2-in-c-sharp-kestrel-web-server-over-plain-http)
 		- [Deep Dive with Real-World Examples](https://www.c-sharpcorner.com/article/understanding-kestrel-web-server-in-net-core-deep-dive-with-real-world-exa/)
+
+<hr>
+
+### Timing out doomed (SSE) response.OutputStream.Write(data, 0, data.Length);
+
+- [`WriteAsync(Byte[], Int32, Int32, CancellationToken)`](https://learn.microsoft.com/en-us/dotnet/api/system.io.stream.writeasync?view=netframework-4.8#system-io-stream-writeasync(system-byte()-system-int32-system-int32-system-threading-cancellationtoken))
+- [`CancellationTokenSource.CancelAfter()`](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/cancel-async-tasks-after-a-period-of-time#complete-example)
+- [`await Task.WhenAny(DoSomethingAsync(), Task.Delay(TimeSpan.FromSeconds(1)));`](https://devblogs.microsoft.com/oldnewthing/20220505-00/?p=106585)
+- [Using CancellationTokenSource](https://www.webdevtutor.net/blog/c-sharp-kill-running-task)
+- [How to: Cancel a Task and Its Children](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-cancel-a-task-and-its-children)
+- [Cancel async tasks after a period of time](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/cancel-async-tasks-after-a-period-of-time)
+- [`Task.Delay()` is non-blocking](https://www.w3tutorials.net/blog/understanding-the-use-of-task-run-wait-async-await-used-in-one-line/)
+- [`Task.Run()` vs `await`](https://dev.to/stevsharp/taskrun-vs-await-what-every-c-developer-should-know-1mmi)
+	- use `Task.Run()` only when absolutely needed.
