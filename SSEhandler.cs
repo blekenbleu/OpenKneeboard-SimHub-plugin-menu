@@ -7,14 +7,15 @@ using System.Web.Script.Serialization;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-    // Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
-    // Posted by GreysonTyrus, modified by community. See post 'Timeline' for change history
-    // Retrieved 2026-01-13, License - CC BY-SA 4.0
+	// Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
+	// Posted by GreysonTyrus, modified by community. See post 'Timeline' for change history
+	// Retrieved 2026-01-13, License - CC BY-SA 4.0
 
-    partial class HttpServer
+	partial class HttpServer
 	{
-		private static bool SSEtimeout = true;
+		private static bool SSEtimeout = true, SSEonce = true;
 		private static HttpListenerContext SSEcontext = null;
+		private static int foo = 0;
 
 		public void ProcessRequest(HttpContext context)
 		{
@@ -56,80 +57,69 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return 0;
 		}
 
-		static bool SSErunning = false;
+		private static async Task SSErve(byte[] data)
+		{
+			try	// if this takes "too long", call `Response.Close()`
+			{
+//				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
+				SSEcontext.Response.ContentType = "text/event-stream";
+				SSEcontext.Response.AddHeader("Cache-Control", "no-cache");
+				SSEcontext.Response.AddHeader("Access-Control-Allow-Origin", "*");
+				SSEcontext.Response.AddHeader("Connection", "keep-alive");
+				SSEcontext.Response.ContentEncoding = Encoding.UTF8;
+				await SSEcontext.Response.OutputStream.WriteAsync(data, 0, data.Length);	// System.IO.Stream
+//				if (3 < foo)
+//					await Task.Delay(2000);	// simulate Write() hang
+				SSEcontext.Response.OutputStream.Flush();
+			}
+			catch (HttpListenerException)
+			{
+				OKSHmenu.Info($"SSErve(): lost connection");
+				SSEcontext.Response.Close();
+				SSEcontext = null;
+			}
+		}
+
 		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
-		public static void SSEreponse(string responseText)
+		public static void SSErespond(string responseText)
 		{
 			SSEtimeout = false;
 			if (null == SSEcontext)
 			{
-				OKSHmenu.Info("SSEreponse():  null SSEcontext");
+				if (SSEonce)
+				{
+					OKSHmenu.Info("SSErespond():  null SSEcontext");
+					SSEonce = false;
+				}
 				return;
 			}
-			OKSHmenu.Info($"SSEreponse({responseText}): SSErunning = {(SSErunning ? "true" : "false")}"); 
 
-			SSEcontext.Response.ContentType = "text/event-stream";
-			HttpListenerResponse response = SSEcontext.Response;
-			response.AddHeader("Cache-Control", "no-cache");
-			response.AddHeader("Access-Control-Allow-Origin", "*");
-			JavaScriptSerializer js = new JavaScriptSerializer();
-			byte[] data = Encoding.UTF8.GetBytes(string.Format("data: " + js.Serialize(responseText) + "\n\n"));
-			response.ContentEncoding = Encoding.UTF8;
-			response.ContentLength64 = data.LongLength;
-			Task delay;
-
-			if (SSErunning)
-				delay = Task.Delay(1000).ContinueWith(_ =>
-				{
-					OKSHmenu.Info("SSEreponse()Task.Delay(1000): response.OutputStream.WriteAsync() incomplete");
-//					SSEcontext.Response.Close();
-//					SSErunning = false;
-				});
-
-			try	// if this takes "too long", call `response.Close()`
+			Task delay = SSErve(Encoding.UTF8.GetBytes(string.Format("data: "
+								+ js.Serialize(responseText) + "\n\n")));
+			if (null != SSEcontext && !delay.Wait(1000))
 			{
-//				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
-				SSErunning = true;
-				response.OutputStream.WriteAsync(data, 0, data.Length);	// System.IO.Stream 
-				SSErunning = false;
-				response.OutputStream.Flush();
-			}
-			catch (Exception e)
-			{
-				OKSHmenu.Info($"SSEreponse():  {e}");
 				SSEcontext.Response.Close();
 				SSEcontext = null;
-			}
-			OKSHmenu.Info($"SSEreponse(): foo = {foo}; SSErunning = {(SSErunning ? "true" : "false")}");
-			SSErunning = false;
+				OKSHmenu.Info($"SSErespond(): foo = {foo} hung");
+			}	
 		}
 
-		private static int foo = 0;
 		public async static Task SSEtimer()
 		{
-			if (null == SSEcontext)
-			{
-				OKSHmenu.Info("SSEtimer():  null SSEcontext");
-				return;
-			}
-
-			OKSHmenu.Info("SSEtimer(): launching");
-			while (OKSHlistener.IsListening)
+			if (null != SSEcontext)
+				OKSHmenu.Info("SSEtimer(): launching");
+			while (null != SSEcontext)
 			{
 				if (SSEtimeout)
 				{
-					OKSHmenu.Info($"SSEtimer(foo = {++foo})");
-					SSEreponse($"foo {foo} async");	// this hangs for 2 == foo
+					SSErespond($"foo {++foo} async");
+					if (null == SSEcontext)
+						return;
 				}
 				SSEtimeout = true;
 				await Task.Delay(5000);
 			}
-			OKSHmenu.Info("SSEtimer(): client not listening");
-			SSEcontext = null;
-			return;
+			OKSHmenu.Info("SSEtimer():  SSEcontext.Response.OutputStream.Write() timeout");
 		}
-		// GetContextAsync() with Cancellation Support
-		// https://stackoverflow.com/questions/69715297/getcontextasync-with-cancellation-support
-	
-	}	// class
-}		// namespace
+	}		// class
+}			// namespace

@@ -3,10 +3,12 @@
 // Author:	Benjamin N. Summerton <define-private-public>		
 // License:   Unlicense (http://unlicense.org/)
 
+using SimHub.Plugins.UI;
 using System;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
@@ -43,6 +45,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://stackoverflow.com/questions/9034721/handling-multiple-requests-with-c-sharp-httplistener
 		// multi-threaded c# http server - THREAD-SAFE?
 		// https://stackoverflow.com/questions/6371741/production-ready-multi-threaded-c-sharp-http-server
+
+		static void SSE()
+		{
+			Task<int> keepalive = KeepAliveAsync();
+		}
+
 		public static async Task HandleIncomingConnections()
 		{
 
@@ -55,6 +63,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				// Peel out the requests and response objects
 				HttpListenerRequest req = ctx.Request;
 				HttpListenerResponse resp = ctx.Response;
+				string get = req.Url.AbsolutePath;
 
 				requestCount++;
 				if (true)
@@ -70,29 +79,34 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 
 				// If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-				if ((req.HttpMethod == "POST") && (req.Url.AbsolutePath == "/shutdown"))
+				if ((req.HttpMethod == "POST") && (get == "/shutdown"))
 				{
-					OKSHmenu.Info("HandleIncomingConnections(): Shutdown requested");
+					OKSHmenu.Info("HandleIncomingConnections(): " + (get = "Shutdown requested"));
 					runServer = false;
 				}
-				else if (req.Url.AbsolutePath.StartsWith("/SSE"))
+				else if (get.StartsWith("/SSE"))
 				{
-					if (null == SSEcontext)
+					if (null != SSEcontext)
+						OKSHmenu.Info("HandleIncomingConnections(): " + (get = "non-null SSEcontext"));
+					else
 					{
 						SSEcontext = ctx;
-						Task<int> keepalive = KeepAliveAsync();
+						SSE();	// SSE and other requests work
+						// await KeepAliveAsync();	// blocks all but SSE
+						continue;   // Server-Sent Events:  do not close this context
 					}
-					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  SSErunning is {(SSErunning ? "true" : "false")}");
-					continue;	// Server-Sent Events:  do not close this context
+				}
+				else
+				{
+					// don't increment page views counter for `favicon.ico` requests
+					if (req.Url.AbsolutePath != "/favicon.ico")
+						pageViews += 1;
+					string disableSubmit = !runServer ? "disabled" : "";
+					get = String.Format(pageData, pageViews, requestCount, disableSubmit);
 				}
 
-				// Make sure we don't increment the page views counter if `favicon.ico` is requested
-				if (req.Url.AbsolutePath != "/favicon.ico")
-					pageViews += 1;
-
 				// Write the response info
-				string disableSubmit = !runServer ? "disabled" : "";
-				byte[] data = Encoding.UTF8.GetBytes(head + String.Format(pageData, pageViews, requestCount, disableSubmit) + end);
+				byte[] data = Encoding.UTF8.GetBytes(head + get + end);
 				resp.ContentType = "text/html";
 				resp.ContentEncoding = Encoding.UTF8;
 				resp.ContentLength64 = data.LongLength;
@@ -103,10 +117,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
+		static JavaScriptSerializer js;
 		// called in OKSHmenu.Init()
 		public static void Serve()
 		{
-			SSEcontext = null;	// OKSHlistener is the only HttpListener
+			js = new JavaScriptSerializer();	// reuse for each SSE
+			SSEcontext = null;  // only one HttpListener, but many contexts
+			SSEonce = true;		// warning once is enough
 			// Create a Http server and start listening for incoming connections
 			OKSHlistener = new HttpListener();
 			foreach (string url in urls)
