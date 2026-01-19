@@ -56,13 +56,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return 0;
 		}
 
-		static bool SSErunning;
+		static bool SSErunning = false;
 		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
 		public static void SSEreponse(string responseText)
 		{
 			SSEtimeout = false;
 			if (null == SSEcontext)
+			{
+				OKSHmenu.Info("SSEreponse():  null SSEcontext");
 				return;
+			}
+			OKSHmenu.Info($"SSEreponse({responseText}): SSErunning = {(SSErunning ? "true" : "false")}"); 
 
 			SSEcontext.Response.ContentType = "text/event-stream";
 			HttpListenerResponse response = SSEcontext.Response;
@@ -72,22 +76,21 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			byte[] data = Encoding.UTF8.GetBytes(string.Format("data: " + js.Serialize(responseText) + "\n\n"));
 			response.ContentEncoding = Encoding.UTF8;
 			response.ContentLength64 = data.LongLength;
-			SSErunning = true;
+			Task delay;
 
-			var delay = Task.Delay(1000).ContinueWith(_ =>
-			{
-				if (SSErunning)
+			if (SSErunning)
+				delay = Task.Delay(1000).ContinueWith(_ =>
 				{
-					OKSHmenu.Info("SSEreponse()Task.Delay(1000): response.OutputStream.Write() incomplete");
+					OKSHmenu.Info("SSEreponse()Task.Delay(1000): response.OutputStream.WriteAsync() incomplete");
 //					SSEcontext.Response.Close();
 //					SSErunning = false;
-				} else OKSHmenu.Info("SSEreponse()Task.Delay(1000): SSErunning NOT running");
-			});
+				});
 
 			try	// if this takes "too long", call `response.Close()`
 			{
 //				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
-				response.OutputStream.Write(data, 0, data.Length);	// System.IO.Stream 
+				SSErunning = true;
+				response.OutputStream.WriteAsync(data, 0, data.Length);	// System.IO.Stream 
 				SSErunning = false;
 				response.OutputStream.Flush();
 			}
@@ -97,7 +100,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				SSEcontext.Response.Close();
 				SSEcontext = null;
 			}
-			OKSHmenu.Info($"SSEreponse(): foo = {foo}; IsListening = {(OKSHlistener.IsListening ? "true" : "false")}");
+			OKSHmenu.Info($"SSEreponse(): foo = {foo}; SSErunning = {(SSErunning ? "true" : "false")}");
 			SSErunning = false;
 		}
 
@@ -116,7 +119,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (SSEtimeout)
 				{
 					OKSHmenu.Info($"SSEtimer(foo = {++foo})");
-					SSEreponse($"foo {foo} not async");	// this hangs for 2 == foo
+					SSEreponse($"foo {foo} async");	// this hangs for 2 == foo
 				}
 				SSEtimeout = true;
 				await Task.Delay(5000);

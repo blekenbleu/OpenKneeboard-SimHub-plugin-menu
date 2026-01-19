@@ -61,10 +61,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				{
 					// Print out some info about the request
 					OKSHmenu.Info($"HandleIncomingConnections(): Request #: {requestCount} "
-						+ req.Url.ToString() + "\n\t"
-						+ req.HttpMethod + "\n\t"
+						+ req.Url.ToString()
+/*						+ "\n\t" + req.HttpMethod + "\n\t"
 						+ req.UserHostName + "\n\t"
-						+ req.UserAgent);
+						+ req.UserAgent
+ */
+					);
 				}
 
 				// If `shutdown` url requested w/ POST, then shutdown the server after serving the page
@@ -80,7 +82,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						SSEcontext = ctx;
 						Task<int> keepalive = KeepAliveAsync();
 					}
-					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  OKSHlistener is {(OKSHlistener.IsListening ? "" : "NOT")} listening");
+					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  SSErunning is {(SSErunning ? "true" : "false")}");
 					continue;	// Server-Sent Events:  do not close this context
 				}
 
