@@ -14,7 +14,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
     partial class HttpServer
 	{
 		private static bool SSEtimeout = true;
-		private static HttpListener SSElistener = null;
 		private static HttpListenerContext SSEcontext = null;
 
 		public void ProcessRequest(HttpContext context)
@@ -98,7 +97,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				SSEcontext.Response.Close();
 				SSEcontext = null;
 			}
-			OKSHmenu.Info($"SSEreponse(): foo = {foo}; IsListening = {(SSElistener.IsListening ? "true" : "false")}");
+			OKSHmenu.Info($"SSEreponse(): foo = {foo}; IsListening = {(OKSHlistener.IsListening ? "true" : "false")}");
 			SSErunning = false;
 		}
 
@@ -112,7 +111,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 
 			OKSHmenu.Info("SSEtimer(): launching");
-			while (null != SSElistener && SSElistener.IsListening)
+			while (OKSHlistener.IsListening)
 			{
 				if (SSEtimeout)
 				{
@@ -120,7 +119,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					SSEreponse($"foo {foo} not async");	// this hangs for 2 == foo
 				}
 				SSEtimeout = true;
-				await Task.Delay(2000);
+				await Task.Delay(5000);
 			}
 			OKSHmenu.Info("SSEtimer(): client not listening");
 			SSEcontext = null;

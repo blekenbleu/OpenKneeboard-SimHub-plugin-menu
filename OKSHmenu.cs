@@ -123,9 +123,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
-            HttpServer.listener.Prefixes.Clear();
+            HttpServer.OKSHlistener.Prefixes.Clear();
 			Info("Closing {HttpServer.url} listener");
-			HttpServer.listener.Close();
+			HttpServer.OKSHlistener.Close();
 
             if (!write)				// End()
 				return;

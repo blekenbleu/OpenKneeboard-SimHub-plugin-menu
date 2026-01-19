@@ -11,7 +11,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
-		public static HttpListener listener = null;
+		public static HttpListener OKSHlistener = null;
 		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/" };
 		public static int pageViews = 0;
 		public static int requestCount = 0;
@@ -50,7 +50,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			for (bool runServer = true; runServer;)
 			{
 				// Will wait here until we hear from a connection
-				HttpListenerContext ctx = await listener.GetContextAsync();
+				HttpListenerContext ctx = await OKSHlistener.GetContextAsync();
 
 				// Peel out the requests and response objects
 				HttpListenerRequest req = ctx.Request;
@@ -77,11 +77,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				{
 					if (null == SSEcontext)
 					{
-						SSElistener = listener;
 						SSEcontext = ctx;
 						Task<int> keepalive = KeepAliveAsync();
 					}
-					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  SSElistener is {(SSElistener.IsListening ? "" : "NOT")} listening");
+					else OKSHmenu.Info($"HandleIncomingConnections(): non-null SSEcontext;  OKSHlistener is {(OKSHlistener.IsListening ? "" : "NOT")} listening");
 					continue;	// Server-Sent Events:  do not close this context
 				}
 
@@ -105,16 +104,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// called in OKSHmenu.Init()
 		public static void Serve()
 		{
-			SSEcontext = null;
-			SSElistener = null;
+			SSEcontext = null;	// OKSHlistener is the only HttpListener
 			// Create a Http server and start listening for incoming connections
-			listener = new HttpListener();
+			OKSHlistener = new HttpListener();
 			foreach (string url in urls)
-				listener.Prefixes.Add(url);
+				OKSHlistener.Prefixes.Add(url);
 //			listener.Prefixes.Add("http://192.168.1.147:8765/");	// needs elevated privileges
 			try
 			{
-				listener.Start();
+				OKSHlistener.Start();
 			}
 			catch (HttpListenerException hlex)
 			{
