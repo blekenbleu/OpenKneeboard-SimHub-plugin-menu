@@ -50,11 +50,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// HandleIncomingConnections() continues after invoking this
-		private static async Task<int> KeepAliveAsync()
+		private static async Task KeepAliveAsync()
 		{
 			await SSEtimer();	// keep-alive
 			OKSHmenu.Info("KeepAliveAsync(): SSEtimer() ended.");
-			return 0;
 		}
 
 		private static async Task SSErve(byte[] data)
@@ -104,7 +103,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}	
 		}
 
-		public async static Task SSEtimer()
+		public async static Task SSEtimer()		// hopefully long-running
 		{
 			if (null != SSEcontext)
 				OKSHmenu.Info("SSEtimer(): launching");

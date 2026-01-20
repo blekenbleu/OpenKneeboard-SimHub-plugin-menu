@@ -48,7 +48,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		static void SSE()
 		{
-			Task<int> keepalive = KeepAliveAsync();
+			Task keepalive = KeepAliveAsync();
 		}
 
 		public static async Task HandleIncomingConnections()
