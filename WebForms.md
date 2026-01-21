@@ -1,3 +1,4 @@
+[*back*](README.md)  
 ## [Web Forms vs MVC in VS 2022](https://visualstudiomagazine.com/articles/2022/05/16/vs2022-web-forms-tip.aspx)
  &emsp; ["*If you have experience in WPF*"](https://learn.microsoft.com/en-us/aspnet/overview) - (also alternatives)  
 - alternative [MVC](https://learn.microsoft.com/en-us/aspnet/mvc/overview/) can use [`<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>`](https://github.com/robbiemcarthur/ASP.net-MVCtutorial)
@@ -7,6 +8,15 @@
 		- other examples:&nbsp; [KeepFormStateUsingSession](https://github.com/darrenji/KeepFormStateUsingSession), [MVCtutorial](https://github.com/robbiemcarthur/ASP.net-MVCtutorial)
 			- [Razor **Pages** uses .NET 6](https://stackoverflow.com/a/56193541) - requiring [migration from .NET Framework 4.8](https://steven-giesel.com/blogPost/f531dded-44af-4341-871c-d54875877900)
 - [official M$ Web Forms documentation](https://learn.microsoft.com/en-us/aspnet/web-forms/)
+
+### [ASP.NET MVC (non-Core) app with SDK-style project demonstrating design-time Razor Intellisense issues](https://github.com/tompazourek/AspNetMvcOnSdk)
+- [ASP.NET MVC 5.2.7](https://learn.microsoft.com/en-us/aspnet/mvc/overview/) runs on .NET Framework 4.8
+	- In ASP.Net MVC you can use the [.Net Core Dependency Injection from NuGet](https://stackoverflow.com/a/47674318)
+	- [Generating External JavaScript Files Using Partial Razor Views](https://mariusschulz.com/blog/generating-external-javascript-files-using-partial-razor-views) - [other articles](https://mariusschulz.com/blog)
+- .NET 5 includes ASP.NET Core 5 and ASP.NET Core MVC 5, [**which is NOT ASP.NET MVC 5**](https://stackoverflow.com/a/70121978).
+	- ASP.NET MVC 5 uses `web.config`, `Global.asax` files, separate [dependency injection](https://www.c-sharpcorner.com/article/dependency-injection-in-asp-net-mvc-5/) - [ASP.NET MVC 4](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/hands-on-labs/aspnet-mvc-4-dependency-injection)  
+		- ASP .NET Core uses `appsettings.json`.
+### [Visual Studio 2022 Web Live Preview](https://marketplace.visualstudio.com/items?itemName=WebToolsTeam.WebLivePreview) - [**blog**](https://devblogs.microsoft.com/visualstudio/improve-your-productivity-with-web-live-preview-and-telerik/)  
 
 <hr>
 
