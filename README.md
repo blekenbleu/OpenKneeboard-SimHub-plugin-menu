@@ -26,9 +26,10 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	`KSHmenu.ChangeProperties` needs its own `ExternalScript.CarChange` event trigger setting  
 	in **SimHub Controls and events**.
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
-- [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-networking/02/) - proof of concept (not SSE) -
+- [**A Simple HTTP SSE server in C#**](SSE.md) - proof of concept -
   [Gist](https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7)
 	- [Server-sent event (SSE) with ASHX (.Net framework 4.6)](https://laucsharp.blogspot.com/2020/06/server-sent-event-sse-with-ashx-net.html)
+	- [WebForms VS MVC](WebForms.md)
 
 ### Server-Sent Event (SSE) HTML table cell updates
 - Update &lt;table&gt; cells using JavaScript
