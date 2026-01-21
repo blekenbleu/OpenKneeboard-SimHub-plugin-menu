@@ -5,7 +5,7 @@
 	[`<TargetFramework>net48</TargetFramework>`](https://github.com/tompazourek/AspNetMvcOnSdk/tree/feature/advanced)  
 		- [M$ ASP.NET Web Pages (**Razor**) Guidance](https://learn.microsoft.com/en-us/aspnet/web-pages/overview/)
 		- other examples:&nbsp; [KeepFormStateUsingSession](https://github.com/darrenji/KeepFormStateUsingSession), [MVCtutorial](https://github.com/robbiemcarthur/ASP.net-MVCtutorial)
-			- [Razor **Pages** uses .NET 6](https://stackoverflow.com/a/56193541)
+			- [Razor **Pages** uses .NET 6](https://stackoverflow.com/a/56193541) - requiring [migration from .NET Framework 4.8](https://steven-giesel.com/blogPost/f531dded-44af-4341-871c-d54875877900)
 - [official M$ Web Forms documentation](https://learn.microsoft.com/en-us/aspnet/web-forms/)
 
 <hr>
@@ -15,7 +15,7 @@
 
 #### [.NET Framework for server apps](https://learn.microsoft.com/en-us/dotnet/standard/choosing-core-framework-server) - alternative implementations
 - [ASP.NET Web Forms (.NET Framework) in Visual Studio 2022](https://stackoverflow.com/questions/77712319/how-to-create-asp-net-web-forms-project-in-visual-studio-2022-using-empty-templa)
-	- [ASP.NET Core 7.0](https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/7.0/libuv-transport-dll-removed) seemingly broke ASP.NET Core support for `.Net Framework`
+	- [ASP.NET Core 6.0](https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/release-notes/aspnetcore-6.0.md) broke ASP.NET Core support for `.Net Framework`
 - [Developing Web apps with ASP.NET and .NET Framework - M$](https://learn.microsoft.com/en-us/dotnet/framework/develop-web-apps-with-aspnet)
 - [Learn ASP.NET MVC 5 on .NET Framework](https://www.tutorialsteacher.com/mvc) - TutorialsTeacher
 - [Getting started with ASP.NET MVC 5 - M$](https://learn.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/getting-started) - [GitHub sample app](https://github.com/kexuelou/MvcMovie5)
