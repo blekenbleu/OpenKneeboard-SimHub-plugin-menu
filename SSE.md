@@ -4,6 +4,8 @@
 
 Based on [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-networking/02/)  
 
+### May need [Dependency Injection](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/hands-on-labs/aspnet-mvc-4-dependency-injection) to interface with [MVC Razor](WebForms.md)  
+
 For `req.Url.AbsolutePath.StartsWith("/SSE")` in `HandleIncomingConnections()`
 - make `SSEcontext` non-null:&nbsp; (`SSEcontext = ctx = await OKSHlistener.GetContextAsync();`)
 - kick off a SSEkeep-alive Timer task (`Task keepalive = KeepAliveAsync();`)

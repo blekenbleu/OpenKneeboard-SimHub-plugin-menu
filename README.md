@@ -28,6 +28,9 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
 - [**A Simple HTTP SSE server in C#**](SSE.md) - proof of concept -
   [Gist](https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7)
+	- [Using HTTPListener to build a HTTP Server in C#](https://thoughtbot.com/blog/using-httplistener-to-build-a-http-server-in-csharp)  
+		- [IAsyncResult Interface](https://learn.microsoft.com/en-us/dotnet/api/system.iasyncresult?view=netframework-4.8), from
+		[Asynchronous Programming Model (APM)](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/asynchronous-programming-model-apm)  
 	- [Server-sent event (SSE) with ASHX (.Net framework 4.6)](https://laucsharp.blogspot.com/2020/06/server-sent-event-sse-with-ashx-net.html)
 	- [WebForms VS MVC](WebForms.md)
 
