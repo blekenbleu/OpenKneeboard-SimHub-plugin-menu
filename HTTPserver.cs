@@ -26,14 +26,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"   <link rel=\"icon\" href=" +
 			"   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
 			"	type=\"image/x-icon\">" +
-			"  </head>" +
+			"  </head>\n" +
 			"  <body style=\"font-size: 30px; margin-left: 50px;\">";
 
 		public static string pageData =
 			"	<form method=\"post\" action=\"shutdown\">" +
 			"	  <input type=\"submit\" value=\"Shutdown\" {2}>" +
 			"	</form>" +
-			"	<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>";
+			"	<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>\n";
 
 		public static string end =
 			"  </body>" +
