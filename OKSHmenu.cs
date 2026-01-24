@@ -36,7 +36,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// <summary>
 		/// DisplayGrid contents
 		/// </summary>
-		public List<Values> simValues = new List<Values>();		// must be initialized before Init()
+		public static List<Values> simValues = new List<Values>();		// must be initialized before Init()
 
 		/// <summary>
 		/// Plugin-specific wrapper for SimHub.Logging.Current.Info();

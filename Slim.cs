@@ -45,7 +45,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				pList = new List<string> { }		// per-car, then per-game
 			};
 			for (int i = 0; i < OKSHmenu.gCount; i++)
-				data.pList.Add(js.simValues[i].Name);
+				data.pList.Add(OKSHmenu.simValues[i].Name);
 		}
 
 		// Reconcile .json values with simValues based on .ini and Settings
@@ -55,15 +55,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// car[0] is per-game car default and per-game property values
 			int count = (0 == car) ? OKSHmenu.gCount : OKSHmenu.pCount;
 
-			if (count > js.simValues.Count)
-				count = js.simValues.Count;		// it happens 19 Feb 2025
+			if (count > OKSHmenu.simValues.Count)
+				count = OKSHmenu.simValues.Count;		// it happens 19 Feb 2025
 
 			for (int i = 0; i < count; i++)
 			{
-				int Index =  data.pList.FindIndex(j => j == js.simValues[i].Name);
+				int Index =  data.pList.FindIndex(j => j == OKSHmenu.simValues[i].Name);
 
 				if (-1 == Index || Index >= vList.Count)
-					New.Add(js.simValues[i].Default);
+					New.Add(OKSHmenu.simValues[i].Default);
 				else New.Add(vList[Index]);	// reuse as many as possible
 			}
 			return New;
@@ -112,7 +112,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (gCount != data.pList.Count)
 				i = -1;
 			else for (i = 0; i < data.pList.Count; i++)
-				if (data.pList[i] != js.simValues[i].Name)
+				if (data.pList[i] != OKSHmenu.simValues[i].Name)
 					break;
 
 			if (i == gCount)
@@ -146,7 +146,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					}
 				data.pList = new List<string> {};
 				for (i = 0; i < gCount; i++)
-					data.pList.Add(js.simValues[i].Name);
+					data.pList.Add(OKSHmenu.simValues[i].Name);
 			}
 			if (0 < nullcarID)
 				js.OOpa($"Slim.Load({path}): {nullcarID} null carIDs");

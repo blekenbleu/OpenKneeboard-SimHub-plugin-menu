@@ -14,7 +14,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	/// </summary>
 	public partial class Control : UserControl
 	{
-		public OKSHmenu JS { get; }
+		public OKSHmenu OK { get; }
 		public ViewModel Model;							// reference XAML controls
 		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
 		internal static string version = "1.60";
@@ -27,8 +27,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		public Control(OKSHmenu plugin) : this()
 		{
-			this.JS = plugin;							// Control.xaml button events call OKSHmenu methods
-			dg.ItemsSource = plugin.simValues;			// DataGrid values
+			this.OK = plugin;							// Control.xaml button events call OKSHmenu methods
+			dg.ItemsSource = OKSHmenu.simValues;			// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -64,42 +64,42 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			JS.FromSlider(0.5 + SL.Value);
+			OK.FromSlider(0.5 + SL.Value);
 		}
 
 		private void Slider_Click(object sender, RoutedEventArgs e)	// handle button clicks
 		{
-			JS.SelectSlider();
+			OK.SelectSlider();
 		}
 
 		private void Prior_Click(object sender, RoutedEventArgs e)	// handle button clicks
 		{
-			JS.Select(false);
+			OK.Select(false);
 		}
 
 		private void Next_Click(object sender, RoutedEventArgs e)
 		{
-			JS.Select(true);
+			OK.Select(true);
 		}
 
 		private void Inc_Click(object sender, RoutedEventArgs e)
 		{
-			JS.Ment(1);
+			OK.Ment(1);
 		}
 
 		private void Dec_Click(object sender, RoutedEventArgs e)
 		{
-			JS.Ment(-1);
+			OK.Ment(-1);
 		}
 
 		private void Swap_Click(object sender, RoutedEventArgs e)
 		{
-			JS.Swap();
+			OK.Swap();
 		}
 
 		private void Def_Click(object sender, RoutedEventArgs e)
 		{
-			JS.SetDefault();
+			OK.SetDefault();
 		}
 	}
 }

@@ -5,6 +5,7 @@
 
 using SimHub.Plugins.UI;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,26 +21,26 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static string head = 
 			"<!DOCTYPE>" +
 			"<html>" +
-			"  <head>" +
+			"  <head><style>th, td {padding-right: 30px;}</style>" +
 			"	<title>HttpListener Example</title>" +
 			"   <link rel=\"icon\" href=" +
 			"   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
 			"	type=\"image/x-icon\">" +
 			"  </head>" +
-			"  <body>";
+			"  <body style=\"font-size: 30px; margin-left: 50px;\">";
+
 		public static string pageData =
-			"	<p>Page Views: {0};&nbsp; Request Count: {1}</p>" +
 			"	<form method=\"post\" action=\"shutdown\">" +
 			"	  <input type=\"submit\" value=\"Shutdown\" {2}>" +
-			"	</form>";
+			"	</form>" +
+			"	<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>";
+
 		public static string end =
 			"  </body>" +
 			"</html>";
 
 		// Using HTTPListener to build a HTTP Server in C#
 		// https://thoughtbot.com/blog/using-httplistener-to-build-a-http-server-in-csharp
-		// Task.Run(async () => await SomeAsyncMethod()).Wait();
-		// https://www.w3tutorials.net/blog/understanding-the-use-of-task-run-wait-async-await-used-in-one-line/
 		// Handling multiple requests with C# HttpListener
 		// https://www.iditect.com/faq/csharp/handling-multiple-requests-with-c-httplistener.html
 		// https://stackoverflow.com/questions/9034721/handling-multiple-requests-with-c-sharp-httplistener
@@ -106,7 +107,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 
 				// Write the response info
-				byte[] data = Encoding.UTF8.GetBytes(head + get + end);
+                byte[] data = Encoding.UTF8.GetBytes(head + get + HTMLtable(OKSHmenu.simValues) + end);
 				resp.ContentType = "text/html";
 				resp.ContentEncoding = Encoding.UTF8;
 				resp.ContentLength64 = data.LongLength;
@@ -122,8 +123,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static void Serve()
 		{
 			js = new JavaScriptSerializer();	// reuse for each SSE
-			SSEcontext = null;  // only one HttpListener, but many contexts
-			SSEonce = true;		// warning once is enough
+			SSEcontext = null;					// only one HttpListener, but many contexts
+			SSEonce = true;						// warning once is enough
+
 			// Create a Http server and start listening for incoming connections
 			OKSHlistener = new HttpListener();
 			foreach (string url in urls)
