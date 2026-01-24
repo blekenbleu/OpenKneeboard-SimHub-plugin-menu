@@ -1,10 +1,11 @@
 ## Doomed experiments and alternatives
+Just hacking C# with HTML and [JavaScript](JavaScript.md) strings will probably take less time than was spent here...  
 ### experiments for Razor
-- [IPASideLoader](https://github.com/blekenbleu/IPASideLoader)
-- [ASPNETSingle](https://github.com/blekenbleu/ASPNETSingle)
-- [MVC](https://github.com/blekenbleu/MVC)
-- [WebForm](https://github.com/blekenbleu/WebForm)
-- [MvcMovie5](https://github.com/blekenbleu/MvcMovie5)
+- [IPASideLoader](https://github.com/blekenbleu/IPASideLoader) - an alternative lightweight server, [uHttpSharp](https://github.com/Code-Sharp/uHttpSharp)
+- [ASPNETSingle](https://github.com/blekenbleu/ASPNETSingle) - could not get [Razor](WebForms.md) support;&nbsp; problematic with Visual Studio Community 2022  
+- [MVC](https://github.com/blekenbleu/MVC) - `.cshtml` file saved changes update web browser  
+- [WebForm](https://github.com/blekenbleu/WebForm) - no `.cshtml`;&nbsp; Visual Studio provides a `.aspx` editor
+- [MvcMovie5](https://github.com/blekenbleu/MvcMovie5) - IMO, too complicated for an introductory demo;&nbsp; `.cshtml` seemingly without Razor editor
 
 ### alternatives for SSE server
 - [**Web Forms vs MVC in VS 2022**](WebForms.md)
@@ -37,7 +38,6 @@
 	- [**Minimal API example**](https://fullstackcity.com/server-sent-events-in-net-10) sends web page
 	- [Real-Time Updates with SSE in C# ASP.NET: A Complete Guide (2025)](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)  
 	- [.NET 9 WebApplication SSE tutorial and source (2024)](https://www.strathweb.com/2024/07/built-in-support-for-server-sent-events-in-net-9/)  
-	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript)
 	- [Real-Time `ServerSentEvents` example](https://www.codemag.com/Article/2309051/Developing-Real-Time-Web-Applications-with-Server-Sent-Events-in-ASP.NET-7-Core)
 	- [Milan Jovanovic YouTube](https://www.youtube.com/watch?v=JKCyvlh0_mE)
 	- [.NET 9 example with `WriteAsync`](https://medium.com/@tomas.madajevas/server-sent-events-and-rx-for-requests-interception-3e6b2356a9b6)

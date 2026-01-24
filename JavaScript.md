@@ -1,5 +1,6 @@
 ### Server-Sent Event (SSE) HTML table cell updates
-- Update &lt;table&gt; cells using JavaScript
+- Update &lt;table&gt; cells [using JavaScript](JavaScript.cs)
+	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript)
 	- https://www.htmlgoodies.com/html5/updating-html-table-content-using-javascript/
 	- https://stackoverflow.com/questions/27859976/how-to-dynamically-change-html-table-content-using-javascript
 	- https://www.geeksforgeeks.org/html/how-to-add-edit-and-delete-data-in-html-table-using-javascript/

@@ -1,6 +1,6 @@
 [*back*](README.md)  
-## [Web Forms vs MVC in VS 2022](https://visualstudiomagazine.com/articles/2022/05/16/vs2022-web-forms-tip.aspx)
- &emsp; ["*If you have experience in WPF*"](https://learn.microsoft.com/en-us/aspnet/overview) - (also alternatives)  
+## [Web Forms vs MVC (Razor) in VS 2022](https://visualstudiomagazine.com/articles/2022/05/16/vs2022-web-forms-tip.aspx)
+ &emsp; Web Forms ["*If you have experience in WPF*"](https://learn.microsoft.com/en-us/aspnet/overview) - (also alternatives)  
 - alternative [MVC](https://learn.microsoft.com/en-us/aspnet/mvc/overview/) can use [`<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>`](https://github.com/robbiemcarthur/ASP.net-MVCtutorial)
 	- [Razor Syntax](https://www.learnrazorpages.com/razor-syntax) uses e.g.
 	[`<TargetFramework>net48</TargetFramework>`](https://github.com/tompazourek/AspNetMvcOnSdk/tree/feature/advanced)  
@@ -8,6 +8,7 @@
 		- other examples:&nbsp; [KeepFormStateUsingSession](https://github.com/darrenji/KeepFormStateUsingSession), [MVCtutorial](https://github.com/robbiemcarthur/ASP.net-MVCtutorial)
 			- [Razor **Pages** uses .NET 6](https://stackoverflow.com/a/56193541) - requiring [migration from .NET Framework 4.8](https://steven-giesel.com/blogPost/f531dded-44af-4341-871c-d54875877900)
 - [official M$ Web Forms documentation](https://learn.microsoft.com/en-us/aspnet/web-forms/)
+	- [my doomed experiments](Doomed.md#experiments-for-razor)  
 
 ### [ASP.NET MVC (non-Core) app with SDK-style project demonstrating design-time Razor Intellisense issues](https://github.com/tompazourek/AspNetMvcOnSdk)
 - [ASP.NET MVC 5.2.7](https://learn.microsoft.com/en-us/aspnet/mvc/overview/) runs on .NET Framework 4.8
