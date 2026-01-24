@@ -2,7 +2,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
     partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
     {
+
+//		JavaScript Debugging:  https://www.w3schools.com/js/js_debugging.asp
 		public static string JavaScript =	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
+
 "
 const eventSource = new EventSource('/orders/realtime/with-replays');
 
@@ -28,6 +31,14 @@ eventSource.onerror = () => {
     console.log('Reconnecting...');
   }
 };
+
+/* Table Row Background Colors
+  var table = document.getElementById("tok");
+  var rows = table.getElementsByTagName("tr");
+  for(i = 0; i < rows.length; i++)
+	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888'; 
+ */
 ";
+
 	}       // class
 }           // namespace
