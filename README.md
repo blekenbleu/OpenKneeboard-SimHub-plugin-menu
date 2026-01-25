@@ -1,5 +1,5 @@
 ## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-[plugin-menu](https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki)
-*display a SimHub plugin menu in OpenKneeboard*
+*[SimHub plugin properties](https://github.com/blekenbleu/JSONio) HTTP table for e.g. [OpenKneeboard](https://github.com/OpenKneeboard/OpenKneeboard)*
 
 ### background
 Currently, SimHub (and its plugin menus) access from SteamVR is by e.g.

@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	[PluginDescription("NCalc configured properties to/from JSON")]
+	[PluginDescription("JSONio properties displayed in HTTP table")]
 	[PluginAuthor("blekenbleu")]
 	[PluginName("OKSHmenu")]
 	public partial class OKSHmenu : IPlugin, IDataPlugin, IWPFSettingsV2

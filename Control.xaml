@@ -40,8 +40,8 @@
 
 		<StackPanel Orientation="Horizontal">
 			<Slider Maximum="100" Minimum="0" TickPlacement="BottomRight" TickFrequency="3"
-				Name="SL" Value="{Binding SliderValue}" PreviewMouseUp="Slider_DragCompleted" Width="250" Height="20"
-				Visibility="{Binding SliderVisibility}"/>
+				Name="SL" Value="{Binding SliderValue}" Width="250" Height="20"
+				PreviewMouseUp="Slider_DragCompleted" Visibility="{Binding SliderVisibility}"/>
 			<Button x:Name="SB" Content="{Binding SliderProperty}" Width="140" Height="22"
 				Click="Slider_Click" Visibility="{Binding SliderVisibility}" Background="Green"/>
 		</StackPanel>

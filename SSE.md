@@ -1,10 +1,15 @@
 [*back*](README.md)  
 ## .NET Framework 4.8 `HttpListener` Server-Sent Event handler
- &emsp; *SimHub plugins use* `.NET Framework 4.8` &emsp; [WebForms VS MVC](WebForms.md)  
+ &emsp; *SimHub plugins use* `.NET Framework 4.8`
 
 Based on [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-networking/02/)  
 
-### May need [Dependency Injection](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/hands-on-labs/aspnet-mvc-4-dependency-injection) to interface with [MVC Razor](WebForms.md)  
+### [Razor seems doomed](Doomed.md) for .NET Framework
+ &emsp; if only for lack of support in recent Visual Studio  
+
+- send current Properties `<table>` in response to initial GET [*(done)*](HTML.cs)
+	- also send [JavaScript](JavaScript.md) to request SSE and update `<table>` cells [(*hacked*)](JavaScript.cs)
+	- update SSEhandler.cs with methods for custom SSE events `table`, `scroll`
 
 For `req.Url.AbsolutePath.StartsWith("/SSE")` in `HandleIncomingConnections()`
 - make `SSEcontext` non-null:&nbsp; (`SSEcontext = ctx = await OKSHlistener.GetContextAsync();`)

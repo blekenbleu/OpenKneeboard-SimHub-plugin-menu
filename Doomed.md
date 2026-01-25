@@ -1,4 +1,4 @@
-## Doomed experiments and alternatives
+## Doomed [WebForms and Razor](WebForms.md) experiments and [SSE server](SSE.md) alternatives
 Just hacking C# with HTML and [JavaScript](JavaScript.md) strings will probably take less time than was spent here...  
 ### experiments for Razor
 - [IPASideLoader](https://github.com/blekenbleu/IPASideLoader) - an alternative lightweight server, [uHttpSharp](https://github.com/Code-Sharp/uHttpSharp)

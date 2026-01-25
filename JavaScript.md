@@ -1,8 +1,10 @@
 ### Server-Sent Event (SSE) HTML table cell updates
 - Update &lt;table&gt; cells [using JavaScript](JavaScript.cs)
-	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript)
-	- https://www.htmlgoodies.com/html5/updating-html-table-content-using-javascript/
-	- https://stackoverflow.com/questions/27859976/how-to-dynamically-change-html-table-content-using-javascript
+	- [Learn Server-Sent Events in C# .NET - c-sharpcorner.com](https://www.c-sharpcorner.com/article/learn-server-sent-events-in-c-sharp-net/) minimal C# + JavaScript
+	- [send C# `Dictionary<>` to client JavaScript](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)
+	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript) using `eventSource` with reconnect on error
+	- [JavaScript **JQuery** `<table>` updates](https://www.htmlgoodies.com/html5/updating-html-table-content-using-javascript/)
+	- [JavaScript dynamically update `<table>` cells - stackoverflow](https://stackoverflow.com/questions/27859976/how-to-dynamically-change-html-table-content-using-javascript)
 	- https://www.geeksforgeeks.org/html/how-to-add-edit-and-delete-data-in-html-table-using-javascript/
 	- [2015 JavaScript live table update](https://datatables.net/forums/discussion/26983/how-to-do-live-table-updates-with-html5-sse)
 - [Set up table with id](https://www.w3schools.com/htmL/html_id.asp)
@@ -22,6 +24,7 @@ source.onmessage = function (event) {
 [HTML Living Standard SSE](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events)
 
 - [SSE data as JSON sent and received](https://codelucky.com/javascript-onmessage-event-sse/)  
+- [SSE JavaScript onmessage Event](https://codelucky.com/javascript-onmessage-event-sse/)
 
 
 ## [access table cell value in JavaScript...not jQuery](https://stackoverflow.com/questions/3072233/getting-value-from-table-cell-in-javascript-not-jquery)
@@ -82,3 +85,13 @@ rows[line].scrollIntoView({
 ### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
 
+## JavaSript EventSource
+- [**EventSource is only text** - javascript.info](https://javascript.info/server-sent-events)
+	- EventSource event types:&nbsp; `onopen`, `onmessage`, `onerror`
+		- and 3 readyState property values: `CONNECTING`, `OPEN`, `CLOSED`
+	- JSON-encoded messages:
+		- `data: {"user":"John","message":"First line\n Second line"}`
+		- [JSON.parse(event.data) - mozilla.org](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#listening_for_custom_events):&nbsp;
+		`const user = JSON.parse(event.data).user;`
+- [HTML Server-Sent Events API - w3schools](https://www.w3schools.com/html/html5_serversentevents.asp)
+- [mozilla](https://developer.mozilla.org/en-US/docs/Web/API/EventSource)

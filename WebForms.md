@@ -19,6 +19,7 @@
 		- ASP .NET Core uses `appsettings.json`.
 ### [Visual Studio 2022 Web Live Preview](https://marketplace.visualstudio.com/items?itemName=WebToolsTeam.WebLivePreview) - [**blog**](https://devblogs.microsoft.com/visualstudio/improve-your-productivity-with-web-live-preview-and-telerik/)  
 
+### May need [Dependency Injection](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/hands-on-labs/aspnet-mvc-4-dependency-injection) to interface with [MVC Razor](WebForms.md)  
 <hr>
 
 ### [.NET Framework and ASP.NET Core *11 Oct 2016*](https://odetocode.com/blogs/scott/archive/2016/10/11/asp-net-core-and-the-enterprise-part-1ndashframeworks.aspx)  
