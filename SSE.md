@@ -8,7 +8,9 @@ Based on [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-network
  &emsp; if only for lack of support in recent Visual Studio  
 
 - send current Properties `<table>` in response to initial GET [*(done)*](HTML.cs)
-	- also send [JavaScript](JavaScript.md) to request SSE and update `<table>` cells [(*hacked*)](JavaScript.cs)
+	- also send [JavaScript](JavaScript.md) to request SSE and update `<table>` cells [(*keep-alive works*)](JavaScript.cs)
+		- browser ignores JavaScript with syntax errors
+		- [In Chrome, CTRL + SHIFT + C launches Chrome Console, then select `Network` Tab](https://stackoverflow.com/questions/25291052/how-to-view-the-whole-raw-http-request)
 	- update SSEhandler.cs with methods for custom SSE events `table`, `scroll`
 
 For `req.Url.AbsolutePath.StartsWith("/SSE")` in `HandleIncomingConnections()`

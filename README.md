@@ -1,12 +1,12 @@
 ## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-[plugin-menu](https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki)
 *[SimHub plugin properties](https://github.com/blekenbleu/JSONio) HTTP table for e.g. [OpenKneeboard](https://github.com/OpenKneeboard/OpenKneeboard)*
-
+![](example.png)  
 ### background
-Currently, SimHub (and its plugin menus) access from SteamVR is by e.g.
-- SteamVR's Desktop utility
+Currently, access from SteamVR to SimHub (and its plugin menus) is by e.g.
+- [SteamVR's Desktop](https://store.steampowered.com/news/app/250820/view/2898585530113863169)
 - [Desktop+](https://steamcommunity.com/app/1494460)
 
-While SimHub lacks VR overlay support, [its overlays can be displayed using OpenKneeboard](https://www.madmikeplays.com/free-downloads#block-yui_3_17_2_1_1742822224076_6340) via HTTP.
+SimHub dash overlays lack VR support, but [OpenKneeboard can display SimHub overlays](https://www.madmikeplays.com/free-downloads#block-yui_3_17_2_1_1742822224076_6340) via HTTP.
 
 ### wanted
 An always visible dedicated menu display controlled e.g. by steering wheel buttons or rotary encoders  
@@ -30,10 +30,11 @@ HTML table cell updates should have lower processing overhead than graphical ove
   [Gist](https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7)
 
 ### plan
-- generate an HTML `<table>` from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
+- generate an [HTML `<table>`](HTML.md) from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
 - hand-code [JavaScript](JavaScript.md) for browser to update `<table>` from Server-Sent Events
-- send that HTML and JavaScript page to client browsers
+- send [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page to client browsers
 - send Server-Sent Events for `<table>` cell property values and e.g. scroll actions
+	- *yet to do;&nbsp; currently sending only keep-alive messages*
 
 ### [Writing a Web Server using C# HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
 - [ doomed alternatives and experiments](Doomed.md)

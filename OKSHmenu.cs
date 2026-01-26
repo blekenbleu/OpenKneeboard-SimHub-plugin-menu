@@ -365,7 +365,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				)
 			);
 
-			Info($"JSONIO.Init():  simValues.Count = {simValues.Count}");
+			Info($"Init():  simValues.Count = {simValues.Count}");
 			HttpServer.Serve();
 		}	// Init()
 	}		// class OKSHmenu

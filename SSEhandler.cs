@@ -111,7 +111,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				if (SSEtimeout)
 				{
-					SSErespond($"foo {++foo} async");
+					SSErespond($"keep-alive {++foo} async");
 					if (null == SSEcontext)
 						return;
 				}

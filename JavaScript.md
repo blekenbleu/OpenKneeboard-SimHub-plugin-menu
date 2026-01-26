@@ -1,21 +1,20 @@
-### Server-Sent Event (SSE) HTML table cell updates
+### Server-Sent Event (SSE) HTML `<table>` cell updates
 - Update &lt;table&gt; cells [using JavaScript](JavaScript.cs)
 	- [Learn Server-Sent Events in C# .NET - c-sharpcorner.com](https://www.c-sharpcorner.com/article/learn-server-sent-events-in-c-sharp-net/) minimal C# + JavaScript
-	- [send C# `Dictionary<>` to client JavaScript](https://dev.to/mayank_agarwal/implementing-real-time-updates-with-server-sent-events-sse-in-c-net-a-complete-guide-248l)
-	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript) using `eventSource` with reconnect on error
-	- [JavaScript **JQuery** `<table>` updates](https://www.htmlgoodies.com/html5/updating-html-table-content-using-javascript/)
+	- send C# `Dictionary<>` to client as a `<table>`, along with JavaScript, as a normal web page
+		- [Set up `<table>` with id](https://www.w3schools.com/htmL/html_id.asp)
+			- [then access `<table>` by id in JavaScript](https://www.w3schools.com/jsref/dom_obj_table.asp)
+		- JavaScript  `EventSource()` initiates SSE
+		- [*generated HTML received by browser*](HTML.txt)
+	- [Consuming Server-Sent Events in JavaScript](https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript) using `EventSource` with reconnect on error
 	- [JavaScript dynamically update `<table>` cells - stackoverflow](https://stackoverflow.com/questions/27859976/how-to-dynamically-change-html-table-content-using-javascript)
 	- https://www.geeksforgeeks.org/html/how-to-add-edit-and-delete-data-in-html-table-using-javascript/
-	- [2015 JavaScript live table update](https://datatables.net/forums/discussion/26983/how-to-do-live-table-updates-with-html5-sse)
-- [Set up table with id](https://www.w3schools.com/htmL/html_id.asp)
-	- [then access table by id in javascript](https://www.w3schools.com/jsref/dom_obj_table.asp)
+	- [2015 JavaScript live `<table>` update](https://datatables.net/forums/discussion/26983/how-to-do-live-table-updates-with-html5-sse)
 
-Invoke that table cell change javascript in registered event listener  
+Invoke that `<table>` cell change JavaScript in custom `table` event listener  
 ```
-var source = new EventSource('updates.cgi');
-source.onmessage = function (event) {
-    alert(event.data);
-};
+const source = new EventSource('SSE');
+source.addEventListener('table', (event) => {tableUpdate(event.data);});
 ```
 
 
@@ -27,32 +26,29 @@ source.onmessage = function (event) {
 - [SSE JavaScript onmessage Event](https://codelucky.com/javascript-onmessage-event-sse/)
 
 
-## [access table cell value in JavaScript...not jQuery](https://stackoverflow.com/questions/3072233/getting-value-from-table-cell-in-javascript-not-jquery)
+## [access `<table>` cell value in JavaScript...not jQuery](https://stackoverflow.com/questions/3072233/getting-value-from-table-cell-in-javascript-not-jquery)
 ```
 <html>
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=windows-1250">
-  <meta name="generator" content="PSPad editor, www.pspad.com">
-  <title></title>
+  <title>simplistic example</title>
 </head>
 <body>
   <table id='tableID'>
     <tr>
-      <td>dfsdf</td> 
-      <td>sdfs</td>
-      <td>frtyr</td>
-      <td>hjhj</td>
+      <td>one</td> 
+      <td>two</td>
+      <td>three</td>
+      <td>four</td>
     </tr>
   </table>
 
 <script>
-var refTab = document.getElementById("tableID")
+let refTab = document.getElementById("tableID")
 // Loop through all rows and columns of the table
 for ( var i = 0; i<refTab.rows.length; i++ ) {
-   row = refTab.rows[i];
-   for ( var j = 0; col = row.cells[j]; j++ ) {
+   let row = refTab.rows[i];
+   for ( var j = 0; col = row.cells[j]; j++ )
       alert(col.firstChild.value);
-   }
 }
 
 // change it? r: row; c: column
@@ -82,7 +78,7 @@ rows[line].scrollIntoView({
 ` var elem = document.querySelector("#tableID").children[0].children[row];`  
 ` elem.scrollIntoView(true);`
 
-### [highlight selected table row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
+### [highlight selected `<table>` row](https://jsfiddle.net/armaandhir/Lgt1j68s/)
 from: [stack**overflow**](https://stackoverflow.com/questions/14443533/highlighting-and-un-highlight-a-table-row-on-click-from-row-to-row)
 
 ## JavaSript EventSource

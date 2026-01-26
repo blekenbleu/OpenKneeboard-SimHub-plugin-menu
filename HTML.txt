@@ -1,0 +1,71 @@
+
+<!DOCTYPE><html><head><style>th, td {padding-right: 30px;}</style>
+<title>HttpListener Example</title>
+<link rel='icon' href='https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png' type='image/x-icon'>
+</head>
+
+<body style='font-size: 30px; margin-left: 50px;'>
+<form method='post' action='shutdown'>
+<input type='submit' value='Shutdown'>
+</form>
+<p> &emsp; Page Views: 1;&nbsp; Request Count: 2</p>
+<table id=tok style='font-size: 25px;'>
+<tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>
+<tr><td>Gscale</td><td>1.1</td><td>1.1</td><td>1</td></tr>
+<tr><td>threshold</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>SlipGain</td><td>6</td><td>6</td><td>6</td></tr>
+<tr><td>gamma</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>EffectStrength</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>Fmin.FrontLeft</td><td>30</td><td>30</td><td>30</td></tr>
+<tr><td>Fmin.FrontRight</td><td>30</td><td>30</td><td>30</td></tr>
+<tr><td>Fmin.RearLeft</td><td>30</td><td>30</td><td>30</td></tr>
+<tr><td>Fmin.RearRight</td><td>30</td><td>30</td><td>30</td></tr>
+<tr><td>Fmax.FrontLeft</td><td>400</td><td>400</td><td>400</td></tr>
+<tr><td>Fmax.FrontRight</td><td>400</td><td>400</td><td>400</td></tr>
+<tr><td>Fmax.RearLeft</td><td>400</td><td>400</td><td>400</td></tr>
+<tr><td>Fmax.RearRight</td><td>400</td><td>400</td><td>400</td></tr>
+<tr><td>global</td><td>42</td><td>42</td><td>42</td></tr>
+</table>
+<p id=msg style='width:600; color:navy; background-color:silver'><i>messages here</i></p>
+<label id=active for='myRange'>unset:</label>
+<input type='range' value='50' id='myRange' style='width:500'>
+<script>
+const source = new EventSource('SSE');
+const msg = document.getElementById('msg');
+const label = document.getElementById('active');
+const slider = document.getElementById('myRange');
+const table = document.getElementById('tok');
+let rows = table.getElementsByTagName('tr');
+const blurt = (string) => {console.log(string); msg.innerHTML = string;};
+const tableUpdate = (data) => {
+  let obj = JSON.parse(data);
+  let r = obj.row;
+  let c = obj.col;
+  table.rows[r].cells[c].innerHTML = obj.val;
+};
+const tableScroll = (data) => {
+  let foo = JSON.parse(data).foo;
+  for(i = 0; i < rows.length; i++)
+	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888';
+};
+const slide = (data) => {
+  let obj = JSON.parse(data);
+  label.innerHTML = obj.prop;
+  slider.value = obj.val;
+};
+source.addEventListener('table', (event) => {tableUpdate(event.data);});
+source.addEventListener('scroll', (event) => {tableScroll(event.data);});
+source.addEventListener('slider', (event) => {slide(event.data);});
+source.onopen = () => {blurt('Connection opened');};
+source.onmessage = (event) => {
+  msg.innerHTML = event.data;
+  console.log('Received message:', event);
+};
+source.onerror = (e) => {
+  let oops = 'Error: ' + JSON.parse(e);
+  console.error(oops);
+  msg.innerHTML = oops;
+  if (source.readyState === EventSource.CONNECTING)
+	blurt('Reconnecting...');
+};
+</script></body></html>

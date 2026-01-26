@@ -21,22 +21,22 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static string head = 
 			"<!DOCTYPE>" +
 			"<html>" +
-			"  <head><style>th, td {padding-right: 30px;}</style>" +
-			"	<title>HttpListener Example</title>" +
-			"   <link rel=\"icon\" href=" +
-			"   \"https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png\"" +
-			"	type=\"image/x-icon\">" +
-			"  </head>\n" +
-			"  <body style=\"font-size: 30px; margin-left: 50px;\">";
+			  "<head><style>th, td {padding-right: 30px;}</style>" +
+				"\n<title>HttpListener Example</title>" +
+				"\n<link rel='icon' href=" +
+					"'https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png'" +
+					" type='image/x-icon'>" +
+			  "\n</head>\n" +
+			  "\n<body style='font-size: 30px; margin-left: 50px;'>";
 
 		public static string pageData =
-			"	<form method=\"post\" action=\"shutdown\">" +
-			"	  <input type=\"submit\" value=\"Shutdown\" {2}>" +
-			"	</form>" +
-			"	<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>\n";
+			"\n<form method='post' action='shutdown'>" +
+				"\n<input type='submit' value='Shutdown'{2}>" +
+			"\n</form>" +
+			"\n<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>\n";
 
 		public static string end =
-			"  </body>" +
+			  "</body>" +
 			"</html>";
 
 		// Using HTTPListener to build a HTTP Server in C#
@@ -102,7 +102,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					// don't increment page views counter for `favicon.ico` requests
 					if (req.Url.AbsolutePath != "/favicon.ico")
 						pageViews += 1;
-					string disableSubmit = !runServer ? "disabled" : "";
+					string disableSubmit = !runServer ? " disabled" : "";
 					get = String.Format(pageData, pageViews, requestCount, disableSubmit);
 				}
 

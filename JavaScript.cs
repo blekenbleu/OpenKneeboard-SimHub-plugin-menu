@@ -13,70 +13,70 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		JavaScript minification:  https://github.com/trullock/NUglify
 		JavaScript Debugging:  https://www.w3schools.com/js/js_debugging.asp
 */
-		public static string JavaScript =	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
-"<script>
-const source = new EventSource('SSE');
-const msg = document.getElementById('msg');
-const label = document.getElementById('active');
-const slider = document.getElementById('myRange');
-const table = document.getElementById('tok');
-let rows = table.getElementsByTagName('tr');
+	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
+		public static string JavaScript = "\n<script>"
++"\nconst source = new EventSource('SSE');"
++"\nconst msg = document.getElementById('msg');"
++"\nconst label = document.getElementById('active');"
++"\nconst slider = document.getElementById('myRange');"
++"\nconst table = document.getElementById('tok');"
++"\nlet rows = table.getElementsByTagName('tr');"
 
-const blurt = (string) => {
-  console.log(string);
-  msg.innerHTML = string'
-};
++"\nconst blurt = (string) => {"
++	"console.log(string); "
++	"msg.innerHTML = string;"
++"};"
 
-const tableUpdate = (data) => {
-  let obj = JSON.parse(data);
-  let r = obj.row;
-  let c = obj.col;
-  table.rows[r].cells[c].innerHTML = obj.val;
-};
++"\nconst tableUpdate = (data) => {"
++"\n  let obj = JSON.parse(data);"
++"\n  let r = obj.row;"
++"\n  let c = obj.col;"
++"\n  table.rows[r].cells[c].innerHTML = obj.val;"
++"\n};"
 
 // Table Row Background Colors
-const tableScroll = (data) => {
-  let foo = JSON.parse(data).foo;
-  for(i = 0; i < rows.length; i++)
-	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888';
-};
++"\nconst tableScroll = (data) => {"
++"\n  let foo = JSON.parse(data).foo;"
++"\n  for(i = 0; i < rows.length; i++)"
++"\n	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888';"
++"\n};"
 
-const slide = (data) => {
-	let obj = JSON.parse(data);
-	label.innerHTML = obj.prop;
-	slider.value = obj.val;
-};
++"\nconst slide = (data) => {"
++"\n  let obj = JSON.parse(data);"
++"\n  label.innerHTML = obj.prop;"
++"\n  slider.value = obj.val;"
++"\n};"
 
-// Listen for the specific event types defined in C#
-source.addEventListener('table', (event) => {
-  tableUpdate(event.data);
-});
+// Listen for the specific event types defined in C#"
++"\nsource.addEventListener('table', (event) => {"
++  "tableUpdate(event.data);"
++"});"
 
-source.addEventListener('scroll', (event) => {
-  tableScroll(event.data);
-});
++"\nsource.addEventListener('scroll', (event) => {"
++  "tableScroll(event.data);"
++"});"
 
-source.addEventListener('slider', (event) => {
-  slide(event.data);
-});
++"\nsource.addEventListener('slider', (event) => {"
++  "slide(event.data);"
++"});"
 
-source.onopen = () => {
-  blurt('Connection opened');
-};
++"\nsource.onopen = () => {"
++  "blurt('Connection opened');"
++"};"
 
-source.onmessage = (event) => {
-  msg.innerHTML = event.data;
-  console.log('Received message:', event);
-};
++"\nsource.onmessage = (event) => {"
++"\n  msg.innerHTML = event.data;"
++"\n  console.log('Received message:', event);"
++"\n};"
 
-source.onerror = (e) => {
-  let oops = 'Error: ' + JSON.parse(e);
-  console.error(oops);
-  msg.innerHTML = oops;
-  if (source.readyState === EventSource.CONNECTING)
-	blurt('Reconnecting...');
-};
-</script>";			// string JavaScript
++"\nsource.onerror = (e) => {"
++"\n  let oops = 'Error: ' + JSON.parse(e);"
++"\n  console.error(oops);"
++"\n  msg.innerHTML = oops;"
++"\n  if (source.readyState === EventSource.CONNECTING)"
++"\n	blurt('Reconnecting...');"
++"\n};"
++"\n</script>";			// string JavaScript
 
 	}       // class
 }           // namespace
