@@ -3,7 +3,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
     partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
     {
 
-/*		Custom SSE events
+/*		Using server-sent events https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
+			https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events
+		Custom SSE events
 			https://medium.com/pon-tech-talk/a-simple-guide-to-server-sent-events-sse-and-eventsource-9de19c23645b
 			https://github.com/omer-pon/sse-eventsource
 
@@ -13,7 +15,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 */
 		public static string JavaScript =	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
 "<script>
-const source = new EventSource('http://localhost:8765/SSE');
+const source = new EventSource('SSE');
 const msg = document.getElementById('msg');
 const label = document.getElementById('active');
 const slider = document.getElementById('myRange');
@@ -41,7 +43,7 @@ const tableScroll = (data) => {
 
 const slide = (data) => {
 	let obj = JSON.parse(data);
-	label.innerHTML = obj.id;
+	label.innerHTML = obj.prop;
 	slider.value = obj.val;
 };
 
