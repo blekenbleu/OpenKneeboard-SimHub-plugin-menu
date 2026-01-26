@@ -14,14 +14,22 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static string JavaScript =	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
 "<script>
 const source = new EventSource('http://localhost:8765/SSE');
-const table = document.getElementById("tok");
-let rows = table.getElementsByTagName("tr");
+const msg = document.getElementById('msg');
+const label = document.getElementById('active');
+const slider = document.getElementById('myRange');
+const table = document.getElementById('tok');
+let rows = table.getElementsByTagName('tr');
+
+const blurt = (string) => {
+  console.log(string);
+  msg.innerHTML = string'
+};
 
 const tableUpdate = (data) => {
   let obj = JSON.parse(data);
   let r = obj.row;
   let c = obj.col;
-  table.rows[r].cells[c].innerHTML = obj.value;
+  table.rows[r].cells[c].innerHTML = obj.val;
 };
 
 // Table Row Background Colors
@@ -29,6 +37,12 @@ const tableScroll = (data) => {
   let foo = JSON.parse(data).foo;
   for(i = 0; i < rows.length; i++)
 	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888';
+};
+
+const slide = (data) => {
+	let obj = JSON.parse(data);
+	label.innerHTML = obj.id;
+	slider.value = obj.val;
 };
 
 // Listen for the specific event types defined in C#
@@ -40,18 +54,25 @@ source.addEventListener('scroll', (event) => {
   tableScroll(event.data);
 });
 
+source.addEventListener('slider', (event) => {
+  slide(event.data);
+});
+
 source.onopen = () => {
-  console.log('Connection opened');
+  blurt('Connection opened');
 };
 
 source.onmessage = (event) => {
+  msg.innerHTML = event.data;
   console.log('Received message:', event);
 };
 
 source.onerror = (e) => {
-  console.error("Error: " + JSON.parse(e));
+  let oops = 'Error: ' + JSON.parse(e);
+  console.error(oops);
+  msg.innerHTML = oops;
   if (source.readyState === EventSource.CONNECTING)
-	console.log('Reconnecting...');
+	blurt('Reconnecting...');
 };
 </script>";			// string JavaScript
 

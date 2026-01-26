@@ -11,7 +11,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			builder.Append("<table id=tok style=\"font-size: 25px;\">\n<tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>");
 			for (int i = 0; i < sV.Count; i++)
 				builder.Append($"\n<tr><td>{sV[i].Name}</td><td>{sV[i].Current}</td><td>{sV[i].Previous}</td><td>{sV[i].Default}</td></tr>");
+
 			builder.Append("</table>");
+			builder.Append("<label id=active for=\"myRange\">unset:</label>
+			builder.Append("<input type=\"range\" value=\"50\" id=\"myRange\">");
+			builder.Append("<p id=msg><i>messages here</i></p>");
 			return builder.ToString();
 		}
 	}
