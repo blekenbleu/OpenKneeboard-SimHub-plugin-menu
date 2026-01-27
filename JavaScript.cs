@@ -47,18 +47,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n  slider.value = obj.val;"
 +"\n};"
 
-// Listen for the specific event types defined in C#"
-+"\nsource.addEventListener('table', (event) => {"
-+  "tableUpdate(event.data);"
-+"});"
-
-+"\nsource.addEventListener('scroll', (event) => {"
-+  "tableScroll(event.data);"
-+"});"
-
-+"\nsource.addEventListener('slider', (event) => {"
-+  "slide(event.data);"
-+"});"
++CustomEvents	// CustomEvent.cs
 
 +"\nsource.onopen = () => {"
 +  "blurt('Connection opened');"

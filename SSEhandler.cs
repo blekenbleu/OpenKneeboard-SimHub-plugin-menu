@@ -80,6 +80,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
+		public static void SSEvent(string name, string data)
+		{
+			SSErespond("event: " + name + "\ndata:{" + data + "}");
+		}
+
 		public static void SSErespond(string responseText)
 		{
 			SSEtimeout = false;
@@ -119,37 +124,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				await Task.Delay(5000);
 			}
 			OKSHmenu.Info("SSEtimer():  SSEcontext.Response.OutputStream.Write() timeout");
-		}
-
-//		These event methods correspond to JavaScript.cs source.addEventListener()s
-		// https://github.com/CharlieDigital/dn7-server-sent-events/blob/main/api/Program.cs
-		// update a table cell
-		public static void SSEcell(int row, int col, string val)
-        {
-			SSErespond("event: table\ndata:{"
-						+ "\"row\": \"" + $"{row}" + "\","
-						+ "\"col\": \"" + $"{col}" + "\","
-						+ "\"val\": \"" + $"{val}" + "\""
-						+ "}");
-		}
-
-		public static void SSEscroll(int row)
-        {
-			SSErespond("event: scroll\ndata:{"
-						+ "\"row\": \"" + $"{row}" + "\"}");
-		}
-
-		public static void SSEslide(int val, string prop)
-		{
-			SSErespond("event: slider\ndata:{"
-						+ "\"prop\": \"" + $"{prop}" + "\","
-						+ "\"val\": \"" + $"{val}" + "\""
-                        + "}");
-		}
-
-		public static void SSEmessage(string msg)
-		{
-			SSErespond("event:\ndata:" + msg);
 		}
 	}		// class
 }			// namespace

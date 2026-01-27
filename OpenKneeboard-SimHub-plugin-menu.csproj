@@ -66,6 +66,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomEvent.cs" />
     <Compile Include="HTML.cs" />
     <Compile Include="HTTPserver.cs" />
     <Compile Include="JavaScript.cs" />

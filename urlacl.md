@@ -35,6 +35,7 @@ URL reservation successfully deleted
 	- [Create a TcpListener using **`IPAddress.Any`** and port](https://learn.microsoft.com/en-us/dotnet/fundamentals/networking/sockets/tcp-classes#create-a-tcplistener)
 		- [`IPAddress.Any`:&nbsp; 0.0.0.0]()
 	- [asynchronous TcpListener using async/await - stackoverflow](https://stackoverflow.com/a/21831405)
+	- [Task-based `TcpListener()` HTTP server](https://www.programmersought.com/article/59981249482/)
 	- [TcpListener listening socket loop](https://stackoverflow.com/a/19387431)
 	- [custom `TcpListener()` HTTP server - Medium](https://medium.com/@haroonayaz/mastering-c-with-a-custom-built-http-server-an-exciting-dive-into-network-programming-427792a02cd6) - [GitHub](https://github.com/Kyojur0/HTTP-Server)
 	- [Mastering TCPListener in C# - YouTube](https://www.youtube.com/watch?v=TAGoid4u6PY)

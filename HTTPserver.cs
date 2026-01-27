@@ -37,8 +37,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"\n<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>\n";
 
 		public static string end =
-			  "</body>" +
-			"</html>";
+			  "</body></html>";
 
 		// Using HTTPListener to build a HTTP Server in C#
 		// https://thoughtbot.com/blog/using-httplistener-to-build-a-http-server-in-csharp
