@@ -7,6 +7,7 @@ using SimHub.Plugins.UI;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -15,7 +16,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
 		public static HttpListener OKSHlistener = null;
-		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/" };
+		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/", "real IP" };
 		public static int pageViews = 0;
 		public static int requestCount = 0;
 		public static string head = 
@@ -107,7 +108,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 
 				// Write the response info
-                byte[] data = Encoding.UTF8.GetBytes(head + get + HTMLtable(OKSHmenu.simValues) + end);
+				byte[] data = Encoding.UTF8.GetBytes(head + get + HTMLtable(OKSHmenu.simValues) + end);
 				resp.ContentType = "text/html";
 				resp.ContentEncoding = Encoding.UTF8;
 				resp.ContentLength64 = data.LongLength;
@@ -119,6 +120,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		static JavaScriptSerializer js;
+		public static string localIP;
 		// called in OKSHmenu.Init()
 		public static void Serve()
 		{
@@ -126,11 +128,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			SSEcontext = null;					// only one HttpListener, but many contexts
 			SSEonce = true;						// warning once is enough
 
+			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+			{
+				socket.Connect("8.8.8.8", 65530);
+				IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+				localIP = endPoint.Address.ToString();
+			}
+			urls[2] = "http://"+localIP+":8765/";	// needs elevated privileges
+
 			// Create a Http server and start listening for incoming connections
 			OKSHlistener = new HttpListener();
-			foreach (string url in urls)
-				OKSHlistener.Prefixes.Add(url);
-//			listener.Prefixes.Add("http://192.168.1.147:8765/");	// needs elevated privileges
+			for (int i= 0; i < 2; i++)
+				OKSHlistener.Prefixes.Add(urls[i]);
 			try
 			{
 				OKSHlistener.Start();
@@ -140,7 +149,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				OKSHmenu.Info("Serve(): HttpListenerException transaction " + hlex);
 				return;
 			}
-			OKSHmenu.Info($"Serve(): Listening for connections on {urls[0]}");
+			OKSHmenu.Info($"Serve(): Listening for connections on {urls[0]} and {urls[1]}");
 			// Handle requests
 			Task listenTask = HandleIncomingConnections();
 			// Close listener in OKSHmenu.End().

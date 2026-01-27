@@ -7,6 +7,9 @@ Based on [A Simple HTTP server in C#](https://16bpp.net/tutorials/csharp-network
 ### [Razor seems doomed](Doomed.md) for .NET Framework
  &emsp; if only for lack of support in recent Visual Studio  
 
+[**`HttpListener.Prefixes.Add()` works only for `localhost` and `127.0.0.1`**](urlacl.md)
+- which does not allow access by e.g. smartphone browser
+
 - send current Properties `<table>` in response to initial GET [*(done)*](HTML.cs)
 	- also send [JavaScript](JavaScript.md) to request SSE and update `<table>` cells [(*keep-alive works*)](JavaScript.cs)
 		- browser ignores JavaScript with syntax errors
