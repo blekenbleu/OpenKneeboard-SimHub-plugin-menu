@@ -36,9 +36,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 // Table Row Background Colors
 +"\nconst tableScroll = (data) => {"
-+"\n  let foo = JSON.parse(data).foo;"
++"\n  msg.innerHTML = data;"
++"\n  let r = JSON.parse(data).row;"
 +"\n  for(i = 0; i < rows.length; i++)"
-+"\n	rows[i].style.backgroundColor = (foo == i) ? '#ffffff' : '#888888';"
++"\n	rows[i].style.backgroundColor = (r == i) ? '#ffffff' : '#888888';"
 +"\n};"
 
 +"\nconst slide = (data) => {"
@@ -59,7 +60,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n};"
 
 +"\nsource.onerror = (e) => {"
-+"\n  let oops = 'Error: ' + JSON.parse(e);"
+//+"\n  let oops = 'Error: ' + JSON.parse(e);"
++"\n  let oops = 'Error: ' + e;"
 +"\n  console.error(oops);"
 +"\n  msg.innerHTML = oops;"
 +"\n  if (source.readyState === EventSource.CONNECTING)"
