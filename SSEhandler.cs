@@ -120,7 +120,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						return;
 				}
 				SSEtimeout = true;
-				await Task.Delay(5000);
+				await Task.Delay(15000);
 			}
 			OKSHmenu.Info("SSEtimer():  SSEcontext.Response.OutputStream.Write() timeout");
 		}

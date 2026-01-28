@@ -126,6 +126,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
             HttpServer.OKSHlistener.Prefixes.Clear();
 			Info("Closing {HttpServer.url} listener");
 			HttpServer.OKSHlistener.Close();
+			simValues = new List<Values>();
 
             if (!write)				// End()
 				return;
@@ -216,8 +217,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			SettingsProps = new List<Property> {};			// deep copy
 			foreach(Property p in Settings.properties)
 				if (null != p.Name && null != p.Value)
-					SettingsProps.Add(new Property() { Name = p.Name,
-												  Value = p.Value });
+					SettingsProps.Add(new Property() { Name = p.Name, Value = p.Value });
 
 			Steps = new List<int>() {};		// for Populate()
 

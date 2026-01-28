@@ -6,6 +6,28 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public partial class OKSHmenu
 	{
+		// simValues set methods
+		string Default(int i, string value)
+		{
+			simValues[i].Default = value;
+			HttpServer.SSEcell(1 + i, 3, value);
+			return value;
+		}
+
+		string Current(int i, string value)
+		{
+			simValues[i].Current = value;
+			HttpServer.SSEcell(1 + i, 1, value);
+			return value;
+		}
+
+		string Previous(int i, string value)
+		{
+			simValues[i].Previous = value;
+			HttpServer.SSEcell(1 + i, 2, value);
+			return value;
+		}
+
 		// check whether current properties differ from JSON
 		bool Changed()
 		{
@@ -145,7 +167,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// Control.xaml methods -------------------------------------------------
 		internal void FromSlider(double value)
 		{
-			simValues[slider].Current = (SliderFactor[0] * (int)value).ToString();
+			Current(slider, (SliderFactor[0] * (int)value).ToString());
 			Changed();
 			View.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
 		}
@@ -175,9 +197,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			iv += sign * step;
 			if (0 <= iv)
 			{
-				if (0 != step % 100)
-					simValues[View.Selection].Current = $"{(float)(0.01 * iv)}";
-				else simValues[View.Selection].Current = $"{(int)(0.004 + 0.01 * iv)}";
+				Current(View.Selection, (0 != step % 100) ? $"{(float)(0.01 * iv)}"
+										: $"{(int)(0.004 + 0.01 * iv)}");
 				Changed();
 				if (slider == View.Selection)
 					ToSlider();
@@ -216,8 +237,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			for (int i = 0; i < simValues.Count; i++)
 			{
 				temp = simValues[i].Previous;
-				simValues[i].Previous = simValues[i].Current;
-				simValues[i].Current = temp;
+				Previous(i, simValues[i].Current);
+				Current(i, temp);
 			}
 			ToSlider();		// Swap()
 			Changed();
@@ -231,7 +252,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			else {
 				int p = View.Selection;
 
-				simValues[p].Default = simValues[p].Current;	// End() sorts per-game changes
+				Default(p, simValues[p].Current);	// End() sorts per-game changes
 				Changed();
 			}
 		}
@@ -267,7 +288,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				ml = Msg.Length;
 
 				for (i = 0; i < simValues.Count; i++)			// copy Current to previous
-					simValues[i].Previous = simValues[i].Current;
+					Previous(i, simValues[i].Current);
 
 				// indices for new car
 				if (0 <= GameIndex(gnew))						// sets gndx
@@ -288,10 +309,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						{											// different game
 							count = pCount > vcount ? vcount : pCount;
 							for (i = 0; i < count; i++)				// per-car defaults
-								simValues[i].Default = game.cList[0].Vlist[i];
+								Default(i, game.cList[0].Vlist[i]);
 						}
 						for (i = pCount; i < count; i++)			// per-game defaults
-							simValues[i].Default = game.cList[0].Vlist[i];	// perhaps altered since .ini
+							Default(i, game.cList[0].Vlist[i]);	// perhaps altered since .ini
 					}
 				}
 				else
@@ -299,15 +320,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						NewCar = "false";
 						if (cname != Settings.carid && null != game)				// previous car?
 							for (i = 0; i < pCount; i++)
-								simValues[i].Current = game.cList[cndx].Vlist[i];
+								Current(i, game.cList[cndx].Vlist[i]);
 						if (null == CurrentCar && null != game)						// first in this game instance?
 						{											// restore game defaults
 							count = pCount > vcount ? vcount : pCount;
 							for (i = 0; i < count; i++)
-								simValues[i].Default = game.cList[0].Vlist[i];
+								Default(i, game.cList[0].Vlist[i]);
 							count = gCount > vcount ? vcount : gCount;
 							for(i = pCount; i < count; i++)
-								simValues[i].Current = simValues[i].Default = game.cList[0].Vlist[i];
+								Current(i, Default(i, game.cList[0].Vlist[i]));
 						}
 				}
 				Settings.carid = CurrentCar = cname;
