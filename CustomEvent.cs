@@ -27,13 +27,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// designated slider property name and value
-		public static void SSEslide(int val, string prop)
+		public static void SSEslide(double val, string prop)
 		{
-			SSEvent("slider", $"\"prop\": \"{prop}\","
-					+ $"\"val\": \"{val}\"");
+			SSEvent("slider", $"\"prop\": \"{prop}\", \"val\": \"{val}\"");
 		}
 
-		// used by SSEtimer() keep-alive
 		public static void SSEmessage(string msg)
 		{
 			SSErespond("event:\ndata:" + msg);

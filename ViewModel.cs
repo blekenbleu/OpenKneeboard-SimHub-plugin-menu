@@ -71,6 +71,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
                 {
 					_sval = value;
 					PropertyChanged?.Invoke(this, SLevent);
+					HttpServer.SSEslide(SliderValue, SliderProperty);
 				}
 			}
 		}
@@ -118,6 +119,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
                 	_slider_Property = value;
                 	PropertyChanged?.Invoke(this, Nevent);
 					SliderVisibility = Visibility.Visible;
+					HttpServer.SSEslide(SliderValue, SliderProperty);
 				}
             }
         }
