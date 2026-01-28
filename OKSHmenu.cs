@@ -367,6 +367,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			Info($"Init():  simValues.Count = {simValues.Count}");
 			HttpServer.Serve();
+			Task taskT = HttpServer.TcpServe();
 		}	// Init()
 	}		// class OKSHmenu
 }

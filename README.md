@@ -34,7 +34,9 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - hand-code [JavaScript](JavaScript.md) for browser to update `<table>` from Server-Sent Events
 - send [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page to client browsers
 - send Server-Sent Events for `<table>` cell property values and e.g. scroll actions
-	- *yet to do;&nbsp; currently sending only keep-alive messages*
+	- *working, but disconnected client causes SimHub game disconnects and reconnects*
+	- `HttpListener` without admin privelege can only serve to LocalHost on Windows 11
+		- *to do*: experiment with `TcpListener`
 
 ### [Writing a Web Server using C# HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
 - [ doomed alternatives and experiments](Doomed.md)
