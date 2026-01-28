@@ -367,7 +367,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			Info($"Init():  simValues.Count = {simValues.Count}");
 			HttpServer.Serve();
-			Task taskT = HttpServer.TcpServe();
+			// Is there a cleaner way to run a separate task...
+			Task.Run(() => HttpServer.TcpServe());
 		}	// Init()
 	}		// class OKSHmenu
 }
