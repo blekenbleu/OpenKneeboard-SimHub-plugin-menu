@@ -98,8 +98,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				return;
 			}
 
-			Task delay = SSErve(Encoding.UTF8.GetBytes(string.Format("data: "
-								+ js.Serialize(responseText) + "\n\n")));
+			Task delay = SSErve(Encoding.UTF8.GetBytes(responseText + "\n\n"));
 			if (null != SSEcontext && !delay.Wait(1000))
 			{
 				SSEcontext.Response.Close();
@@ -116,7 +115,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				if (SSEtimeout)
 				{
-					SSErespond($"keep-alive {++foo} async");
+					SSErespond($"data: keep-alive {++foo} async");
 					if (null == SSEcontext)
 						return;
 				}

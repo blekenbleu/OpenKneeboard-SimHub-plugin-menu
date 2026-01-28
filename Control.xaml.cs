@@ -28,7 +28,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public Control(OKSHmenu plugin) : this()
 		{
 			this.OK = plugin;							// Control.xaml button events call OKSHmenu methods
-			dg.ItemsSource = OKSHmenu.simValues;			// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
+			dg.ItemsSource = OKSHmenu.simValues;		// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -52,6 +52,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				dg.CurrentCell = new DataGridCellInfo(dg.Items[Selection], dg.Columns[1]);
 				dg.SelectedCells.Clear();
 				dg.SelectedCells.Add(dg.CurrentCell);
+				HttpServer.SSEscroll(Selection);
 			}
 		}
 
