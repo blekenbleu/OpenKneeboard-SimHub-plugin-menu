@@ -36,8 +36,10 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - send Server-Sent Events for `<table>` cell property values and e.g. scroll actions
 	- *working, but disconnected client causes SimHub game disconnects and reconnects*
 	- `HttpListener` without admin privelege can only serve to LocalHost on Windows 11
-		- *to do*: experiment with [`TcpListener`](TcpServer.cs) - not handling multiple connections
-			= as yet, no HTTP served...
+		- *to do*: experiment with [`TcpListener`](TcpServer.cs)
+			- handling multiple connections, but not multiple in `List<>`
+			- as yet, no HTTP served...
+- set HTML scroll and slider with car change; do not wait for WPF menu open
 
 ### [Writing a Web Server using C# HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
 - [ doomed alternatives and experiments](Doomed.md)
