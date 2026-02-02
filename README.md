@@ -26,10 +26,12 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	`KSHmenu.ChangeProperties` needs its own `ExternalScript.CarChange` event trigger setting  
 	in **SimHub Controls and events**.
 - [MIDIio](https://github.com/blekenbleu/MIDIio)
-- [**A Simple HTTP SSE server in C#**](SSE.md) - proof of concept -
+- [A Simple HTTP SSE server in C#](SSE.md) - proof of concept -
   [Gist](https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7)
+	- but user-space `HttpListener` server can serve only to browsers on the same PC
+	- [**TCPListener - based server**](https://github.com/blekenbleu/HttpServer) avoids that limitation.
 
-### plan
+## plan
 - generate an [HTML `<table>`](HTML.md) from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
 - hand-code [JavaScript](JavaScript.md) for browser to update `<table>` from Server-Sent Events
 - send [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page to client browsers
@@ -41,12 +43,25 @@ HTML table cell updates should have lower processing overhead than graphical ove
 			- as yet, no HTTP served...
 - set HTML scroll and slider with car change; do not wait for WPF menu open
 
-### [Writing a Web Server using C# HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
-- [ doomed alternatives and experiments](Doomed.md)
+#### [Web Server using C# TcpListener](https://github.com/blekenbleu/HttpServer), *NOT* [HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
+- HttpListener on Windows 11 Home - works for me only for localhost (``)
+- [other doomed alternatives and experiments](Doomed.md)
+- [**`TcpListener` works for Internet address**]()
+	- requires [hand-coding HTTP header content](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Session)
+	- GitHub inspiration: [HttpServer](https://github.com/Peteri-git/simple-HttpServer) with minimal C#
 
-## SimHub plugins are .NET Framework 4.8 WPF User Control libraries
-## SimHub plugin build process
-### .NET Framework v4.8
+#### Because *only* a Server-Sent Events application
+- no need to *maintain* per-connection Tasks;&nbsp; all SSE client connections have the same state
+	- send page with current `<table>` and `script` in response to initial `GET`
+		- a single async Task
+	- accumulate a `List<>` of `GET /SSE` connections
+		- immediately send current `<table>` row and slider settings to each new connection 
+- send update Events to each connection in the connection `List<>`
+	- may need to launch a set of parallel tasks to handle data chunking (but each SSE is small)
+
+### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
+### [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)
+#### [.NET Framework v4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)
 Windows-only version of .NET for building client and server applications;  
 newest version supported by M$ is 4.8.1 (*August 9th, 2022*), but SimHub uses 4.8  
 In Visual Studio, `new project > WPF User Control Library (.NET Framework)`  
