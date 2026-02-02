@@ -58,7 +58,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 > slider)
 				return;
 
-			View.Model.SliderProperty = simValues[slider].Name;
+			View.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name;
 			/* slider View.SL.Maximum = 100; scale property to it, based on Steps[slider]
 			 ; Steps	   Guestimated range
 			 ; 1  (0.01)	0 - 2
@@ -177,8 +177,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if(0 > slider)
 				return;
 
-			View.Model.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
-			View.Model.SliderValue = SliderFactor[1] * Convert.ToDouble(simValues[slider].Current);
+			View.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
+			View.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * Convert.ToDouble(simValues[slider].Current);
 		}
 
 		/// <summary>

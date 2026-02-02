@@ -5,106 +5,174 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-    partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
-    {
-        private static TcpListener listener;    // also works for other IP addresses
-        private static bool listen = true; // <--- boolean flag to exit loop
-        static readonly Int32 port = 5678;
-        static List<NetworkStream> clients;
+	class SSES								// SSE connections
+	{
+		NetworkStream ns;
+		private StreamWriter sw;
+		public NetworkStream Ns { get => ns; set => ns = value; }
+		public StreamWriter Sw { get => sw; set => sw = value; }
+	}
 
-        // TcpListener server with List<TcpClient> clients:
-        // https://medium.com/@jm.keuleyan/c-tcp-communications-building-a-client-server-chat-a2155d585191
-        // 
+	partial class HttpServer				// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
+	{
+		internal static string SliderProperty;
+		internal static double SliderValue;
+		static TcpListener listener;		// works for any IP addresses
+		static readonly Int32 port = 8765;
+		static List<SSES> clients;
+		static bool ServerLoop;
+		static Task keepalive;
 
-        // https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient?view=netframework-4.8
-        // TcpClient creates a Socket to send and receive data, accessible as TcpClient.Client
-        // https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient.client?view=netframework-4.8
-        private static async Task HttpServe(TcpClient server)
-        {
-            if (server.Connected)
-            {
-                // https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.networkstream?view=netframework-4.8
-                using (NetworkStream ns = server.GetStream())
-                {
-                    // https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=netframework-4.8
-                    using StreamReader sr = new StreamReader(ns);
-                    OKSHmenu.Info($"HttpServe(): new message");
-                    while (server.Connected && listen && !sr.EndOfStream)
-                    {
-                        string msg;
-                        // https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader.readlineasync?view=netframework-4.8
-                        do
-                        {
-                            msg = await sr.ReadLineAsync();
-                            if (null != msg && 0 < msg.Length && msg.StartsWith("GET /"))
-                            {
-                                if (msg.StartsWith("GET /SSE"))
-                                    clients.Add(ns);
-                                OKSHmenu.Info("HttpServe():  " + msg);
-                            }
-                        } while (null != msg && 0 < msg.Length);
-                        await Task.Delay(1000);
-                    }
-                	OKSHmenu.Info($"HttpServe():  end clients List count {clients.Count}");
-                	clients.Remove(ns);
-                }
-            }
-        }
+		// TcpListener server with List<SSES> clients:
+		// https://medium.com/@jm.keuleyan/c-tcp-communications-building-a-client-server-chat-a2155d585191
 
-		// SSE place-holder tasks; if a Write fails, set Readable = false
-        private static async Task NetServe(TcpClient server, NetworkStream ns)
-        {
-			while (server.Connected && listen && ns.Writeable && ns.Readable)
-				await Task.Delay(1000);
-			OKSHmenu.Info("NetServe(): ending");
-        }
+		// https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient?view=netframework-4.8
+		// TcpClient creates a Socket to send and receive data, accessible as TcpClient.Client
+		// https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient.client?view=netframework-4.8
 
-        // https://dev.to/nickproud/net-tcplistener-accepting-multiple-client-connections-108d
-        public static async Task TcpServe()
-        {
-            clients = new List<NetworkStream> { };	// list management should all occur in this task
-            listener = new TcpListener(IPAddress.Any, port);
-            listener.Start();
-            OKSHmenu.Info($"TcpServe():  TcpListener.Start port {port}");
-            for (listen = true; listen;)
-            {
-                TcpClient server = await listener.AcceptTcpClientAsync();
+		private static readonly string get = "";
+		private static readonly string end = "</body></html>";
+		private static readonly string head = 
+			"\n<html>" +
+			  "<head><style>th, td {padding-right: 30px;}</style>" +
+				"\n<title>HttpListener Example</title>" +
+				"\n<link rel='icon' href=" +
+					"'https://media.geeksforgeeks.org/wp-content/cdn-uploads/gfg_200X200.png'" +
+					" type='image/x-icon'>" +
+			  "\n</head>\n" +
+			  "\n<body style='font-size: 30px; margin-left: 50px;'>";
+
+		static bool W(StreamWriter sw, string s)
+		{
+			try {
+	  			OKSHmenu.Info("\t"+s);
+				sw.WriteLine(s);
+			} catch(Exception exp) {
+				OKSHmenu.Info("W():  "+exp.Message);
+				return false; 
+			}
+			return true;
+		}
+
+		static bool W(StreamWriter sw)
+		{
+			return W(sw, "");
+		} 
+
+		static void Table (NetworkStream ns)
+		{
+			StreamWriter sw = new StreamWriter(ns);
+			if (W(sw, "HTTP/1.1 200 OK")
+			&& W(sw, $"Content-Type:text/html; charset=UTF-8"))
+			{
+				// Write the response info
+				string data = head + get + HTMLtable(OKSHmenu.simValues) + end;
+				if (W(sw, $"Content-Length: {data.Length}"))
+					W(sw, data+"\n\n");
+				W(sw);
+				sw.Flush();
+//				sw.Close();
+			}	
+//			ns.Close();
+		}
+
+		// add SSES() to clients;  leave ns open
+		static void SSE(NetworkStream ns)
+		{
+			string SSEhead = "HTTP/1.1 200 OK\nContentType: text/event-stream"
+                        + "\nCache-Control: no-cache"
+						+ "\nX-Accel-Buffering: no"
+						+ "\nAccess-Control-Allow-Origin: *"
+						+ "\nConnection: keep-alive"
+						+ "\n";
+			try {
+				StreamWriter sw = new StreamWriter(ns);
+				W(sw, SSEhead);
+				// update set <table> scroll, slider
+				if (SSErve(sw, Encoding.UTF8.GetBytes("event: scroll\ndata:{"
+						+ "\"row\": \"1\"}"))
+				 && SSErve(sw, Encoding.UTF8.GetBytes("event: slider\ndata:{"
+						+ $"\"prop\": \"{SliderProperty}\", \"val\": \"{SliderValue}\"" + "}")))
+				{
+					SSES ss = new SSES() { Ns = ns, Sw = sw };
+					clients.Add(ss);
+					OKSHmenu.Info($"TcpServe():  client List count {clients.Count}");
+					if (1 == clients.Count)
+						keepalive = SSEtimer();
+				}
+			} catch (Exception exp) {
+				OKSHmenu.Info($"SSE():  "+exp.Message);
+			}
+		}
+
+		// Served page is passive; only SSE from JavaScript is supported.
+		// Any other request gets table<>
+
+		// https://dev.to/nickproud/net-tcplistener-accepting-multiple-client-connections-108d
+
+		static void End(SSES ss)
+		{
+			ss.Ns.Close();
+			clients.Remove(ss);
+			OKSHmenu.Info($"TcpServer.End():  client List count {clients.Count}");
+		}
+
+		static JavaScriptSerializer js;
+		static string localIP;
+		// called in OKSHmenu.End();
+		internal static void Close()
+		{
+			ServerLoop = false;
+		}
+
+		public static async Task TcpServe()
+		{
+			OKSHmenu.Info($"TcpServe():  TcpListener.Start {localIP} port {port}");
+			for (ServerLoop = true; ServerLoop;)
+			{
+				TcpClient server = await listener.AcceptTcpClientAsync();
 				// sort out /SSE clients here, then only await those
 				using (NetworkStream ns = server.GetStream())
-                {
+				{
 					// https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=netframework-4.8
-                    using StreamReader sr = new StreamReader(ns);
-                    if (server.Connected && listen && !sr.EndOfStream)
-                    {
-                        string msg = await sr.ReadLineAsync();
-                        // https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader.readlineasync?view=netframework-4.8
-                        if (null != msg && 0 < msg.Length)
-                        {
-                    		OKSHmenu.Info($"HttpServe(): new message");
-                            if (msg.StartsWith("GET /"))
-                            {
-                                if (msg.StartsWith("GET /SSE"))
-								{
-                                    clients.Add(ns);
-									OKSHmenu.Info($"TcpServe():  start clients List count {clients.Count}");
-									await Task.Run(() => NetServe(server, ns));   // is await ok here?
-                    				OKSHmenu.Info($"TcpServe():  end clients List count {clients.Count}");
-                    				clients.Remove(ns);
-								}
-								else do {
-                                	OKSHmenu.Info("HttpServe():  " + msg);
-									msg = await sr.ReadLineAsync();
-								} while (null != msg && 0 < msg.Length && listen && server.Connected && !sr.EndOfStream);
-                            }
-                        }
-                    }
+					using StreamReader sr = new StreamReader(ns);
+					while (server.Connected && ServerLoop && !sr.EndOfStream)
+					{
+						string msg = await sr.ReadLineAsync();
+						// https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader.readlineasync?view=netframework-4.8
+						OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
+						if (null != msg && msg.StartsWith("GET /SSE"))
+						{
+							SSE(ns);
+							break;
+						}
+						else Table(ns);
+					}
 				}
-            }
-            OKSHmenu.Info($"TcpServe(): ending");
-        }
-    }	   // class
+			}
+			OKSHmenu.Info($"Closing {localIP} listener");
+		}
+
+		// called in OKSHmenu.Init()
+		internal static void Serve()
+		{
+			js = new JavaScriptSerializer();		// reuse for each SSE
+			clients = new List<SSES> { };	// list management should all occur while this task runs
+			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+			{
+				socket.Connect("8.8.8.8", 65530);
+				IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+				localIP = endPoint.Address.ToString();
+			}
+			listener = new TcpListener(IPAddress.Any, Convert.ToInt32(port));
+			listener.Start();
+			Task.Run(() => TcpServe());
+		}	// Serve()
+	}	   // class	HttpServer
 } 			// namespace

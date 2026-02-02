@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -8,74 +10,26 @@ using System.Web.Script.Serialization;
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	// Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
-	// Posted by GreysonTyrus, modified by community. See post 'Timeline' for change history
-	// Retrieved 2026-01-13, License - CC BY-SA 4.0
+	//			https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
 
 	partial class HttpServer
 	{
 		private static bool SSEtimeout = true, SSEonce = true;
-		private static HttpListenerContext SSEcontext = null;
 		private static int foo = 0;
 
-		public void ProcessRequest(HttpContext context)
-		{
-			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers
-			context.Response.ContentType = "text/event-stream";
-			context.Response.AddHeader("Cache-Control", "no-cache");
-			context.Response.AddHeader("Access-Control-Allow-Origin", "*");
-			context.Response.AddHeader("Connection", "keep-alive");
-			HttpResponse response = context.Response;
-
-			DateTime startdate = DateTime.Now;
-
-			while (startdate.AddMinutes(10) > DateTime.Now)
-			{
-				JavaScriptSerializer js = new JavaScriptSerializer();
-
-				string responseText = DateTime.Now.TimeOfDay.ToString();
-
-				response.Write(string.Format("data: {0}\n\n", js.Serialize(responseText)));
-				response.Flush();
-				System.Threading.Thread.Sleep(1000);
-			}
-			response.Close();
-		}
-
-		public bool IsReusable
-		{
-			get
-			{
-				return false;	// true requires thread-safe:  variables local to functions
-			}
-		}
-
-		// HandleIncomingConnections() continues after invoking this
-		private static async Task KeepAliveAsync()
-		{
-			await SSEtimer();	// keep-alive
-			OKSHmenu.Info("KeepAliveAsync(): SSEtimer() ended.");
-		}
-
-		private static async Task SSErve(byte[] data)
+		private static bool SSErve(StreamWriter sw, byte[] data)
 		{
 			try	// if this takes "too long", call `Response.Close()`
 			{
-//				https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
-				SSEcontext.Response.ContentType = "text/event-stream";
-				SSEcontext.Response.AddHeader("Cache-Control", "no-cache");
-				SSEcontext.Response.AddHeader("Access-Control-Allow-Origin", "*");
-				SSEcontext.Response.AddHeader("Connection", "keep-alive");
-				SSEcontext.Response.ContentEncoding = Encoding.UTF8;
-				await SSEcontext.Response.OutputStream.WriteAsync(data, 0, data.Length);	// System.IO.Stream
-//				if (3 < foo)
-//					await Task.Delay(2000);	// simulate Write() hang
-				SSEcontext.Response.OutputStream.Flush();
+				sw.Write(data.ToString()+"\n\n");	// System.IO.Stream
+				sw.Flush();
+				return true;
 			}
-			catch (HttpListenerException)
+			catch (Exception oops)
 			{
-				OKSHmenu.Info($"SSErve(): lost connection");
-				SSEcontext.Response.Close();
-				SSEcontext = null;
+				OKSHmenu.Info($"SSErve(): " + oops.Message);
+				sw.Close();
+				return false;
 			}
 		}
 
@@ -85,44 +39,34 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			SSErespond("event: " + name + "\ndata:{" + data + "}");
 		}
 
+		// send event to each client
 		public static void SSErespond(string responseText)
 		{
 			SSEtimeout = false;
-			if (null == SSEcontext)
+			if (null != clients && 0 < clients.Count)
 			{
+				SSEonce = true;
+				foreach(var client in clients)
+					if (!SSErve(client.Sw, Encoding.UTF8.GetBytes(responseText + "\n\n")))
+						End(client);
+			} else {
 				if (SSEonce)
-				{
-					OKSHmenu.Info("SSErespond():  null SSEcontext");
-					SSEonce = false;
-				}
-				return;
+					OKSHmenu.Info("SSErespond():  no clients");
+				SSEonce = false;
 			}
-
-			Task delay = SSErve(Encoding.UTF8.GetBytes(responseText + "\n\n"));
-			if (null != SSEcontext && !delay.Wait(1000))
-			{
-				SSEcontext.Response.Close();
-				SSEcontext = null;
-				OKSHmenu.Info($"SSErespond(): foo = {foo} hung");
-			}	
 		}
 
 		public async static Task SSEtimer()		// hopefully long-running
 		{
-			if (null != SSEcontext)
-				OKSHmenu.Info("SSEtimer(): launching");
-			while (null != SSEcontext)
+			OKSHmenu.Info("SSEtimer(): launching");
+			while (ServerLoop)
 			{
 				if (SSEtimeout)
-				{
 					SSErespond($"data: keep-alive {++foo} async");
-					if (null == SSEcontext)
-						return;
-				}
 				SSEtimeout = true;
 				await Task.Delay(15000);
 			}
-			OKSHmenu.Info("SSEtimer():  SSEcontext.Response.OutputStream.Write() timeout");
+			OKSHmenu.Info("SSEtimer(): exiting");
 		}
 	}		// class
 }			// namespace

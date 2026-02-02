@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="CustomEvent.cs" />
     <Compile Include="HTML.cs" />
-    <Compile Include="HTTPserver.cs" />
     <Compile Include="JavaScript.cs" />
     <Compile Include="js.cs" />
     <Compile Include="OKSHmenu.cs" />

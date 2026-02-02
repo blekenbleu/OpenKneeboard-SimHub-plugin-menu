@@ -16,6 +16,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
 		public static HttpListener OKSHlistener = null;
+		private static HttpListenerContext SSEcontext = null;
 		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/", "real IP" };
 		public static int pageViews = 0;
 		public static int requestCount = 0;

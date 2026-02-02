@@ -123,10 +123,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
-            HttpServer.OKSHlistener.Prefixes.Clear();
-			Info("Closing {HttpServer.url} listener");
-			HttpServer.OKSHlistener.Close();
-			simValues = new List<Values>();
+			HttpServer.Close();
+            simValues = new List<Values>();
 
             if (!write)				// End()
 				return;
@@ -159,6 +157,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			View = new Control(this);		// invoked *after* Init()
 			SetSlider();
+            Task.Run(() => HttpServer.Serve());
 			if (0 < Msg.Length)
 			{
 				Info("OOpsMB() " + Msg);
@@ -366,9 +365,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			);
 
 			Info($"Init():  simValues.Count = {simValues.Count}");
-			HttpServer.Serve();
-			// Is there a cleaner way to run a separate task...
-			Task.Run(() => HttpServer.TcpServe());
 		}	// Init()
 	}		// class OKSHmenu
 }
