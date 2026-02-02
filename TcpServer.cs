@@ -58,7 +58,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// SSE place-holder tasks; if a Write fails, set Readable = false
         private static async Task NetServe(TcpClient server, NetworkStream ns)
         {
-			while (server.Connected && listen && ns.Writeable && ns.Readable)
+			while (server.Connected) // && listen && ns.Writeable && ns.Readable)
 				await Task.Delay(1000);
 			OKSHmenu.Info("NetServe(): ending");
         }
