@@ -54,6 +54,7 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	- [server-sent-events-are-just-http-requests](https://jvns.ca/blog/2021/01/12/day-36--server-sent-events-are-cool--and-a-fun-bug/#server-sent-events-are-just-http-requests)
 	- [Each event is sent as a block of text terminated by a pair of newlines.](https://medium.com/@truongtronghai/content-type-text-event-stream-b81fee085ee1)
 	- [9.2 Server-sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html)
+	- [**non-async barebones HTTP TcpListener server**](https://github.com/Charles-Zhang-CSharp/PracticeBareboneHTTPServer)
 	- [SSE Server Response](https://dev.to/serifcolakel/real-time-data-streaming-with-server-sent-events-sse-1gb2)
 ```
 HTTP/1.1 200 OK

@@ -33,12 +33,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
-		public static void SSEvent(string name, string data)
-		{
-			SSErespond("event: " + name + "\ndata:{" + data + "}");
-		}
-
 		// send event to each client
 		public static void SSErespond(string responseText)
 		{
@@ -46,20 +40,33 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (null != clients && 0 < clients.Count)
 			{
 				SSEonce = true;
-				foreach(var client in clients)
-					if (!SSErve(client.Sw, responseText))
-						End(client);
-			} else {
+				foreach (var client in clients)
+					if (client != null)
+					{
+						if (!client.Ns.CanWrite)
+							End(client);
+						else if (!SSErve(client.Sw, responseText))
+							End(client);
+					}
+					else OKSHmenu.Info("SSErespond():  null client!!?");
+
+            } else {
 				if (SSEonce)
 					OKSHmenu.Info("SSErespond():  no clients");
 				SSEonce = false;
 			}
 		}
 
+		// https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
+		public static void SSEvent(string name, string data)
+		{
+			SSErespond("event: " + name + "\ndata:{" + data + "}");
+		}
+
 		public async static Task SSEtimer()		// hopefully long-running
 		{
 			OKSHmenu.Info("SSEtimer(): launching");
-			while (ServerLoop)
+			while (ServerLoop && 0 < clients.Count)
 			{
 				if (SSEtimeout)
 					SSErespond($"data: keep-alive {++foo} async");

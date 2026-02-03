@@ -8,15 +8,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using System.Windows;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	class SSES								// SSE connections
 	{
-		NetworkStream ns;
-		private StreamWriter sw;
-		public NetworkStream Ns { get => ns; set => ns = value; }
-		public StreamWriter Sw { get => sw; set => sw = value; }
+		internal NetworkStream Ns;
+		internal StreamWriter Sw;
 	}
 
 	partial class HttpServer				// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
@@ -50,7 +49,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		static bool W(StreamWriter sw, string s)
 		{
-			try {
+/*											// does not work
+            if (!sw.BaseStream.CanWrite)
+			{
+				OKSHmenu.Info("W(): cannot write");
+				return false;
+			}
+ */
+            try {
 	  			OKSHmenu.Info("W:\t"+s);
 				sw.WriteLine(s);
 			} catch(Exception exp) {
@@ -101,14 +107,16 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						+ $"\"prop\": \"{SliderProperty}\", \"val\": \"{SliderValue}\"" + "}"))
 				{
 					clients.Add(ss);
-					OKSHmenu.Info($"TcpServe():  client List count {clients.Count}");
+					OKSHmenu.Info($"TcpServe.Sse():  client List count {clients.Count}");
 					if (1 == clients.Count)
 						keepalive = SSEtimer();
 				}
 			} catch (Exception exp) {
 				OKSHmenu.Info($"SSE():  "+exp.Message);
 			}
-		}
+			OKSHmenu.Info("Sse(): ending");
+
+        }
 
 		// Served page is passive; only SSE from JavaScript is supported.
 		// Any other request gets table<>
@@ -127,22 +135,20 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// called in OKSHmenu.End();
 		internal static void Close()
 		{
-			ServerLoop = false;
+            ServerLoop = false;
 			clients = null;
 		}
 
-		public static async Task TcpServe()
+		static async Task HandleClientAsync(TcpClient server)
 		{
-			OKSHmenu.Info($"TcpServe():  TcpListener.Start {localIP} port {port}");
-			for (ServerLoop = true; ServerLoop;)
-			{
-				TcpClient server = await listener.AcceptTcpClientAsync();
 				// sort out /SSE clients here, then only await those
 				NetworkStream ns = server.GetStream();
 					// https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=netframework-4.8
 					StreamReader sr = new StreamReader(ns);
 					StreamWriter sw = new StreamWriter(ns);
 					SSES ss = new SSES() { Ns = ns, Sw = sw };
+					char[] buffer = new char[32];
+					int len;
 					
 					while (server.Connected && ServerLoop && !sr.EndOfStream)
 					{
@@ -152,20 +158,43 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 							continue;
 						if (msg.StartsWith("GET /SSE"))
 						{
-							OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
+							OKSHmenu.Info($"TcpServe(): new message = '"+msg+"'");
+							do len = await sr.ReadAsync(buffer, 0, buffer.Length);
+							while (len == buffer.Length);
 							Sse(ss);
 //							break;
 						}
 						else if (msg.StartsWith("GET"))
 						{
-							OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
+							OKSHmenu.Info($"TcpServe(): new message = '"+msg+"'");
+							do len = await sr.ReadAsync(buffer, 0, buffer.Length);
+							while (len == buffer.Length);
 							Table(ss);
+							sr.Close();
+							sw.Close();
+							server.Close();
+							OKSHmenu.Info($"HandleClientAsync():  NetworkStream closed");
+							break;
 						}
 					}
-			}
-			OKSHmenu.Info($"Closing {localIP} listener");
+			OKSHmenu.Info($"HandleClientAsync():  Task ending");
 		}
 
+		// https://www.iditect.com/faq/csharp/how-to-set-up-tcplistener-to-always-listen-and-accept-multiple-connections-in-c.html
+		public static async Task TcpServe()
+		{
+			OKSHmenu.Info($"TcpServe():  TcpListener.Start {localIP} port {port}");
+			for (ServerLoop = true; ServerLoop;)
+			{
+				OKSHmenu.Info("TcpServe():  server await");
+                TcpClient connection = await listener.AcceptTcpClientAsync();
+				// Handle client connections in separate tasks
+				_ = HandleClientAsync(connection);
+			}
+			OKSHmenu.Info($"TcpServe():  Closing {localIP} listener");
+		}
+
+		internal static Task SseServer;
 		// called in OKSHmenu.Init()
 		internal static void Serve()
 		{
@@ -176,10 +205,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				socket.Connect("8.8.8.8", 65530);
 				IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
 				localIP = endPoint.Address.ToString();
+				socket.Close();
 			}
+
 			listener = new TcpListener(IPAddress.Any, Convert.ToInt32(port));
 			listener.Start();
-			Task.Run(() => TcpServe());
+//			Task.Run(() => TcpServe());
+			SseServer = TcpServe();
 		}	// Serve()
 	}	   // class	HttpServer
 } 			// namespace
