@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
+
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
@@ -17,11 +14,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		private static bool SSEtimeout = true, SSEonce = true;
 		private static int foo = 0;
 
-		private static bool SSErve(StreamWriter sw, byte[] data)
+		private static bool SSErve(StreamWriter sw, string data)
 		{
-			try	// if this takes "too long", call `Response.Close()`
+			try
 			{
-				sw.Write(data.ToString()+"\n\n");	// System.IO.Stream
+				if (!data.EndsWith("\n"))
+					data += "\n";
+				string sse = Encoding.UTF8.GetString(Encoding.Default.GetBytes(data));
+				W(sw, sse);	// System.IO.Stream
 				sw.Flush();
 				return true;
 			}
@@ -47,7 +47,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				SSEonce = true;
 				foreach(var client in clients)
-					if (!SSErve(client.Sw, Encoding.UTF8.GetBytes(responseText + "\n\n")))
+					if (!SSErve(client.Sw, responseText))
 						End(client);
 			} else {
 				if (SSEonce)

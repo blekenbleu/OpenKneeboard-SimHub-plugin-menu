@@ -44,11 +44,23 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - set HTML scroll and slider with car change; do not wait for WPF menu open
 
 #### [Web Server using C# TcpListener](https://github.com/blekenbleu/HttpServer), *NOT* [HttpListener](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
-- HttpListener on Windows 11 Home - works for me only for localhost (``)
+- HttpListener on Windows 11 Home - worked for me only for localhost (``)
 - [other doomed alternatives and experiments](Doomed.md)
 - [**`TcpListener` works for Internet address**]()
 	- requires [hand-coding HTTP header content](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Session)
 	- GitHub inspiration: [HttpServer](https://github.com/Peteri-git/simple-HttpServer) with minimal C#
+	- `<table>` gets served and displayed, but no SSE joy yet...
+		- should SSE use the same `TcpClient` and `NetworkStream` as `<table>`?
+	- [server-sent-events-are-just-http-requests](https://jvns.ca/blog/2021/01/12/day-36--server-sent-events-are-cool--and-a-fun-bug/#server-sent-events-are-just-http-requests)
+	- [Each event is sent as a block of text terminated by a pair of newlines.](https://medium.com/@truongtronghai/content-type-text-event-stream-b81fee085ee1)
+	- [9.2 Server-sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html)
+	- [SSE Server Response](https://dev.to/serifcolakel/real-time-data-streaming-with-server-sent-events-sse-1gb2)
+```
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+Connection: keep-alive
+```
 
 #### Because *only* a Server-Sent Events application
 - no need to *maintain* per-connection Tasks;&nbsp; all SSE client connections have the same state

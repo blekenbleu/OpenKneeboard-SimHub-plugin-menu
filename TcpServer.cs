@@ -51,7 +51,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		static bool W(StreamWriter sw, string s)
 		{
 			try {
-	  			OKSHmenu.Info("\t"+s);
+	  			OKSHmenu.Info("W:\t"+s);
 				sw.WriteLine(s);
 			} catch(Exception exp) {
 				OKSHmenu.Info("W():  "+exp.Message);
@@ -65,9 +65,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return W(sw, "");
 		} 
 
-		static void Table (NetworkStream ns)
+		static void Table (SSES ss)
 		{
-			StreamWriter sw = new StreamWriter(ns);
+			StreamWriter sw = ss.Sw;
 			if (W(sw, "HTTP/1.1 200 OK")
 			&& W(sw, $"Content-Type:text/html; charset=UTF-8"))
 			{
@@ -83,24 +83,23 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// add SSES() to clients;  leave ns open
-		static void SSE(NetworkStream ns)
+		static void Sse(SSES ss)
 		{
 			string SSEhead = "HTTP/1.1 200 OK\nContentType: text/event-stream"
                         + "\nCache-Control: no-cache"
 						+ "\nX-Accel-Buffering: no"
 						+ "\nAccess-Control-Allow-Origin: *"
-						+ "\nConnection: keep-alive"
+//						+ "\nConnection: keep-alive"
 						+ "\n";
 			try {
-				StreamWriter sw = new StreamWriter(ns);
+				StreamWriter sw = ss.Sw;
 				W(sw, SSEhead);
 				// update set <table> scroll, slider
-				if (SSErve(sw, Encoding.UTF8.GetBytes("event: scroll\ndata:{"
-						+ "\"row\": \"1\"}"))
-				 && SSErve(sw, Encoding.UTF8.GetBytes("event: slider\ndata:{"
-						+ $"\"prop\": \"{SliderProperty}\", \"val\": \"{SliderValue}\"" + "}")))
+				if (SSErve(sw, "event: scroll\ndata:{"
+						+ "\"row\": \"1\"}")
+				 && SSErve(sw, "event: slider\ndata:{"
+						+ $"\"prop\": \"{SliderProperty}\", \"val\": \"{SliderValue}\"" + "}"))
 				{
-					SSES ss = new SSES() { Ns = ns, Sw = sw };
 					clients.Add(ss);
 					OKSHmenu.Info($"TcpServe():  client List count {clients.Count}");
 					if (1 == clients.Count)
@@ -129,6 +128,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal static void Close()
 		{
 			ServerLoop = false;
+			clients = null;
 		}
 
 		public static async Task TcpServe()
@@ -138,23 +138,30 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				TcpClient server = await listener.AcceptTcpClientAsync();
 				// sort out /SSE clients here, then only await those
-				using (NetworkStream ns = server.GetStream())
-				{
+				NetworkStream ns = server.GetStream();
 					// https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader?view=netframework-4.8
-					using StreamReader sr = new StreamReader(ns);
+					StreamReader sr = new StreamReader(ns);
+					StreamWriter sw = new StreamWriter(ns);
+					SSES ss = new SSES() { Ns = ns, Sw = sw };
+					
 					while (server.Connected && ServerLoop && !sr.EndOfStream)
 					{
 						string msg = await sr.ReadLineAsync();
 						// https://learn.microsoft.com/en-us/dotnet/api/system.io.streamreader.readlineasync?view=netframework-4.8
-						OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
-						if (null != msg && msg.StartsWith("GET /SSE"))
+						if (null == msg)
+							continue;
+						if (msg.StartsWith("GET /SSE"))
 						{
-							SSE(ns);
-							break;
+							OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
+							Sse(ss);
+//							break;
 						}
-						else Table(ns);
+						else if (msg.StartsWith("GET"))
+						{
+							OKSHmenu.Info($"HttpServe(): new message = '"+msg+"'");
+							Table(ss);
+						}
 					}
-				}
 			}
 			OKSHmenu.Info($"Closing {localIP} listener");
 		}
