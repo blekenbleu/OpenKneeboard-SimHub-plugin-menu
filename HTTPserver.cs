@@ -1,25 +1,143 @@
-// https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
-// https://16bpp.net/tutorials/csharp-networking/02/
-// Author:	Benjamin N. Summerton <define-private-public>		
-// License:   Unlicense (http://unlicense.org/)
-
-using SimHub.Plugins.UI;
 using System;
-using System.Collections.Generic;
-using System.Net;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
-		public static HttpListener OKSHlistener = null;
-		private static HttpListenerContext SSEcontext = null;
-		public static string[] urls = { "http://localhost:8765/", "http://127.0.0.1:8765/", "real IP" };
+		// adapted from https://github.com/blekenbleu/TcpMultiClient
+		static readonly byte[] ok = Encoding.UTF8.GetBytes(
+			"HTTP/1.1 200 OK\nContent-Type: text/event-stream; charset=UTF-8\n\n\n");
+		static readonly byte[] not = Encoding.UTF8.GetBytes("HTTP/1.1 404 NOT FOUND\n\n");
+
+		// handle HTTP traffic, except SSE
+		// null return wants caller to handle other responses
+		static byte[] IsHttp(string msg, StreamReader sr)
+		{
+			byte[] which = null;
+
+			if (null != msg)
+			{
+				string[] actionLine = msg?.Split(new char[] { ' ' }, 3);
+				if (null != actionLine && "POST" == actionLine[0] || "GET" == actionLine[0])
+				{
+					which = ( "/sse" == actionLine[1]) ? ok
+							: "/SSE" == actionLine[1] ? ok
+							: "/" == actionLine[1] ? Encoding.UTF8.GetBytes(Table())
+							: not;
+					for (string line = sr.ReadLine(); null != line && 0 < line.Length; line = sr.ReadLine())
+/*						if (not != which)
+							OKSHmenu.Info("IsHttp: " + line)
+ */
+						;
+				}
+				if (not == which)
+					OKSHmenu.Info("IsHttp:\tHTTP/1.1 404 NOT FOUND\n");
+			}
+			return which;
+		}
+
+		static byte[] Welcome(string id, int count)
+		{
+			return Encoding.UTF8.GetBytes($"Welcome, {id}!  Connected clients: {count}\n");
+		}
+
+		// Served page is passive; only SSE from JavaScript is supported.
+		// Any other request gets table<>
+		static async Task ClientTask(TcpClient client, string clientId)
+		{
+			try
+			{
+				using (client)
+				using (NetworkStream stream = client.GetStream())
+				using (StreamReader sr = new StreamReader(stream))
+				{
+					byte[] response;
+					bool connected = false;
+
+					string msg = await sr.ReadLineAsync();
+
+					OKSHmenu.Info($"ClientTask: {clientId} first: {msg}");
+					if (null == msg )
+						stream.Close();
+					else {									// Test for HTTP
+						bool ht = false;
+
+						response = IsHttp(msg, sr);
+						if (null == response)
+							response = Welcome(clientId, clients.Count);
+						else ht = true;
+						
+
+						clients[clientId] = new SsClient() { Tc = client, Ht = ht };
+						
+						await stream.WriteAsync(response, 0, response.Length);
+
+						OKSHmenu.Info($"ClientTask:\n---- {clientId} StreamReader connected ---");
+						connected = true;
+						if (ht && null == keepalive)
+							keepalive = Task.Run(() => SSEtimer());
+					}
+
+					while (connected)
+					{
+						string request = await sr.ReadLineAsync();
+
+						if (null == request)							// browser disconnect?
+							break;
+
+						OKSHmenu.Info($"ClientTask:  {clientId}:  {request}");
+						response = IsHttp(request, sr);
+						if(null != response)							// HTTP client request?
+						{
+							await stream.WriteAsync(response, 0, response.Length);
+							continue;
+						}
+
+						// Send non-HTTP request to all clients (except sender)
+						string tcpMsg = $"{clientId}: {request}\n";
+						byte[] tcpBytes = Encoding.UTF8.GetBytes(tcpMsg);		// non-HTTP
+						byte[] reqB = Encoding.UTF8.GetBytes($"{request}\n");	// SSE
+
+						foreach (var c in clients)
+						{
+							if (c.Key == clientId || !c.Value.Tc.Connected)
+								continue;
+
+							byte[] togo = c.Value.Ht ? reqB : tcpBytes;
+							try
+							{
+								NetworkStream clientStream = c.Value.Tc.GetStream();
+								await clientStream.WriteAsync(togo, 0, togo.Length);
+							}
+							catch
+							{
+								// Remove disconnected client
+								clients.TryRemove(c.Key, out _);
+							}
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				OKSHmenu.Info($"ClientTask:  Error handling client {clientId}: {ex}");
+			}
+			finally
+			{
+				clients.TryRemove(clientId, out _);
+				OKSHmenu.Info($"ClientTask:  {clientId} disconnected;  count = {clients.Count}");
+			}
+		}
+
+//		specific to OpenKneeboard-SimHub-plugin-menu
+		public static string[] urls = { $"http://localhost:{port}/", @"http://127.0.0.1:{port}/", "real IP" };
 		public static int pageViews = 0;
 		public static int requestCount = 0;
+		public static string end = "</body></html>";
 		public static string head = 
 			"<!DOCTYPE>" +
 			"<html>" +
@@ -37,122 +155,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			"\n</form>" +
 			"\n<p> &emsp; Page Views: {0};&nbsp; Request Count: {1}</p>\n";
 
-		public static string end =
-			  "</body></html>";
-
-		// Using HTTPListener to build a HTTP Server in C#
-		// https://thoughtbot.com/blog/using-httplistener-to-build-a-http-server-in-csharp
-		// Handling multiple requests with C# HttpListener
-		// https://www.iditect.com/faq/csharp/handling-multiple-requests-with-c-httplistener.html
-		// https://stackoverflow.com/questions/9034721/handling-multiple-requests-with-c-sharp-httplistener
-		// multi-threaded c# http server - THREAD-SAFE?
-		// https://stackoverflow.com/questions/6371741/production-ready-multi-threaded-c-sharp-http-server
-
-		static void SSE()
+		static string Table ()
 		{
-			Task keepalive = KeepAliveAsync();
-		}
-
-		public static async Task HandleIncomingConnections()
-		{
-
-			// While a user hasn't visited the `shutdown` url, keep on handling requests
-			for (bool runServer = true; runServer;)
-			{
-				// Will wait here until we hear from a connection
-				HttpListenerContext ctx = await OKSHlistener.GetContextAsync();
-
-				// Peel out the requests and response objects
-				HttpListenerRequest req = ctx.Request;
-				HttpListenerResponse resp = ctx.Response;
-				string get = req.Url.AbsolutePath;
-
-				requestCount++;
-				if (true)
-				{
-					// Print out some info about the request
-					OKSHmenu.Info($"HandleIncomingConnections(): Request #: {requestCount} "
-						+ req.Url.ToString()
-/*						+ "\n\t" + req.HttpMethod + "\n\t"
-						+ req.UserHostName + "\n\t"
-						+ req.UserAgent
- */
-					);
-				}
-
-				// If `shutdown` url requested w/ POST, then shutdown the server after serving the page
-				if ((req.HttpMethod == "POST") && (get == "/shutdown"))
-				{
-					OKSHmenu.Info("HandleIncomingConnections(): " + (get = "Shutdown requested"));
-					runServer = false;
-				}
-				else if (get.StartsWith("/SSE"))
-				{
-					if (null != SSEcontext)
-						OKSHmenu.Info("HandleIncomingConnections(): " + (get = "non-null SSEcontext"));
-					else
-					{
-						SSEcontext = ctx;
-						SSE();	// SSE and other requests work
-						// await KeepAliveAsync();	// blocks all but SSE
-						continue;   // Server-Sent Events:  do not close this context
-					}
-				}
-				else
-				{
-					// don't increment page views counter for `favicon.ico` requests
-					if (req.Url.AbsolutePath != "/favicon.ico")
-						pageViews += 1;
-					string disableSubmit = !runServer ? " disabled" : "";
-					get = String.Format(pageData, pageViews, requestCount, disableSubmit);
-				}
-
-				// Write the response info
-				byte[] data = Encoding.UTF8.GetBytes(head + get + HTMLtable(OKSHmenu.simValues) + end);
-				resp.ContentType = "text/html";
-				resp.ContentEncoding = Encoding.UTF8;
-				resp.ContentLength64 = data.LongLength;
-
-				// Write out to the response stream (asynchronously), then close it
-				await resp.OutputStream.WriteAsync(data, 0, data.Length);
-				resp.Close();
-			}
-		}
-
-		static JavaScriptSerializer js;
-		public static string localIP;
-		// called in OKSHmenu.Init()
-		public static void Serve()
-		{
-			js = new JavaScriptSerializer();	// reuse for each SSE
-			SSEcontext = null;					// only one HttpListener, but many contexts
-			SSEonce = true;						// warning once is enough
-
-			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
-			{
-				socket.Connect("8.8.8.8", 65530);
-				IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-				localIP = endPoint.Address.ToString();
-			}
-			urls[2] = "http://"+localIP+":8765/";	// needs elevated privileges
-
-			// Create a Http server and start listening for incoming connections
-			OKSHlistener = new HttpListener();
-			for (int i= 0; i < 2; i++)
-				OKSHlistener.Prefixes.Add(urls[i]);
-			try
-			{
-				OKSHlistener.Start();
-			}
-			catch (HttpListenerException hlex)
-			{
-				OKSHmenu.Info("Serve(): HttpListenerException transaction " + hlex);
-				return;
-			}
-			OKSHmenu.Info($"Serve(): Listening for connections on {urls[0]} and {urls[1]}");
-			// Handle requests
-			Task listenTask = HandleIncomingConnections();
-			// Close listener in OKSHmenu.End().
+            string data = head + HTMLtable(OKSHmenu.simValues) + end;
+			string sw =
+			"HTTP/1.1 200 OK\n"
+			+ "Content-Type:text/html; charset=UTF-8\n"
+			+ "Server: TcpMultiClient\n"
+			// response payload
+			+ $"Content-Length: {data.Length}\n\n"
+			+ data;
+			return sw;
 		}
 	}		// class
 }			// namespace
