@@ -10,7 +10,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		// adapted from https://github.com/blekenbleu/TcpMultiClient
 		static readonly byte[] ok = Encoding.UTF8.GetBytes(
-			"HTTP/1.1 200 OK\nContent-Type: text/event-stream; charset=UTF-8\n\n\n");
+			"HTTP/1.1 200 OK\nContent-Type: text/event-stream; charset=UTF-8\n\n\n"
+			+ "event: scroll\ndata:{\"row\": \"1\"}\n\n"
+		);
 		static readonly byte[] not = Encoding.UTF8.GetBytes("HTTP/1.1 404 NOT FOUND\n\n");
 
 		// handle HTTP traffic, except SSE

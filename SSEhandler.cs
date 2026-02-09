@@ -61,6 +61,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				await Task.Delay(15000);
 			}
 			OKSHmenu.Info("SSEtimer(): exiting");
+			keepalive = null;
 		}
 	}		// class
 }			// namespace
