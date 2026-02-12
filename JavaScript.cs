@@ -48,7 +48,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n  slider.value = obj.val;"
 +"\n};"
 
-+CustomEvents	// CustomEvent.cs
++CustomEvents	// SSEvents.cs
 
 +"\nsource.onopen = () => {"
 +  "blurt('Connection opened');"

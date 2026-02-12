@@ -42,8 +42,8 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - send Server-Sent Events for `<table>` cell property values and e.g. scroll actions - **working**
 	- *replaced* TCPserver.cs content with [TcpMultiClient](https://github.com/blekenbleu/TcpMultiClient) `Program.cs` Main() + MultiClientTcpServer()
 	- *replaced* HTTPserver.cs content with IsHttp() + ClientTask()
-- *to do*: set HTML scroll and slider with car change; do not wait for WPF menu open
-- *to do*: MIDI CC support for `<table>` changes
+- set HTML scroll and (*to do*) slider with car change; do not wait for WPF menu open
+- *to do*: [MIDI input support](https://github.com/blekenbleu/MIDIio/blob/UI/docs/map.md) for `<table>` changes
 
 #### [Web Server using C# `TcpListener`](https://github.com/blekenbleu/HttpServer), *NOT* [`HttpListener`](https://aksakalli.github.io/2014/02/24/simple-http-server-with-csparp.html)
 - `HttpListener` on Windows 11 Home - worked for me only for localhost (`127.0.0.1`)
