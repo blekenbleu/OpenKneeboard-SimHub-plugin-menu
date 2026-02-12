@@ -9,11 +9,14 @@
 	<Grid Margin="50,10,0,0" HorizontalAlignment="Left">
 		<StackPanel VerticalAlignment="Top">
 		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="SHlabel" FontSize="13" FontWeight="Bold" Height="20" Width="240">
+			<TextBlock x:Name="SHlabel" FontSize="13" FontWeight="Bold" Height="20" Width="150">
 				<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
-				NavigateUri="http://localhost:8765/">OpenKneeboard-SimHub-plugin-menu</Hyperlink>
+				NavigateUri="http://localhost:8765/">web browser link</Hyperlink>
 			</TextBlock>
-			<TextBlock x:Name="Changed" Text="changed" Height="20" Width="48" Margin="5,0,0,0"
+			<Button x:Name="bm" Click="MidiLearn" Height="20" Background="Gray" Width="65" Margin="5,0,0,0">
+            	<TextBlock Text="MIDI learn"/>
+			</Button>
+			<TextBlock x:Name="Changed" Text=" changed" Height="20" Width="55" Margin="5,0,0,0"
 				Visibility="{Binding ChangedVisibility}" Background="Blue"/>
 			<TextBlock Background="White" TextAlignment="Center" Height="20" Width="30" Margin="5,0,0,0">
 				<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"

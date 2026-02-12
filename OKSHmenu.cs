@@ -73,7 +73,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// <summary>
 		/// Short plugin title to show in left menu. Return null to use the PluginName attribute.
 		/// </summary>
-		public string LeftMenuTitle => "OKSHmenu " + Control.version;
+		public string LeftMenuTitle => "WebMenu " + Control.version;
 
 		/// <summary>
 		/// Called one time per game data update, contains all normalized game data,

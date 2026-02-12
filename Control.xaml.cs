@@ -17,7 +17,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public OKSHmenu OK { get; }
 		public ViewModel Model;							// reference XAML controls
 		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.60";
+		internal static string version = "1.70";
 
 		public Control() {								// called before simValues are initialized
 			Model = new ViewModel(this);
@@ -60,6 +60,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		private void DgSelect(object sender, RoutedEventArgs e)
 		{
 			Selected();
+		}
+
+		internal void MidiLearn(object sender, RoutedEventArgs e)
+		{
 		}
 
 		// handle slider changes
