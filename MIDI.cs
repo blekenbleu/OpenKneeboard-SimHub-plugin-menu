@@ -11,13 +11,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal MidiIn m;
 	}
 
+	// https://github.com/naudio/NAudio/blob/master/Docs/MidiInAndOut.md
+	// https://deepwiki.com/naudio/NAudio/7-midi-support#midi-io-operations
 	partial class MIDI
 	{
 		// https://truelogic.org/wordpress/2021/01/28/using-midi-with-naudio/
         static List<Device> lMidiIn = new List<Device> { };
 
-		delegate void MyRcv(object sender, MidiInMessageEventArgs e); 
-        static readonly System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[] RcvArray
+		// an array of MidiIn message event handlers
+		// to distinguish which device sourced each message
+		// https://github.com/naudio/NAudio/NAudio.Midi/Midi/MidiInMessageEventArgs.cs
+		static readonly System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[] RcvArray
 			= new System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
 
 
@@ -26,7 +30,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			InputMidiDevices();
 		}
 
-// no success shutting down and restarting between games
+// shutting down and restarting between games
 // check out https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L67
 		internal static void Stop(int i)
 		{
@@ -34,12 +38,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			lMidiIn[i].m.Dispose();
 			lMidiIn[i].m.MessageReceived -= RcvArray[i];
 			lMidiIn[i].m.ErrorReceived -= MidiIn_ErrorReceived;
-        }
-        internal static void Stop()
+			lMidiIn.RemoveAt(i);
+		}
+
+		internal static void Stop()
 		{
-//			for (int j = 0; j < lMidiIn.Count; j++)
-//				Stop(j);
-//          lMidiIn.Clear();
+			for (int j = lMidiIn.Count -1 ; j >= 0; j--)
+				Stop(j);
 		}
 
 		static void HandleMidiMessages(int deviceNumber, string ProductName)
@@ -53,13 +58,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			mMidiIn.MessageReceived += RcvArray[j];
 			mMidiIn.ErrorReceived += MidiIn_ErrorReceived;
 			mMidiIn.Start();
-            lMidiIn.Add(new Device { id = ProductName, m = mMidiIn });
+			lMidiIn.Add(new Device { id = ProductName, m = mMidiIn });
 		}
 
 		static void InputMidiDevices()
 		{
 			string s = $"InputMidiDevices():  NAudio MIDI In device count {MidiIn.NumberOfDevices}";
-
+/*
 			if (0 < lMidiIn.Count)
 				for (int i = 0; i < MidiIn.NumberOfDevices; i++)
 				{
@@ -69,6 +74,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						s += "\thandled";
 				}
 			else
+ */
 			for (int i = 0; i < MidiIn.NumberOfDevices; i++)
 			{
 				string input = MidiIn.DeviceInfo(i).ProductName;
@@ -80,10 +86,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					s += "\thandled";
 					HandleMidiMessages(i, input);
 				}
-            }
+			}
 			OKSHmenu.Info(s);
 		}
 
+		// e.MidiEvent = FromRawMessage(e.RawMessage);
+		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
+		// Handle both ControlChange (0xB0) and PatchChange (0xC0)
 		static void MidiIn0(object sender, MidiInMessageEventArgs e)
 		{
 			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
@@ -104,5 +113,5 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			OKSHmenu.Info(String.Format("MidiIn_ErrorReceived():  Message 0x{0:X8} Event {1}",
 				e.RawMessage, e.MidiEvent));
 		}
-    }
+	}
 }
