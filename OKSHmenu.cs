@@ -123,6 +123,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
+			MIDI.Stop();
 			HttpServer.Stop();
             simValues = new List<Values>();
 
@@ -365,6 +366,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			);
 
 			Info($"Init():  simValues.Count = {simValues.Count}");
+			MIDI.Start();
 		}	// Init()
 	}		// class OKSHmenu
 }
