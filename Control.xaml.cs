@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.Eventing.Reader;
+using System.Windows;
 using System.Windows.Controls;
 
 /* XAML DataContext:  Binding source
@@ -18,11 +19,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public ViewModel Model;							// reference XAML controls
 		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
 		internal static string version = "1.70";
+		bool learn;
 
 		public Control() {								// called before simValues are initialized
 			Model = new ViewModel(this);
 			InitializeComponent();
 			this.DataContext = Model;					// StaticControl events change Control.xaml binds
+			learn = false;
 		}
 
 		public Control(OKSHmenu plugin) : this()
@@ -62,49 +65,52 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Selected();
 		}
 
-		internal void MidiLearn(object sender, RoutedEventArgs e)
+		// handle all button events in one method
+		internal void ButHandle(object sender, RoutedEventArgs e)
 		{
+			string butName = (e.OriginalSource as FrameworkElement).Name;
+
+			if ("bm" == butName)
+				learn = !learn;
+			else if (learn)			// alternative event handling
+				Learn(butName);
+			else switch(butName)
+			{
+				case "b0":
+					OK.Select(false);
+					break;
+				case "b1":
+					OK.Select(true);
+					break;
+				case "b2":
+					OK.Ment(1);
+					break;
+				case "b3":
+					OK.Ment(-1);
+					break;
+				case "b4":
+					OK.Swap();
+					break;
+				case "b5":
+					OK.SetDefault();
+					break;
+				case "SB":
+					OK.SelectSlider();
+					break;
+				default:
+					OKSHmenu.Msg = "ButHandle(): unconfigured button '{butName)'";
+					OOpsMB();
+					break;
+			}
 		}
+
+		void Learn(string nothing)
+		{ }
 
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
 			OK.FromSlider(0.5 + SL.Value);
-		}
-
-		private void Slider_Click(object sender, RoutedEventArgs e)	// handle button clicks
-		{
-			OK.SelectSlider();
-		}
-
-		private void Prior_Click(object sender, RoutedEventArgs e)	// handle button clicks
-		{
-			OK.Select(false);
-		}
-
-		private void Next_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Select(true);
-		}
-
-		private void Inc_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Ment(1);
-		}
-
-		private void Dec_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Ment(-1);
-		}
-
-		private void Swap_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Swap();
-		}
-
-		private void Def_Click(object sender, RoutedEventArgs e)
-		{
-			OK.SetDefault();
 		}
 	}
 }

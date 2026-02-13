@@ -13,7 +13,7 @@
 				<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
 				NavigateUri="http://localhost:8765/">web browser link</Hyperlink>
 			</TextBlock>
-			<Button x:Name="bm" Click="MidiLearn" Height="20" Background="Gray" Width="65" Margin="5,0,0,0">
+                <Button x:Name="bm" Click="ButHandle" Height="20" Background="Gray" Width="65" Margin="5,0,0,0">
             	<TextBlock Text="MIDI learn"/>
 			</Button>
 			<TextBlock x:Name="Changed" Text=" changed" Height="20" Width="55" Margin="5,0,0,0"
@@ -27,18 +27,18 @@
 		<TextBlock x:Name="Status" Text="{Binding StatusText}" Height="74" Width="350"
 			Background="DarkSlateGray" 	TextWrapping="Wrap" HorizontalAlignment="Left"/>
 		<StackPanel Orientation="Horizontal">
-		<Button x:Name="b0" Content=" Up " Height="40" Click="Prior_Click"
+		<Button x:Name="b0" Content=" Up " Height="40" Click="ButHandle"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
-		<Button x:Name="b1" Content="Down" Height="40" Click="Next_Click"
+		<Button x:Name="b1" Content="Down" Height="40" Click="ButHandle"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
-		<Button x:Name="b2" Content=" + " Height="40" Click="Inc_Click"
+		<Button x:Name="b2" Content=" + " Height="40" Click="ButHandle"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
-		<Button x:Name="b3" Content=" - " Height="40" Click="Dec_Click"
+		<Button x:Name="b3" Content=" - " Height="40" Click="ButHandle"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
 		<Button x:Name="b4" Content="Swap All&#xA;w/Previous" Height="40"
-				Click="Swap_Click" Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
+				Click="ButHandle" Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
 		<Button x:Name="b5" Content="Current&#xA;-&gt;Default" Height="40"
-				Click="Def_Click" Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
+				Click="ButHandle" Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
 		</StackPanel>
 
 		<StackPanel Orientation="Horizontal">
@@ -46,7 +46,7 @@
 				Name="SL" Value="{Binding SliderValue}" Width="250" Height="20"
 				PreviewMouseUp="Slider_DragCompleted" Visibility="{Binding SliderVisibility}"/>
 			<Button x:Name="SB" Content="{Binding SliderProperty}" Width="140" Height="22"
-				Click="Slider_Click" Visibility="{Binding SliderVisibility}" Background="Green"/>
+				Click="ButHandle" Visibility="{Binding SliderVisibility}" Background="Green"/>
 		</StackPanel>
 
 		<!-- Control.xaml.cs Control() binds dg to OKSHmenu.cs List<Values> simValues -->
