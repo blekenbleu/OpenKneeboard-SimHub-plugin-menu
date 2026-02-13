@@ -23,10 +23,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://github.com/naudio/NAudio/NAudio.Midi/Midi/MidiInMessageEventArgs.cs
 		static readonly System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[] RcvArray
 			= new System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
+		internal static ViewModel Model;
 
 
-		internal static void Start()
+		internal static void Start(ViewModel m)
 		{
+			Model = m;
 			InputMidiDevices();
 		}
 
@@ -88,6 +90,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 			}
 			OKSHmenu.Info(s);
+			Model.StatusText = s;
 		}
 
 		// e.MidiEvent = FromRawMessage(e.RawMessage);

@@ -53,7 +53,7 @@ HTML table cell updates should have lower processing overhead than graphical ove
 - handle all button events in one method by [`(e.OriginalSource as FrameworkElement).Name`](https://stackoverflow.com/a/26938950)
 - [NAudio `MidiIn.NumberOfDevices`, `MidiIn(deviceNumber)`](https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L24)
 	- [`ConcurrentDictionary<>`](https://www.dotnetperls.com/concurrentdictionary)  
-	- [System.Threading.Channels](https://github.com/blekenbleu/MIDIio/blob/UI/docs/map.md#queue-multiple-midi-device-inputs-by-systemthreadingchannels)
+	- [System.Threading.Channels FIFO queue](https://github.com/blekenbleu/MIDIio/blob/UI/docs/map.md#queue-multiple-midi-device-inputs-by-systemthreadingchannels)
 - [`TcpListener` Web Server](TcpListener.md)
 
 

@@ -66,12 +66,26 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// handle all button events in one method
+		static string sb4;
 		internal void ButHandle(object sender, RoutedEventArgs e)
 		{
 			string butName = (e.OriginalSource as FrameworkElement).Name;
 
 			if ("bm" == butName)
+			{
+
 				learn = !learn;
+				if (learn)
+				{
+					sb4 = Model.StatusText;
+ 					if (null == MIDI.Model)
+						MIDI.Start(Model);
+					Model.StatusText += "\n\twaiting for MIDI input";
+				} else if (null != b4) {
+					Model.StatusText = sb4;
+					sb4 = null;
+				}
+			}
 			else if (learn)			// alternative event handling
 				Learn(butName);
 			else switch(butName)
@@ -105,7 +119,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		void Learn(string nothing)
-		{ }
+		{
+		}
 
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)

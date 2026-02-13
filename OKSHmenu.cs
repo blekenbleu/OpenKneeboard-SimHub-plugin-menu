@@ -366,7 +366,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			);
 
 			Info($"Init():  simValues.Count = {simValues.Count}");
-			MIDI.Start();
 		}	// Init()
 	}		// class OKSHmenu
 }

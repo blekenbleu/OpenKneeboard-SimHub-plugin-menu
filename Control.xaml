@@ -24,9 +24,12 @@
 			</TextBlock>
 		</StackPanel>
 
-		<TextBlock x:Name="Status" Text="{Binding StatusText}" Height="74" Width="350"
-			Background="DarkSlateGray" 	TextWrapping="Wrap" HorizontalAlignment="Left"/>
-		<StackPanel Orientation="Horizontal">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="74" Width="Auto">
+                <TextBlock x:Name="Status" Text="{Binding StatusText}" 
+				
+				Background="DarkSlateGray" 	TextWrapping="Wrap"/>
+            </ScrollViewer>
+            <StackPanel Orientation="Horizontal">
 		<Button x:Name="b0" Content=" Up " Height="40" Click="ButHandle"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
 		<Button x:Name="b1" Content="Down" Height="40" Click="ButHandle"
