@@ -93,16 +93,28 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Model.StatusText = s;
 		}
 
-		// e.MidiEvent = FromRawMessage(e.RawMessage);
-		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
-		// Handle both ControlChange (0xB0) and PatchChange (0xC0)
-		static void MidiIn0(object sender, MidiInMessageEventArgs e)
+        // e.MidiEvent = FromRawMessage(e.RawMessage);
+        // https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
+        // Handle both ControlChange (0xB0) and PatchChange (0xC0)
+        // https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
+        static void MidiIn0(object sender, MidiInMessageEventArgs e)
 		{
 			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			// NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
+			var c = e.MidiEvent.Channel;            // 0x0F & e.RawMessage
+			var d1 = (e.RawMessage >> 8) & 0xff;
+			var d2 = (e.RawMessage >> 16) & 0xff;
+            switch ((byte)e.MidiEvent.CommandCode)  // 0x80 <= (0xF0 & e.RawMessage) < 0xF0
+            {
+				case 0x80:
+				case 0x90:
+					break;	
+            }
 		}
 
 		static void MidiIn1(object sender, MidiInMessageEventArgs e)
 		{
+			// Enque(1, e.RawMessage);
 			OKSHmenu.Info(lMidiIn[1].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
 		}
 

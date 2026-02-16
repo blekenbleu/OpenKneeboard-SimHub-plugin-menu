@@ -47,15 +47,15 @@ HTML table cell updates should have lower processing overhead than graphical ove
 	- *replaced* TCPserver.cs content with [TcpMultiClient](https://github.com/blekenbleu/TcpMultiClient) `Program.cs` Main() + MultiClientTcpServer()
 	- *replaced* HTTPserver.cs content with IsHttp() + ClientTask()
 - set HTML scroll and (*to do*) slider with car change; do not wait for WPF menu open
-- *to do*: [MIDI input support](https://github.com/blekenbleu/MIDIio/blob/UI/docs/map.md) for `<table>` changes
+- *to do*: [MIDI input support](Channel.md) for `<table>` changes
 
 ### new-to-me tricks  
 - handle all button events in one method by [`(e.OriginalSource as FrameworkElement).Name`](https://stackoverflow.com/a/26938950)
 - [NAudio `MidiIn.NumberOfDevices`, `MidiIn(deviceNumber)`](https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L24)
 	- [`ConcurrentDictionary<>`](https://www.dotnetperls.com/concurrentdictionary)  
-	- [System.Threading.Channels FIFO queue](https://github.com/blekenbleu/MIDIio/blob/UI/docs/map.md#queue-multiple-midi-device-inputs-by-systemthreadingchannels)
+	- [System.Threading.Channels FIFO queue](Channel.md)  
 - [`TcpListener` Web Server](TcpListener.md)
-
+- [scrolling TextBlock](https://stackoverflow.com/a/40626596)
 
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  
