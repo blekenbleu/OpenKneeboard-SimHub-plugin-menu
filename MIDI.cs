@@ -115,5 +115,31 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			OKSHmenu.Info(String.Format("MidiIn_ErrorReceived():  Message 0x{0:X8} Event {1}",
 				e.RawMessage, e.MidiEvent));
 		}
+
+		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
+		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
+		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
+		internal static void Sort(uint RawMessage)
+		{
+			// NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
+			var c = 0x0F & RawMessage;			// 0x0F & e.RawMessage
+			var d1 = (RawMessage >> 8) & 0xff;
+			var d2 = (RawMessage >> 16) & 0xff;
+			var dev = (RawMessage >> 24) & 0x0f;
+			switch (0xF0 & RawMessage)  // 0x80 <= (0xF0 & e.RawMessage) < 0xF0
+			{
+				case 0x80:
+				case 0x90:
+				case 0xA0:
+					OKSHmenu.Info($"Process({RawMessage:X}) ignored");
+					break;
+				case 0xF0:
+					OKSHmenu.Info($"Process({RawMessage:X}) ignored");
+					break;
+				default:
+					OKSHmenu.Info($"Process({RawMessage:X}) to do");
+					break;
+			}
+		}
 	}
 }
