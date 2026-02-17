@@ -96,18 +96,20 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
         // e.MidiEvent = FromRawMessage(e.RawMessage);
         static void MidiIn0(object sender, MidiInMessageEventArgs e)
 		{
-			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			Enque(0, (uint)e.RawMessage);
+//			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
 		}
 
 		static void MidiIn1(object sender, MidiInMessageEventArgs e)
 		{
-			// Enque(1, e.RawMessage);
-			OKSHmenu.Info(lMidiIn[1].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			Enque(1, (uint)e.RawMessage);
+//			OKSHmenu.Info(lMidiIn[1].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
 		}
 
 		static void MidiIn2(object sender, MidiInMessageEventArgs e)
 		{
-			OKSHmenu.Info(lMidiIn[2].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			Enque(2, (uint)e.RawMessage);
+//			OKSHmenu.Info(lMidiIn[2].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
 		}
 
 		static void MidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)
@@ -131,10 +133,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				case 0x80:
 				case 0x90:
 				case 0xA0:
-					OKSHmenu.Info($"Process({RawMessage:X}) ignored");
+					OKSHmenu.Info($"Sort.({RawMessage:X}) ignored");
 					break;
 				case 0xF0:
-					OKSHmenu.Info($"Process({RawMessage:X}) ignored");
+					OKSHmenu.Info($"Sort.({RawMessage:X}) ignored");
 					break;
 				default:
 					OKSHmenu.Info($"Process({RawMessage:X}) to do");

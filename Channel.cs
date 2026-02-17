@@ -2,15 +2,12 @@
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-// https://www.csharptutorial.net/csharp-tutorial/csharp-record/
-
-
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	internal partial class MIDI
 	{
         // Multiple producers, single consumer 
-        readonly Channel<uint> _channel = Channel.CreateBounded(
+        readonly static Channel<uint> _channel = Channel.CreateBounded(
 			new BoundedChannelOptions(100)	// Bounded to 100. If full, drop oldest.
 			{
 				SingleReader = true,	// Optimization hint
@@ -23,16 +20,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		);
 
 		internal ChannelReader<uint> Reader => _channel.Reader;
-		internal ChannelWriter<uint> Writer => _channel.Writer;
+		internal static ChannelWriter<uint> Writer => _channel.Writer;
 
 		internal async Task ReadAsync()
 		{
 			while (await Reader.WaitToReadAsync())
 				while (Reader.TryRead(out uint item))
 					Sort(item);
+
+			OKSHmenu.Info($"ReadAsync() ended");
 		}
 		
-		internal void Enqueue(uint inDevice, uint payload)
+		internal static void Enque(uint inDevice, uint payload)
 		// https://learn.microsoft.com/en-us/dotnet/core/extensions/channels#producer-patterns
 		{
 			payload |= (inDevice << 24);
