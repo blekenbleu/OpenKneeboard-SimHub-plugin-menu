@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	internal class MidiChannelEvent
-	{ internal uint Payload; } // pass from Naudio MIDI device input events
-
 	internal partial class MIDI
 	{
-		// Multiple producers, single consumer 
-		Channel<MidiChannelEvent> _channel = Channel.CreateBounded(
+        // Multiple producers, single consumer 
+        readonly Channel<uint> _channel = Channel.CreateBounded(
 			new BoundedChannelOptions(100)	// Bounded to 100. If full, drop oldest.
 			{
 				SingleReader = true,	// Optimization hint
@@ -21,18 +18,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 				FullMode = BoundedChannelFullMode.DropOldest
 			},
-			(MidiChannelEvent dropped) =>
-					   OKSHmenu.Info($"MidiChannelEvent Dropped: {dropped}")
+			(uint dropped) =>
+					   OKSHmenu.Info($"MIDI.Channel dropped: {dropped}")
 		);
 
-		internal ChannelReader<MidiChannelEvent> Reader => _channel.Reader;
-		internal ChannelWriter<MidiChannelEvent> Writer => _channel.Writer;
+		internal ChannelReader<uint> Reader => _channel.Reader;
+		internal ChannelWriter<uint> Writer => _channel.Writer;
 
 		internal async Task ReadAsync()
 		{
 			while (await Reader.WaitToReadAsync())
-				while (Reader.TryRead(out MidiChannelEvent item))
-					MIDI.Process(item);
+				while (Reader.TryRead(out uint item))
+					Process(item);
 		}
 		
 		internal void Enqueue(uint inDevice, uint payload)
@@ -40,7 +37,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			payload |= (inDevice << 24);
 			// Fire-and-forget
-			if (Writer.TryWrite(new MidiChannelEvent() { Payload = payload }))
+			if (Writer.TryWrite(payload))
 				return;
 			OKSHmenu.Info(lMidiIn[3].id + ".Enqueue(" + payload.ToString() + ") failed");
 		}
@@ -48,11 +45,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
 		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
-		internal static void Process(MidiChannelEvent item)
+		internal static void Process(uint RawMessage)
 		{
 			// NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
-			uint RawMessage = item.Payload;
-
 			var c = 0x0F & RawMessage;			// 0x0F & e.RawMessage
 			var d1 = (RawMessage >> 8) & 0xff;
 			var d2 = (RawMessage >> 16) & 0xff;
