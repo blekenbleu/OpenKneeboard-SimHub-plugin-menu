@@ -19,10 +19,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					   OKSHmenu.Info($"MIDI.Channel dropped: {dropped:X}")
 		);
 
-		internal ChannelReader<uint> Reader => _channel.Reader;
+		internal static ChannelReader<uint> Reader => _channel.Reader;
 		internal static ChannelWriter<uint> Writer => _channel.Writer;
 
-		internal async Task ReadAsync()
+		internal static async Task ReadAsync()
 		{
 			while (await Reader.WaitToReadAsync())
 				while (Reader.TryRead(out uint item))
@@ -30,6 +30,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			OKSHmenu.Info($"ReadAsync() ended");
 		}
+
+		internal static void ReadMidi()
+		{ Task.Run(() => ReadAsync()); }
 		
 		internal static void Enque(uint inDevice, uint payload)
 		// https://learn.microsoft.com/en-us/dotnet/core/extensions/channels#producer-patterns

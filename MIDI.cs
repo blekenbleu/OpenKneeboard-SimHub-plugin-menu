@@ -30,6 +30,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			Model = m;
 			InputMidiDevices();
+			ReadMidi();
 		}
 
 // shutting down and restarting between games
@@ -133,13 +134,13 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				case 0x80:
 				case 0x90:
 				case 0xA0:
-					OKSHmenu.Info($"Sort.({RawMessage:X}) ignored");
+					OKSHmenu.Info($"Sort.({RawMessage:X8}) ignored");
 					break;
 				case 0xF0:
-					OKSHmenu.Info($"Sort.({RawMessage:X}) ignored");
+					OKSHmenu.Info($"Sort.({RawMessage:X8}) ignored");
 					break;
 				default:
-					OKSHmenu.Info($"Process({RawMessage:X}) to do");
+					OKSHmenu.Info($"Process({RawMessage:X8}) to do");
 					break;
 			}
 		}
