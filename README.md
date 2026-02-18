@@ -14,13 +14,13 @@ SimHub dash overlays lack VR support, but [OpenKneeboard can display SimHub
 overlays](https://www.madmikeplays.com/free-downloads#block-yui_3_17_2_1_1742822224076_6340) via HTTP.
 
 ### wanted
-An always visible dedicated menu display  
+A dedicated menu display always visible in VR  
 for tweaking e.g. harness tensioner or haptics settings (properties).  
 - instead of invoking a computationally expensive overlay GUI,
-	- manipulate properties in an HTML table
-	- navigate and change table values by e.g. rotary encoders, sliders, buttons
+	- update HTML table properties and values
+	- table navigation and changes by e.g. rotary encoders, sliders, buttons
 
-HTML table cell updates should have lower processing overhead than graphical overlay..  
+HTML table updates should have lower processing overhead than graphical overlay..  
 
 ### resources
 - from [JSONio](https://github.com/blekenbleu/JSONio):
@@ -41,8 +41,8 @@ HTML table cell updates should have lower processing overhead than graphical ove
 
 ## plan
 - generate an [HTML `<table>`](HTML.md) from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
-- hand-code [JavaScript](JavaScript.md) for browser to update `<table>` from Server-Sent Events
-- send [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page to client browsers
+- hand-code [JavaScript](JavaScript.md) for `<table>` updates by Server-Sent Events
+- make [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page available to client browsers
 - send Server-Sent Events for `<table>` cell property values and e.g. scroll actions - **working**
 	- *replaced* TCPserver.cs content with [TcpMultiClient](https://github.com/blekenbleu/TcpMultiClient) `Program.cs` Main() + MultiClientTcpServer()
 	- *replaced* HTTPserver.cs content with IsHttp() + ClientTask()
