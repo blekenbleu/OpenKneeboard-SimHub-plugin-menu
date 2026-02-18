@@ -11,7 +11,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	[PluginName("OKSHmenu")]
 	public partial class OKSHmenu : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
-		public DataPluginSettings Settings;
+		public static DataPluginSettings Settings;
 		public string NewCar = "false";
 
 		internal static string Msg = "";

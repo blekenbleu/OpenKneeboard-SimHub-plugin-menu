@@ -50,18 +50,23 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				Stop(j);
 		}
 
-		static void HandleMidiMessages(int deviceNumber, string ProductName)
+		static void InputMidiSetup(int deviceNumber, string ProductName)
 		{
 			int j = lMidiIn.Count;
 
 			if (j > RcvArray.Length)
 				return;
-			OKSHmenu.Info("HandleMidiMessages(): ");
+			OKSHmenu.Info("InputMidiSetup(): ");
 			MidiIn mMidiIn = new MidiIn(deviceNumber);
 			mMidiIn.MessageReceived += RcvArray[j];
 			mMidiIn.ErrorReceived += MidiIn_ErrorReceived;
 			mMidiIn.Start();
 			lMidiIn.Add(new Device { id = ProductName, m = mMidiIn });
+			// deviceNumbers change, depending on available MIDI devices
+			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
+				if (ProductName == OKSHmenu.Settings.midiDevs[i].deviceName)
+                    OKSHmenu.Settings.midiDevs[i].devMessage = (uint)(deviceNumber << 24)
+													| (0x0FFF & OKSHmenu.Settings.midiDevs[i].devMessage);
 		}
 
 		static void InputMidiDevices()
@@ -87,7 +92,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				 || input.StartsWith("USB-Midi")))
 				{
 					s += "\thandled";
-					HandleMidiMessages(i, input);
+					InputMidiSetup(i, input);
 				}
 			}
 			OKSHmenu.Info(s);
@@ -122,13 +127,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
 		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
+
 		internal static void Sort(uint RawMessage)
 		{
-			// NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
-			var c = 0x0F & RawMessage;			// 0x0F & e.RawMessage
+/* NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
+			var channel = 0x0F & RawMessage;			// channel_type is 0xF0 & e.RawMessage
 			var d1 = (RawMessage >> 8) & 0xff;
 			var d2 = (RawMessage >> 16) & 0xff;
 			var dev = (RawMessage >> 24) & 0x0f;
+ */
 			switch (0xF0 & RawMessage)  // 0x80 <= (0xF0 & e.RawMessage) < 0xF0
 			{
 				case 0x80:
@@ -140,7 +147,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					OKSHmenu.Info($"Sort.({RawMessage:X8}) ignored");
 					break;
 				default:
-					OKSHmenu.Info($"Process({RawMessage:X8}) to do");
+					Control.Process(RawMessage);
 					break;
 			}
 		}

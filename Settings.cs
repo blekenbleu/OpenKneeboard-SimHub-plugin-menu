@@ -19,6 +19,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			new Property() {}	// Current per-car, then per-game, then global
 		};
 
+		public List<MidiDev> midiDevs = new List<MidiDev>()
+		{
+			// each current Value stored as string of integer 10x actual value
+			new MidiDev() {}	// Current per-car, then per-game, then global
+		};
+
 		// global default property values
 		public List<Property> gDefaults = new List<Property>() {};
 
