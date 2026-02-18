@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channel.cs" />
+    <Compile Include="Control.midi.cs" />
     <Compile Include="SSEvents.cs" />
     <Compile Include="HTML.cs" />
     <Compile Include="HTTPserver.cs" />
