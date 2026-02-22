@@ -40,11 +40,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				devMessage = recent
 			});
 			if (bName != "SB" && !button)
-				Status.Text = Model.StatusText  + "\nMIDI control >>only<< for slider;  ignored";
+				Model.MidiStatus = "\nMIDI control >>only<< for slider;  ignored";
 			else if (bName == "SB" && button)
-				Status.Text = Model.StatusText + "\nMIDI control >>only<< for button; ignored";
+				Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
 			// To Do:  check for latest or bName already in click
-			else click.Add(latest, bName);
+			else
+			{
+				click.Add(latest, bName);
+				Model.MidiStatus = "";
+			}
 		}
 
 		void Unlearn()				// handle "bm" == butName
@@ -54,9 +58,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
  				if (null == MIDI.Model)
 					MIDI.Start(Model);
-				Status.Text = Model.StatusText + "\n\twaiting for MIDI input";
-			} else
-				Status.Text = Model.StatusText;
+				Model.MidiStatus = "\n\twaiting for MIDI input";
+			} else Model.MidiStatus = "";
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
@@ -76,12 +79,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				case 0x90:
 				case 0xA0:
 				case 0xF0:
-					OKSHmenu.Info($"Process.({MidiMessage:X8}) ignored");
+					Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) ignored";
 					break;
 				default:
 					byte value = (byte)(MidiMessage >> 16);
 
-					OKSHmenu.Info($"Process({MidiMessage:X8}) to do");
+					Model.MidiStatus = $"\nProcess({MidiMessage:X8}) to do";
 					if (recent != (0x0F00FFFF & MidiMessage))
 					{
 						button = 0 == value % 127;
@@ -93,8 +96,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					if (!learn)						// learn waits for xaml event to Learn()
 					{
 						if (click.ContainsKey(recent))
+						{
+							Model.MidiStatus = "";
 							ButHandle(click[recent]);
-						else OKSHmenu.Info($"Process.({MidiMessage:X8}) not learned");
+						}
+						else Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) not learned";
 					}
 					break;
 			}

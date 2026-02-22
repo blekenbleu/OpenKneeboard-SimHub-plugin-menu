@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SimHub.Plugins.DataPlugins.DataCore;
+using System.Windows;
 using System.Windows.Controls;
 
 /* XAML DataContext:  Binding source
@@ -23,7 +24,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Model = new ViewModel(this);
 			InitializeComponent();
 			DataContext = Model;					// StaticControl events change Control.xaml binds
-			learn = false;							// Control.midi.cs
+			learn = false;                          // Control.midi.cs
 		}
 
 		public Control(OKSHmenu plugin) : this()
@@ -77,6 +78,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		internal static void ButHandle(string butName)
 		{
+			Model.MidiStatus = "";
 			switch(butName)
 			{
 				case "b0":
@@ -101,7 +103,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					OK.SelectSlider();
 					break;
 				default:
-					OKSHmenu.Msg = "ButHandle(): unconfigured button '{butName)'";
+					Model.StatusText = "ButHandle(): unconfigured button '{butName)'";
 					OOpsMB();
 					break;
 			}

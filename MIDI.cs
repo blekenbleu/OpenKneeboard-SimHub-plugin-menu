@@ -4,7 +4,7 @@ using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	internal class Device
+	internal class Device	// NAudio MidiIn lacks MIDI In device name
 	{
 		internal string id;
 		internal MidiIn m;
@@ -69,7 +69,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		static void InputMidiDevices()
 		{
-			string s = $"InputMidiDevices():  NAudio MIDI In device count {MidiIn.NumberOfDevices}";
+			string s = $"\nInputMidiDevices():  NAudio MIDI In device count {MidiIn.NumberOfDevices}";
 /*
 			if (0 < lMidiIn.Count)
 				for (int i = 0; i < MidiIn.NumberOfDevices; i++)
@@ -99,7 +99,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 			}
 			OKSHmenu.Info(s);
-			Model.StatusText = s;
+			Model.MidiStatus = s;
 		}
 
 		// e.MidiEvent = FromRawMessage(e.RawMessage);

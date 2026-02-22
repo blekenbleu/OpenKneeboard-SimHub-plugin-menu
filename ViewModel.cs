@@ -32,7 +32,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		readonly PropertyChangedEventArgs Sevent = new PropertyChangedEventArgs("SelectedProperty");
 		readonly PropertyChangedEventArgs SVevent = new PropertyChangedEventArgs("SliderVisibility");
 		readonly PropertyChangedEventArgs SLevent = new PropertyChangedEventArgs("SliderValue");
-		readonly PropertyChangedEventArgs Tevent = new PropertyChangedEventArgs("StatusText");
+		readonly PropertyChangedEventArgs Tevent = new PropertyChangedEventArgs("Text");
 
 		private Visibility _bvis = Visibility.Hidden;	// until carID and game are defined
 		public Visibility ButtonVisibility				// must be public for XAML Binding
@@ -122,6 +122,21 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
+		private string _midi_status = "";
+		public string MidiStatus			// must be public for XAML Binding
+		{
+			get { return _midi_status; }
+
+			set
+			{
+				if (value != _midi_status)
+				{
+					_midi_status = value;
+					Text = StatusText + value;
+				}
+			}
+		}
+
 		private string _slider_Property = "";
 		public string SliderProperty			// must be public for XAML Binding
 		{
@@ -139,6 +154,21 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
+		private string _Text = statusText;
+		public string Text			// must be public for XAML Binding
+		{
+			get { return _Text; }
+
+			set
+			{
+				if (value != _Text)
+				{
+					_Text = value;
+					PropertyChanged?.Invoke(this, Tevent);
+				}
+			}
+		}
+
 		static internal readonly string statusText = "To enable:  launch game or Replay";
 		private string _statusText = statusText;
 		public string StatusText			// must be public for XAML Binding
@@ -150,7 +180,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (value != _statusText)
 				{
 					_statusText = value;
-					PropertyChanged?.Invoke(this, Tevent);
+					Text = value + _midi_status;
 				}
 			}
 		}

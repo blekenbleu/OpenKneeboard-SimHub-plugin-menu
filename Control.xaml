@@ -30,7 +30,7 @@
 		</StackPanel>
 
 		<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="74" Width="Auto">
-			<TextBlock x:Name="Status" Text="{Binding StatusText}" 
+			<TextBlock x:Name="Status" Text="{Binding Text}" 
 				Background="DarkSlateGray" TextWrapping="Wrap"/>
 		</ScrollViewer>
 		<StackPanel Orientation="Horizontal">
