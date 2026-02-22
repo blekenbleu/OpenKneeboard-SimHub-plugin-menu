@@ -1,35 +1,39 @@
 ﻿<UserControl x:Class="blekenbleu.OpenKneeboard_SimHub_plugin_menu.Control"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:blekenbleu.OpenKneeboard_SimHub_plugin_menu"
-		mc:Ignorable="d"
-		Width="480" HorizontalAlignment="Left" VerticalAlignment="Top">
-	<Grid Margin="50,10,0,0" HorizontalAlignment="Left">
-		<StackPanel VerticalAlignment="Top">
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:blekenbleu.OpenKneeboard_SimHub_plugin_menu"
+	mc:Ignorable="d"
+	Width="480" HorizontalAlignment="Left" VerticalAlignment="Top">
+  <Grid Margin="50,10,0,0" HorizontalAlignment="Left">
+	<StackPanel VerticalAlignment="Top">
 		<StackPanel Orientation="Horizontal">
-			<TextBlock x:Name="SHlabel" FontSize="13" FontWeight="Bold" Height="20" Width="150">
+			<TextBlock x:Name="SHlabel" FontSize="13" FontWeight="Bold" Height="20" Width="120">
 				<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
 				NavigateUri="http://localhost:8765/">web browser link</Hyperlink>
 			</TextBlock>
-                <Button x:Name="bm" Click="ButEvent" Height="20" Background="Gray" Width="65" Margin="5,0,0,0">
-            	<TextBlock Text="MIDI learn"/>
+			<Button x:Name="bf" Click="ButEvent" Height="20" Background="Red" Width="45"
+				Visibility="{Binding Forget}" Margin="5,0,0,0" Padding="4">
+					<TextBlock FontWeight="Medium" FontSize="11" Height="20" Text="Forget"/>
 			</Button>
-			<TextBlock x:Name="Changed" Text=" changed" Height="20" Width="55" Margin="5,0,0,0"
-				Visibility="{Binding ChangedVisibility}" Background="Blue"/>
+			<Button x:Name="bm" Click="ButEvent" Height="20" Background="Gray" Width="65"
+					Margin="5,0,0,0" Padding="5">
+				<TextBlock Text="MIDI learn"/>
+			</Button>
+			<TextBlock Text=" changed" Height="20" Width="55" Margin="5,0,0,0"
+				Padding="2" Visibility="{Binding ChangedVisibility}" Background="Blue"/>
 			<TextBlock Background="White" TextAlignment="Center" Height="20" Width="30" Margin="5,0,0,0">
 				<Hyperlink RequestNavigate="Hyperlink_RequestNavigate"
 				NavigateUri="https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki">Help</Hyperlink>
 			</TextBlock>
 		</StackPanel>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="74" Width="Auto">
-                <TextBlock x:Name="Status" Text="{Binding StatusText}" 
-				
-				Background="DarkSlateGray" 	TextWrapping="Wrap"/>
-            </ScrollViewer>
-            <StackPanel Orientation="Horizontal">
+		<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="74" Width="Auto">
+			<TextBlock x:Name="Status" Text="{Binding StatusText}" 
+				Background="DarkSlateGray" TextWrapping="Wrap"/>
+		</ScrollViewer>
+		<StackPanel Orientation="Horizontal">
 		<Button x:Name="b0" Content=" Up " Height="40" Click="ButEvent"
 				Visibility="{Binding ButtonVisibility}" Margin="10,0,0,0"/>
 		<Button x:Name="b1" Content="Down" Height="40" Click="ButEvent"
@@ -91,6 +95,6 @@
 				</DataGridTextColumn>
 			</DataGrid.Columns>
 		</DataGrid>
-		</StackPanel>
-	</Grid>
+	</StackPanel>
+  </Grid>
 </UserControl>
