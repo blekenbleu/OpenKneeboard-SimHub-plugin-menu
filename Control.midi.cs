@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Windows;
 using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
@@ -16,9 +17,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		// index xaml event strings by devMessages
 		static SortedList<uint, string> click = new SortedList<uint, string>() {};
-		static string sb4;			// prompt string when !learn
-		static uint recent, latest;	// MidiDev messages;  recent has data2 masked out
-		static bool button, learn;	// state variables
+		static uint recent, latest; // MidiDev messages;  recent has data2 masked out
+		static bool button,         // state variables
+					_learn = false;
+		static bool learn { get { return _learn; }
+							set {
+									_learn = value;
+									Model.Forget = _learn ? Visibility.Visible : Visibility.Hidden;
+							}}
 
 		// https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/blob/MIDI/Channel.md#midi-device-name-handling
 		void Learn(string bName)	// associate MIDI messages with xaml events
@@ -34,9 +40,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				devMessage = recent
 			});
 			if (bName != "SB" && !button)
-				Model.StatusText = sb4 + "\nMIDI control >>only<< for slider;  ignored";
+				Status.Text = Model.StatusText  + "\nMIDI control >>only<< for slider;  ignored";
 			else if (bName == "SB" && button)
-				Model.StatusText = sb4 + "\nMIDI control >>only<< for button; ignored";
+				Status.Text = Model.StatusText + "\nMIDI control >>only<< for button; ignored";
 			// To Do:  check for latest or bName already in click
 			else click.Add(latest, bName);
 		}
@@ -46,14 +52,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			learn = !learn;
 			if (learn)
 			{
-				sb4 = Model.StatusText;
  				if (null == MIDI.Model)
 					MIDI.Start(Model);
-				Model.StatusText += "\n\twaiting for MIDI input";
-			} else if (null != sb4) {
-				Model.StatusText = sb4;
-				sb4 = null;
-			}
+				Status.Text = Model.StatusText + "\n\twaiting for MIDI input";
+			} else
+				Status.Text = Model.StatusText;
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages

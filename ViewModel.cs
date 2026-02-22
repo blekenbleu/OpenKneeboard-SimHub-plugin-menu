@@ -27,6 +27,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// events to raise
 		readonly PropertyChangedEventArgs Bevent = new PropertyChangedEventArgs("ButtonVisibility");
 		readonly PropertyChangedEventArgs Cevent = new PropertyChangedEventArgs("ChangedVisibility");
+		readonly PropertyChangedEventArgs Fevent = new PropertyChangedEventArgs("Forget");
 		readonly PropertyChangedEventArgs Nevent = new PropertyChangedEventArgs("SliderProperty");
 		readonly PropertyChangedEventArgs Sevent = new PropertyChangedEventArgs("SelectedProperty");
 		readonly PropertyChangedEventArgs SVevent = new PropertyChangedEventArgs("SliderVisibility");
@@ -57,6 +58,20 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				{
 					_cvis = value;
 					PropertyChanged?.Invoke(this, Cevent);
+				}
+			}
+		}
+
+		private Visibility _fvis = Visibility.Hidden;	// except when learning MIDI
+		public Visibility Forget				// must be public for XAML Binding
+		{
+			get { return _fvis; }
+			set
+			{
+				if (_fvis != value)
+				{
+					_fvis = value;
+					PropertyChanged?.Invoke(this, Fevent);
 				}
 			}
 		}
