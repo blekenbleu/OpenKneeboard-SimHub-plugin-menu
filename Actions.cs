@@ -1,4 +1,6 @@
 
+using SimHub.Plugins;
+
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public partial class OKSHmenu
@@ -6,6 +8,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// <summary>
 		/// Helper functions used in Init() AddAction()s and Control.xaml.cs button Clicks
 		/// </summary>
+		void Actions()
+		{
+			this.AddAction("IncrementSelectedProperty", (a, b) => Ment(1));
+			this.AddAction("DecrementSelectedProperty", (a, b) => Ment(-1));
+			this.AddAction("NextProperty",				(a, b) => Select(true)	);
+			this.AddAction("PreviousProperty",			(a, b) => Select(false)	);
+			this.AddAction("SwapCurrentPrevious",		(a, b) => Swap()		);
+			this.AddAction("CurrentAsDefaults",			(a, b) => SetDefault());
+			this.AddAction("SelectedAsSlider",			(a, b) => SelectSlider());
+		}
+
 		/// <param name="sign"></param> should be 1 or -1
 		/// <param name="prefix"></param> should be "in" or "de"
 		public void Ment(int sign)
@@ -25,29 +38,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (slider == View.Selection)
 					ToSlider();
 			}
-		}
-
-		// Control.xaml actions -------------------------------------------------
-		internal void FromSlider(double value)
-		{
-			Current(slider, (SliderFactor[0] * (int)value).ToString());
-			Changed();
-			Control.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
-		}
-
-		internal void ToSlider()
-		{
-			if(0 > slider)
-				return;
-
-			Control.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
-			Control.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * System.Convert.ToDouble(simValues[slider].Current);
-		}
-
-		private void SelectedStatus()
-		{
-			Control.Model.SelectedProperty = (0 > View.Selection) ? "unKnown" : simValues[View.Selection].Name;
-			Control.Model.StatusText = Gname + " " + CurrentCar + ":\t" + Control.Model.SelectedProperty;
 		}
 
 		/// <summary>
@@ -83,8 +73,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Changed();
 		}
 
-		// set "CurrentAsDefaults" action
-		internal void SetDefault()	// List<GameList> Glist)
+		internal void SetDefault()					// List<GameList> Glist) "CurrentAsDefaults" AddAction
 		{
 			if (0 == Gname.Length)
 				OOps("SetDefault: no Gname");
@@ -96,33 +85,56 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		// set "SelectedAsSlider" action
-		internal void SelectSlider()	// List<GameList> Glist)
+		internal void SelectSlider()			// List<GameList> Glist) "SelectedAsSlider" AddAction
 		{
 			slider = View.Selection;
-			SetSlider();
+			SetSlider();						// js.cs
 		}
 
-		// simValues set methods
-		string Default(int i, string value)
-		{
-			simValues[i].Default = value;
-			HttpServer.SSEcell(1 + i, 3, value);
-			return value;
-		}
-
-		string Current(int i, string value)
+		// supporting cast ===================================================
+		string Current(int i, string value)		// Ment(), Swap(), FromSlider()
 		{
 			simValues[i].Current = value;
 			HttpServer.SSEcell(1 + i, 1, value);
 			return value;
 		}
 
-		string Previous(int i, string value)
+		string Previous(int i, string value)	// Swap()
 		{
 			simValues[i].Previous = value;
 			HttpServer.SSEcell(1 + i, 2, value);
 			return value;
+		}
+
+		private void SelectedStatus()			// Select(), CarChange()
+		{
+			Control.Model.SelectedProperty = (0 > View.Selection) ? "unKnown" : simValues[View.Selection].Name;
+			Control.Model.StatusText = Gname + " " + CurrentCar + ":\t" + Control.Model.SelectedProperty;
+		}
+
+		// simValues set methods
+		string Default(int i, string value)		// SetDefault(), CarChange()
+		{
+			simValues[i].Default = value;
+			HttpServer.SSEcell(1 + i, 3, value);
+			return value;
+		}
+
+		internal void ToSlider()				// Ment(), Swap(), SetSlider(), CarChange()
+		{
+			if(0 > slider)
+				return;
+
+			Control.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
+			Control.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * System.Convert.ToDouble(simValues[slider].Current);
+		}
+
+		// Control.xaml action -------------------------------------------------
+		internal void FromSlider(double value)
+		{
+			Current(slider, (SliderFactor[0] * (int)value).ToString());
+			Changed();
+			Control.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
 		}
 	}
 }

@@ -157,7 +157,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
 		{
 			View = new Control(this);		// invoked *after* Init()
-			SetSlider();
+			SelectSlider();
 			Task.Run(() => HttpServer.OpenAsync());
 			if (0 < Msg.Length)
 			{
@@ -351,13 +351,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			this.AttachDelegate("Msg", () => Msg);
 
 			// Declare an event and corresponding action
-			this.AddAction("IncrementSelectedProperty", (a, b) => Ment(1));
-			this.AddAction("DecrementSelectedProperty", (a, b) => Ment(-1));
-			this.AddAction("NextProperty",				(a, b) => Select(true)	);
-			this.AddAction("PreviousProperty",			(a, b) => Select(false)	);
-			this.AddAction("SwapCurrentPrevious",		(a, b) => Swap()		);
-			this.AddAction("CurrentAsDefaults",			(a, b) => SetDefault());
-			this.AddAction("SelectedAsSlider",			(a, b) => SelectSlider());
+			Actions();
 			this.AddAction("ChangeProperties",			(a, b) => CarChange(	// SimHub triggers by ExternalScript.CarChange event
 					pluginManager.GetPropertyValue("CarID")?.ToString(),
 					pluginManager.GetPropertyValue("DataCorePlugin.CurrentGame")?.ToString(),
