@@ -85,6 +85,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				string input = MidiIn.DeviceInfo(i).ProductName;
 				s += ("\n\t" + input);
+				if (input.StartsWith("loopMIDI"))
+				{
+					s += "\tignored";
+					continue;
+				}	
 				if (lMidiIn.Count < RcvArray.Length
 				 && ("nanoKONTROL2" == input
 				 || input.StartsWith("USB-Midi")))
