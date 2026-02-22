@@ -50,7 +50,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		void OOpsMB()
 		{
 			Info("OOpsMB(): " + Msg);
-			View?.Dispatcher.Invoke(() => View.OOpsMB());
+			View?.Dispatcher.Invoke(() => Control.OOpsMB());
 			Msg = "";
 		}
 
@@ -125,9 +125,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 			MIDI.Stop();
 			HttpServer.Stop();
-            simValues = new List<Values>();
+			simValues = new List<Values>();
 
-            if (!write)				// End()
+			if (!write)				// End()
 				return;
 
 			string sjs = Newtonsoft.Json.JsonConvert.SerializeObject(slim.data,
@@ -146,7 +146,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			CarChange(pm.GetPropertyValue("CarID")?.ToString(),
 					  pm.GetPropertyValue("DataCorePlugin.CurrentGame")?.ToString(),
 					  true);				// disable popup
-        }
+		}
 
 		/// <summary>
 		/// Returns settings control or null if not required
@@ -158,17 +158,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			View = new Control(this);		// invoked *after* Init()
 			SetSlider();
-            Task.Run(() => HttpServer.OpenAsync());
+			Task.Run(() => HttpServer.OpenAsync());
 			if (0 < Msg.Length)
 			{
 				Info("OOpsMB() " + Msg);
 				Msg = "Init() " + Msg + ViewModel.statusText;
-				View.Dispatcher.Invoke(() => View.OOpsMB());
+				View.Dispatcher.Invoke(() => Control.OOpsMB());
 				Msg = "";
 			}
 			// assignment preempts Compiler Warning CS4014
 //			Info("GetWPFSettingsControl():  delayTask");
-            Task delayTask = AsyncRunningGame(pluginManager, 1000);
+			Task delayTask = AsyncRunningGame(pluginManager, 1000);
 			return View;
 		}
 
@@ -344,7 +344,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// SimHub properties by AttachDelegate get evaluated "on demand"
 			foreach (Values p in simValues)
 				this.AttachDelegate(p.Name, () => p.Current);
-			this.AttachDelegate("Selected", () => View.Model.SelectedProperty);
+			this.AttachDelegate("Selected", () => Control.Model.SelectedProperty);
 			this.AttachDelegate("New Car", () => NewCar);
 			this.AttachDelegate("Car", () => CurrentCar);
 			this.AttachDelegate("Game", () => Gname);

@@ -20,24 +20,24 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (null != clients && 0 < clients.Count)
 			{
 				SSEonce = true;
-                byte[] togo = Encoding.UTF8.GetBytes($"{responseText}\n\n");
+				byte[] togo = Encoding.UTF8.GetBytes($"{responseText}\n\n");
 
-                foreach (var c in clients)
+				foreach (var c in clients)
 					if (c.Value.Tc.Connected)
-                    {
+					{
 						try
 						{
 							NetworkStream clientStream = c.Value.Tc.GetStream();
 							await clientStream.WriteAsync(togo, 0, togo.Length);
 						}
 						catch
-                        { // Remove disconnected client
-                            clients.TryRemove(c.Key, out _);
-                        }
-                    }
+						{ // Remove disconnected client
+							clients.TryRemove(c.Key, out _);
+						}
+					}
 					else OKSHmenu.Info("SSErespond():  null client!!?");
 
-            } else {
+			} else {
 				if (SSEonce)
 					OKSHmenu.Info("SSErespond():  no clients");
 				SSEonce = false;

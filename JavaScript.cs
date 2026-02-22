@@ -1,7 +1,7 @@
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-    partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
-    {
+	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
+	{
 
 /*		Using server-sent events https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 			https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events
@@ -69,5 +69,5 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n};"
 +"\n</script>";			// string JavaScript
 
-	}       // class
-}           // namespace
+	}	   // class
+}		   // namespace

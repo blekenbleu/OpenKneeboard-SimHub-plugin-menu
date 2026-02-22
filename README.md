@@ -56,6 +56,8 @@ HTML table updates should have lower processing overhead than graphical overlay.
 	- [System.Threading.Channels FIFO queue](Channel.md)  
 - [`TcpListener` Web Server](TcpListener.md)
 - [scrolling TextBlock](https://stackoverflow.com/a/40626596)
+- Click handler:&nbsp; [`var jumptbl = new SortedList<uint, Func<string, string> >();`](https://stackoverflow.com/a/7181866)  
+	- [SortedList Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8)
 
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  

@@ -82,6 +82,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="Control.midi.cs" />
     <Compile Include="SSEvents.cs" />

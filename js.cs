@@ -6,28 +6,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public partial class OKSHmenu
 	{
-		// simValues set methods
-		string Default(int i, string value)
-		{
-			simValues[i].Default = value;
-			HttpServer.SSEcell(1 + i, 3, value);
-			return value;
-		}
-
-		string Current(int i, string value)
-		{
-			simValues[i].Current = value;
-			HttpServer.SSEcell(1 + i, 1, value);
-			return value;
-		}
-
-		string Previous(int i, string value)
-		{
-			simValues[i].Previous = value;
-			HttpServer.SSEcell(1 + i, 2, value);
-			return value;
-		}
-
 		// check whether current properties differ from JSON
 		bool Changed()
 		{
@@ -49,7 +27,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					break;
 				}
 
-			View.Model.ChangedVisibility = changed ? Visibility.Visible : Visibility.Hidden;
+			Control.Model.ChangedVisibility = changed ? Visibility.Visible : Visibility.Hidden;
 			return changed;
 		}
 
@@ -58,7 +36,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 > slider)
 				return;
 
-			View.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name;
+			Control.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name;
 			/* slider View.SL.Maximum = 100; scale property to it, based on Steps[slider]
 			 ; Steps	   Guestimated range
 			 ; 1  (0.01)	0 - 2
@@ -164,111 +142,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return write;			// SaveSlim()
 		}
 
-		// Control.xaml methods -------------------------------------------------
-		internal void FromSlider(double value)
-		{
-			Current(slider, (SliderFactor[0] * (int)value).ToString());
-			Changed();
-			View.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
-		}
-
-		internal void ToSlider()
-		{
-			if(0 > slider)
-				return;
-
-			View.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
-			View.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * Convert.ToDouble(simValues[slider].Current);
-		}
-
-		/// <summary>
-		/// Helper functions used in Init() AddAction()s and Control.xaml.cs button Clicks
-		/// </summary>
-		/// <param name="sign"></param> should be 1 or -1
-		/// <param name="prefix"></param> should be "in" or "de"
-		public void Ment(int sign)
-		{
-			if (0 == Gname.Length || null == CurrentCar || 0 == CurrentCar.Length)
-				return;
-
-			int step = Steps[View.Selection];
-			int iv = (int)(0.004 + 100 * float.Parse(simValues[View.Selection].Current));
-
-			iv += sign * step;
-			if (0 <= iv)
-			{
-				Current(View.Selection, (0 != step % 100) ? $"{(float)(0.01 * iv)}"
-										: $"{(int)(0.004 + 0.01 * iv)}");
-				Changed();
-				if (slider == View.Selection)
-					ToSlider();
-			}
-		}
-
-		private void SelectedStatus()
-		{
-			View.Model.SelectedProperty = (0 > View.Selection) ? "unKnown" : simValues[View.Selection].Name;
-			View.Model.StatusText = Gname + " " + CurrentCar + ":\t" + View.Model.SelectedProperty;
-		}
-
-		/// <summary>
-		/// Select next or prior property; exception if invoked on other than UI thread
-		/// </summary>
-		/// <param name="next"></param> false for prior
-		public void Select(bool next)
-		{
-			if (0 == Gname.Length || null == CurrentCar || 0 == CurrentCar.Length)
-				return;
-
-			if (next)
-			{
-				if (++View.Selection >= simValues.Count)
-					View.Selection = 0;
-			}
-			else if (0 < View.Selection)	// prior
-				View.Selection--;
-			else View.Selection = (byte)(simValues.Count - 1);
-			SelectedStatus();		// Select()
-		}
-
-		public void Swap()
-		{
-			string temp;
-			for (int i = 0; i < simValues.Count; i++)
-			{
-				temp = simValues[i].Previous;
-				Previous(i, simValues[i].Current);
-				Current(i, temp);
-			}
-			ToSlider();		// Swap()
-			Changed();
-		}
-
-		// set "CurrentAsDefaults" action
-		internal void SetDefault()	// List<GameList> Glist)
-		{
-			if (0 == Gname.Length)
-				OOps("SetDefault: no Gname");
-			else {
-				int p = View.Selection;
-
-				Default(p, simValues[p].Current);	// End() sorts per-game changes
-				Changed();
-			}
-		}
-
-		// set "SelectedAsSlider" action
-		internal void SelectSlider()	// List<GameList> Glist)
-		{
-			slider = View.Selection;
-			SetSlider();
-		}
-
 /*--------------------------------------------------------------
- ;      invoked for CarId changes, based on this `NCalcScripts/OKSHpm.ini` entry:
- ;          [ExportEvent]
- ;          name='CarChange'
- ;          trigger=changed(200, [DataCorePlugin.GameData.CarId])
+ ;	  invoked for CarId changes, based on this `NCalcScripts/OKSHpm.ini` entry:
+ ;		  [ExportEvent]
+ ;		  name='CarChange'
+ ;		  trigger=changed(200, [DataCorePlugin.GameData.CarId])
  ;--------------------------------------------------------------- */
 		void CarChange(string cname, string gnew, bool once)
 		{
@@ -348,14 +226,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (ml < Msg.Length)
 			{
 				if (once)
-                    Msg = "";
+					Msg = "";
 				else OOpsMB();
 				return;
 			}
 			else Msg = "";
 			SelectedStatus();					// CarChange()
 			ToSlider();
-			View.Model.ButtonVisibility = System.Windows.Visibility.Visible;	// ready
+			Control.Model.ButtonVisibility = System.Windows.Visibility.Visible;	// ready
 		}	// CarChange()
 	}		// public partial class OKSHmenu
 }

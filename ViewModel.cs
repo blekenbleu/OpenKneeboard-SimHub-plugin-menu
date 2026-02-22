@@ -10,12 +10,12 @@ using System.Windows;
  */
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-    /// <summary>
-    /// define a class with Model-view-viewmodel pattern for dynamic UI
-    /// </summary>
-    public class ViewModel : INotifyPropertyChanged
+	/// <summary>
+	/// define a class with Model-view-viewmodel pattern for dynamic UI
+	/// </summary>
+	public class ViewModel : INotifyPropertyChanged
 	{
-        readonly Control Ctrl;				// Ctrl.Dispatcher.Invoke(Ctrl.Selected())
+		readonly Control Ctrl;				// Ctrl.Dispatcher.Invoke(Ctrl.Selected())
 		public ViewModel(Control C)
 		{
 			Ctrl = C;
@@ -24,14 +24,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// One event handler for all property changes
 		public event PropertyChangedEventHandler PropertyChanged;
 
-        // events to raise
-        readonly PropertyChangedEventArgs Bevent = new PropertyChangedEventArgs("ButtonVisibility");
-        readonly PropertyChangedEventArgs Cevent = new PropertyChangedEventArgs("ChangedVisibility");
-        readonly PropertyChangedEventArgs Nevent = new PropertyChangedEventArgs("SliderProperty");
-        readonly PropertyChangedEventArgs Sevent = new PropertyChangedEventArgs("SelectedProperty");
-        readonly PropertyChangedEventArgs SVevent = new PropertyChangedEventArgs("SliderVisibility");
-        readonly PropertyChangedEventArgs SLevent = new PropertyChangedEventArgs("SliderValue");
-        readonly PropertyChangedEventArgs Tevent = new PropertyChangedEventArgs("StatusText");
+		// events to raise
+		readonly PropertyChangedEventArgs Bevent = new PropertyChangedEventArgs("ButtonVisibility");
+		readonly PropertyChangedEventArgs Cevent = new PropertyChangedEventArgs("ChangedVisibility");
+		readonly PropertyChangedEventArgs Nevent = new PropertyChangedEventArgs("SliderProperty");
+		readonly PropertyChangedEventArgs Sevent = new PropertyChangedEventArgs("SelectedProperty");
+		readonly PropertyChangedEventArgs SVevent = new PropertyChangedEventArgs("SliderVisibility");
+		readonly PropertyChangedEventArgs SLevent = new PropertyChangedEventArgs("SliderValue");
+		readonly PropertyChangedEventArgs Tevent = new PropertyChangedEventArgs("StatusText");
 
 		private Visibility _bvis = Visibility.Hidden;	// until carID and game are defined
 		public Visibility ButtonVisibility				// must be public for XAML Binding
@@ -40,7 +40,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			set
 			{
 				if (_bvis != value)
-                {
+				{
 					_bvis = value;
 					PropertyChanged?.Invoke(this, Bevent);
 				}
@@ -54,7 +54,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			set
 			{
 				if (_cvis != value)
-                {
+				{
 					_cvis = value;
 					PropertyChanged?.Invoke(this, Cevent);
 				}
@@ -68,7 +68,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			set
 			{
 				if (_sval != value)
-                {
+				{
 					_sval = value;
 					PropertyChanged?.Invoke(this, SLevent);
 					HttpServer.SSEslide(SliderValue, SliderProperty);
@@ -83,7 +83,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			set
 			{
 				if (_svis != value)
-                {
+				{
 					_svis = value;
 					PropertyChanged?.Invoke(this, SVevent);
 				}
@@ -92,52 +92,52 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		private string _selected_Property = "unKnown";
 		public string SelectedProperty			// must be public for XAML Binding
-        {
-            get { return _selected_Property; }
+		{
+			get { return _selected_Property; }
 
-            set
-            {
-                if (value != _selected_Property)
+			set
+			{
+				if (value != _selected_Property)
 				{
-                	_selected_Property = value;
-                	PropertyChanged?.Invoke(this, Sevent);
+					_selected_Property = value;
+					PropertyChanged?.Invoke(this, Sevent);
 					// update xaml DataGrid from another thread
-                    Ctrl.Dispatcher.Invoke(() => Ctrl.Selected());
+					Ctrl.Dispatcher.Invoke(() => Ctrl.Selected());
 				}
-            }
-        }
+			}
+		}
 
 		private string _slider_Property = "";
 		public string SliderProperty			// must be public for XAML Binding
-        {
-            get { return _slider_Property; }
+		{
+			get { return _slider_Property; }
 
-            set
-            {
-                if (value != _slider_Property)
+			set
+			{
+				if (value != _slider_Property)
 				{
-                	_slider_Property = value;
-                	PropertyChanged?.Invoke(this, Nevent);
+					_slider_Property = value;
+					PropertyChanged?.Invoke(this, Nevent);
 					SliderVisibility = Visibility.Visible;
 					HttpServer.SSEslide(SliderValue, SliderProperty);
 				}
-            }
-        }
+			}
+		}
 
 		static internal readonly string statusText = "To enable:  launch game or Replay";
 		private string _statusText = statusText;
 		public string StatusText			// must be public for XAML Binding
-        {
-            get { return _statusText; }
+		{
+			get { return _statusText; }
 
-            set
-            {
-                if (value != _statusText)
+			set
+			{
+				if (value != _statusText)
 				{
-                	_statusText = value;
-                	PropertyChanged?.Invoke(this, Tevent);
+					_statusText = value;
+					PropertyChanged?.Invoke(this, Tevent);
 				}
-            }
-        }
+			}
+		}
 	}		// public class StaticControl
 }

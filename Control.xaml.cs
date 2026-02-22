@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 /* XAML DataContext:  Binding source
@@ -15,23 +14,22 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	/// </summary>
 	public partial class Control : UserControl
 	{
-		public OKSHmenu OK { get; }
-		public ViewModel Model;							// reference XAML controls
-		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.70";
-		bool learn;
+		public static OKSHmenu OK;
+		public static ViewModel Model;				// reference XAML controls
+		internal byte Selection;					// changes only in OKSHmenu.Select() on UI thread
+		internal static string version = "1.71";
 
-		public Control() {								// called before simValues are initialized
+		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);
 			InitializeComponent();
-			this.DataContext = Model;					// StaticControl events change Control.xaml binds
-			learn = false;
+			DataContext = Model;					// StaticControl events change Control.xaml binds
+			learn = false;							// Control.midi.cs
 		}
 
 		public Control(OKSHmenu plugin) : this()
 		{
-			this.OK = plugin;							// Control.xaml button events call OKSHmenu methods
-			dg.ItemsSource = OKSHmenu.simValues;		// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
+			OK = plugin;							// Control.xaml button events call OKSHmenu methods
+			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -40,14 +38,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
 		}
 
-		internal void OOpsMB()
+		internal static void OOpsMB()
 		{
 			Model.StatusText = OKSHmenu.Msg;
 			System.Windows.Forms.MessageBox.Show(OKSHmenu.Msg, "OKSHmenu");
 		}
 
 		// highlights selected property cell
-		internal void Selected()						// crashes if called from other threads
+		internal void Selected()					// crashes if called from other threads
 		{
 			if ((dg.Items.Count > Selection) && (dg.Columns.Count > 2))
 			{
@@ -66,15 +64,20 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// handle all button events in one method
-		internal void ButHandle(object sender, RoutedEventArgs e)
+		internal void ButEvent(object sender, RoutedEventArgs e)
 		{
 			string butName = (e.OriginalSource as FrameworkElement).Name;
 
 			if ("bm" == butName)
 				Unlearn();
-			else if (learn)			// alternative event handling
+			else if (learn)		 // alternative event handling
 				Learn(butName);
-			else switch(butName)
+			else ButHandle(butName);
+		}
+
+		internal static void ButHandle(string butName)
+		{
+			switch(butName)
 			{
 				case "b0":
 					OK.Select(false);

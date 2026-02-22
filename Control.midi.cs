@@ -1,9 +1,9 @@
-
+using System.Collections.Generic;
 using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	public class MidiDev
+	public class MidiDev			// must be public for Settings.cs
 	{
 		internal string deviceName, butName;
 		internal uint devMessage;	// lMidiIn index | data2 | data 1 | status
@@ -14,22 +14,32 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	/// </summary>
 	public partial class Control
 	{
+		// index xaml event strings by devMessages
+		static SortedList<uint, string> click = new SortedList<uint, string>() {};
 		static string sb4;			// prompt string when !learn
+		static uint recent, latest;	// MidiDev messages;  recent has data2 masked out
+		static bool button, learn;	// state variables
+
 		// https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/blob/MIDI/Channel.md#midi-device-name-handling
-		void Learn(string bName)	// manage MIDI messages
+		void Learn(string bName)	// associate MIDI messages with xaml events
 		{
-            // search for butName in Settings.midiDevs
-			int dev = (int)latest >> 24;
-			// search for latest & 0x0F00FFFF in Settings.midiDevs
+			// search for butName in Settings.midiDevs
+			int dev = (int) recent >> 24;
+
+			// search for recent in Settings.midiDevs
 			OKSHmenu.Settings.midiDevs.Add(new MidiDev()
 			{
 				deviceName = MidiIn.DeviceInfo(dev).ProductName,
 				butName = bName,
-				devMessage = latest & 0x0F00FFFF
+				devMessage = recent
 			});
-			if (!button)
-				Model.StatusText = sb4 + "\nMIDI control for slider";
-        }
+			if (bName != "SB" && !button)
+				Model.StatusText = sb4 + "\nMIDI control >>only<< for slider;  ignored";
+			else if (bName == "SB" && button)
+				Model.StatusText = sb4 + "\nMIDI control >>only<< for button; ignored";
+			// To Do:  check for latest or bName already in click
+			else click.Add(latest, bName);
+		}
 
 		void Unlearn()				// handle "bm" == butName
 		{
@@ -40,26 +50,51 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
  				if (null == MIDI.Model)
 					MIDI.Start(Model);
 				Model.StatusText += "\n\twaiting for MIDI input";
-			} else if (null != b4) {
+			} else if (null != sb4) {
 				Model.StatusText = sb4;
 				sb4 = null;
 			}
 		}
 
-		static uint recent, latest;
-		static bool button;
-		internal static void Process(uint RawMessage)
+		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
+		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
+		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
+		internal static void Process(uint MidiMessage)
 		{
-			OKSHmenu.Info($"Process({RawMessage:X8}) to do");
-			if (recent != (0x0F00FFFF & RawMessage))
+/*			NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
+			var channel = 0x0F & MidiMessage;		// most likely always 0 for real control surfaces
+			var d1 = (MidiMessage >> 8) & 0xff;		// e.g. CC number
+			var d2 = (MidiMessage >> 16) & 0xff;		// data value
+			var dev = (MidiMessage >> 24) & 0x0f;	// NAudio-detected MIDI device list index
+ */
+			switch (0xF0 & MidiMessage)  // channel_type 0x80 <= (0xF0 & e.RawMessage) < 0xF0
 			{
-				button = true;
-				recent = 0x0F00FFFF & RawMessage;
+				case 0x80:
+				case 0x90:
+				case 0xA0:
+				case 0xF0:
+					OKSHmenu.Info($"Process.({MidiMessage:X8}) ignored");
+					break;
+				default:
+					byte value = (byte)(MidiMessage >> 16);
+
+					OKSHmenu.Info($"Process({MidiMessage:X8}) to do");
+					if (recent != (0x0F00FFFF & MidiMessage))
+					{
+						button = 0 == value % 127;
+						recent = 0x0F00FFFF & MidiMessage;
+					}
+					else if (0 != value % 127)
+						button = false;				// Learn() should assign only to slider
+					latest = MidiMessage;
+					if (!learn)						// learn waits for xaml event to Learn()
+					{
+						if (click.ContainsKey(recent))
+							ButHandle(click[recent]);
+						else OKSHmenu.Info($"Process.({MidiMessage:X8}) not learned");
+					}
+					break;
 			}
-			byte value = (byte)(RawMessage >> 16);
-			if (0 < value && 127 != value)
-				button = false;				// Learn() should assign only to slider
-			latest = RawMessage;
 		}
 	}
 }

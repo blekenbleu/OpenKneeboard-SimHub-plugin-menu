@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NAudio.Midi;
 
-
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	internal class Device
@@ -24,7 +23,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		static readonly System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[] RcvArray
 			= new System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
 		internal static ViewModel Model;
-
 
 		internal static void Start(ViewModel m)
 		{
@@ -65,7 +63,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// deviceNumbers change, depending on available MIDI devices
 			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
 				if (ProductName == OKSHmenu.Settings.midiDevs[i].deviceName)
-                    OKSHmenu.Settings.midiDevs[i].devMessage = (uint)(deviceNumber << 24)
+					OKSHmenu.Settings.midiDevs[i].devMessage = (uint)(deviceNumber << 24)
 													| (0x0FFF & OKSHmenu.Settings.midiDevs[i].devMessage);
 		}
 
@@ -99,8 +97,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Model.StatusText = s;
 		}
 
-        // e.MidiEvent = FromRawMessage(e.RawMessage);
-        static void MidiIn0(object sender, MidiInMessageEventArgs e)
+		// e.MidiEvent = FromRawMessage(e.RawMessage);
+		static void MidiIn0(object sender, MidiInMessageEventArgs e)
 		{
 			Enque(0, (uint)e.RawMessage);
 //			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
@@ -122,34 +120,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			OKSHmenu.Info(String.Format("MidiIn_ErrorReceived():  Message 0x{0:X8} Event {1}",
 				e.RawMessage, e.MidiEvent));
-		}
-
-		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
-		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
-		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
-
-		internal static void Sort(uint RawMessage)
-		{
-/* NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
-			var channel = 0x0F & RawMessage;			// channel_type is 0xF0 & e.RawMessage
-			var d1 = (RawMessage >> 8) & 0xff;
-			var d2 = (RawMessage >> 16) & 0xff;
-			var dev = (RawMessage >> 24) & 0x0f;
- */
-			switch (0xF0 & RawMessage)  // 0x80 <= (0xF0 & e.RawMessage) < 0xF0
-			{
-				case 0x80:
-				case 0x90:
-				case 0xA0:
-					OKSHmenu.Info($"Sort.({RawMessage:X8}) ignored");
-					break;
-				case 0xF0:
-					OKSHmenu.Info($"Sort.({RawMessage:X8}) ignored");
-					break;
-				default:
-					Control.Process(RawMessage);
-					break;
-			}
 		}
 	}
 }

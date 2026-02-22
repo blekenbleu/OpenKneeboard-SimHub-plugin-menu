@@ -6,8 +6,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	internal partial class MIDI
 	{
-        // Multiple producers, single consumer 
-        readonly static Channel<uint> _channel = Channel.CreateBounded(
+		// Multiple producers, single consumer 
+		readonly static Channel<uint> _channel = Channel.CreateBounded(
 			new BoundedChannelOptions(100)	// Bounded to 100. If full, drop oldest.
 			{
 				SingleReader = true,	// Optimization hint
@@ -26,7 +26,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			while (await Reader.WaitToReadAsync())
 				while (Reader.TryRead(out uint item))
-					Sort(item);
+					Control.Process(item);				// Control.midi.cs
 
 			OKSHmenu.Info($"ReadAsync() ended");
 		}

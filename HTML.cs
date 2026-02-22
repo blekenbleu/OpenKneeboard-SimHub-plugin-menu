@@ -3,8 +3,8 @@ using System.Text;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-    partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
-    {
+	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
+	{
 		internal static string HTMLtable(List<Values> sV)
 		{
 			StringBuilder builder = new StringBuilder();	// https://jonskeet.uk/csharp/stringbuilder.html

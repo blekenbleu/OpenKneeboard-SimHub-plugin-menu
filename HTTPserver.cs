@@ -159,7 +159,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		static string Table ()
 		{
-            string data = head + HTMLtable(OKSHmenu.simValues) + end;
+			string data = head + HTMLtable(OKSHmenu.simValues) + end;
 			string sw =
 			"HTTP/1.1 200 OK\n"
 			+ "Content-Type:text/html; charset=UTF-8\n"
