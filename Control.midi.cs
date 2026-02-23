@@ -32,6 +32,30 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// search for butName in Settings.midiDevs
 			int dev = (int) recent >> 24;
 
+			if ( "bf" == bName)
+			{
+				if (0 == click.Count)
+					Model.MidiStatus = "\nNo listed clicks to forget";
+				else {
+					recent = 0xFF0000FF;
+					Model.MidiStatus = "\nSelect a click to forget";
+				}
+				return;
+			} else if (0xFF0000FF == recent) {	// Forget?
+				if (!click.ContainsValue(bName))
+					Model.MidiStatus = $"\n'{bName}' not in click list";
+				else {
+					click.RemoveAt(click.IndexOfValue(bName));
+					Model.MidiStatus = $"\n'{bName}' removed";
+				}
+				recent = 0;
+				return;
+			}
+			if (0 == recent)
+			{
+				Model.MidiStatus = "\nMIDI input needed";
+				return;
+			}
 			// search for recent in Settings.midiDevs
 			OKSHmenu.Settings.midiDevs.Add(new MidiDev()
 			{
