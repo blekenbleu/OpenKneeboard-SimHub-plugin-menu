@@ -17,7 +17,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
-		internal byte Selection;					// changes only in OKSHmenu.Select() on UI thread
+		internal  byte Selection;					// changes only in OKSHmenu.Select() on UI thread
 		internal static string version = "1.71";
 
 		public Control() {							// called before simValues are initialized
@@ -30,7 +30,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public Control(OKSHmenu plugin) : this()
 		{
 			OK = plugin;							// Control.xaml button events call OKSHmenu methods
-			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
+			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -100,7 +100,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					OK.SetDefault();
 					break;
 				case "SB":
-					OK.SelectSlider();
+					OK.SliderButtton();
+					break;
+				case "SL":
+					// MIDI value as if from slider, except 0-127
+					OK.FromSlider((127 & (latest >> 16))/1.27);
+					OK.ToSlider();
 					break;
 				default:
 					Model.StatusText = "ButHandle(): unconfigured button '{butName)'";
@@ -112,7 +117,28 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			OK.FromSlider(0.5 + SL.Value);
+			if (learn)	// map a MIDI axis to slider via click list
+			{
+				if (0xFF0000FF == recent) {         // Forget?
+					if (!click.ContainsValue("SL"))
+                    	Model.MidiStatus = $"\n'SL' not in click list";
+                	else {
+                	    click.RemoveAt(click.IndexOfValue("SL"));
+            	        Model.MidiStatus = $"\n'SL' removed";
+        	        }
+    	            recent = 0;
+				} else if (0 == recent)
+    	            Model.MidiStatus = "\nMIDI input missing";
+				else if (button)
+					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
+				else if (click.ContainsValue("SL"))
+					Model.MidiStatus = "\n'SL' already in click list;  first Forget it";
+				else {
+					click.Add((int)recent, "SL");
+					Model.MidiStatus = "\n'SL' {recent:X8} added to click list";
+				}
+			}
+			else OK.FromSlider(SL.Value);
 		}
 	}
 }

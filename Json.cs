@@ -31,9 +31,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return changed;
 		}
 
-		internal void SetSlider()
+		public void SliderButtton()			// List<GameList> Glist) "SelectedAsSlider" AddAction
 		{
-			if (0 > slider)
+			if (0 > (slider = View.Selection))
 				return;
 
 			Control.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name;

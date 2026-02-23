@@ -16,7 +16,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			this.AddAction("PreviousProperty",			(a, b) => Select(false)	);
 			this.AddAction("SwapCurrentPrevious",		(a, b) => Swap()		);
 			this.AddAction("CurrentAsDefaults",			(a, b) => SetDefault());
-			this.AddAction("SelectedAsSlider",			(a, b) => SelectSlider());
+			this.AddAction("SelectedAsSlider",			(a, b) => SliderButtton());		// Json.cs
 		}
 
 		/// <param name="sign"></param> should be 1 or -1
@@ -85,18 +85,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		internal void SelectSlider()			// List<GameList> Glist) "SelectedAsSlider" AddAction
-		{
-			slider = View.Selection;
-			SetSlider();						// js.cs
-		}
-
 		// supporting cast ===================================================
-		string Current(int i, string value)		// Ment(), Swap(), FromSlider()
+		string Current(int i, string value)	// Ment(), Swap(), FromSlider(), Slider_DragCompleted()
 		{
 			simValues[i].Current = value;
 			HttpServer.SSEcell(1 + i, 1, value);
 			return value;
+		}
+
+		void CurrentSlider(double value)
+		{
+			Current(slider, (SliderFactor[0] * (int)(0.5 + value)).ToString());
 		}
 
 		string Previous(int i, string value)	// Swap()
@@ -130,9 +129,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 		// Control.xaml action -------------------------------------------------
-		internal void FromSlider(double value)
+		internal void FromSlider(double value)	// Slider_DragCompleted()
 		{
-			Current(slider, (SliderFactor[0] * (int)value).ToString());
+			CurrentSlider(value);
 			Changed();
 			Control.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
 		}

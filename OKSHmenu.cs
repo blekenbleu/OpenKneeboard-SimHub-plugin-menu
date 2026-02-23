@@ -157,7 +157,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
 		{
 			View = new Control(this);		// invoked *after* Init()
-			SelectSlider();
+			SliderButtton();
 			Task.Run(() => HttpServer.OpenAsync());
 			if (0 < Msg.Length)
 			{

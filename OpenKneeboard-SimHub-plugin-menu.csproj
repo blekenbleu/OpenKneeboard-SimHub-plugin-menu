@@ -89,7 +89,7 @@
     <Compile Include="HTML.cs" />
     <Compile Include="HTTPserver.cs" />
     <Compile Include="JavaScript.cs" />
-    <Compile Include="js.cs" />
+    <Compile Include="Json.cs" />
     <Compile Include="MIDI.cs" />
     <Compile Include="OKSHmenu.cs" />
     <Compile Include="Settings.cs" />

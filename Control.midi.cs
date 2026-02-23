@@ -33,10 +33,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					recent = 0xFF0000FF;
 					Model.MidiStatus = "\nSelect a click to forget";
 				}
-				return;
 			}
-
-			if (0xFF0000FF == recent) {			// Forget?
+			else if (0xFF0000FF == recent) {			// Forget?
 				if (!click.ContainsValue(bName))
 					Model.MidiStatus = $"\n'{bName}' not in click list";
 				else {
@@ -44,18 +42,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					Model.MidiStatus = $"\n'{bName}' removed";
 				}
 				recent = 0;
-				return;
 			}
-
-			if (0 == recent)
-			{
+			else if (0 == recent)
 				Model.MidiStatus = "\nMIDI input missing";
-				return;
-			}
-
-			if (bName != "SB" && !button)
+			else if (bName != "SL" && !button)
 				Model.MidiStatus = "\nMIDI control >>only<< for slider;  ignored";
-			else if (bName == "SB" && button)
+			else if (bName == "SL" && button)
 				Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
 			else if (click.ContainsValue(bName))
 				Model.MidiStatus = $"\n'{bName}' already in click list;  first Forget it";
