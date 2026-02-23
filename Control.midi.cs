@@ -4,19 +4,13 @@ using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
-	public class MidiDev			// must be public for Settings.cs
-	{
-		internal string deviceName, butName;
-		internal uint devMessage;	// lMidiIn index | data2 | data 1 | status
-	}
-
 	/// <summary>
 	/// MIDI interaction code for Control.xaml
 	/// </summary>
 	public partial class Control
 	{
 		// index xaml event strings by devMessages
-		static SortedList<uint, string> click = new SortedList<uint, string>() {};
+		internal static SortedList<int, string> click = new SortedList<int, string>() {};
 		static uint recent, latest; // MidiDev messages;  recent has data2 masked out
 		static bool button,         // state variables
 					_learn = false;
@@ -27,12 +21,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 							}}
 
 		// https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/blob/MIDI/Channel.md#midi-device-name-handling
+		// https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8
+		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
 		void Learn(string bName)	// associate MIDI messages with xaml events
 		{
-			// search for butName in Settings.midiDevs
-			int dev = (int) recent >> 24;
-
-			if ( "bf" == bName)
+			if ( "bf" == bName)					// Forget button?
 			{
 				if (0 == click.Count)
 					Model.MidiStatus = "\nNo listed clicks to forget";
@@ -41,7 +34,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					Model.MidiStatus = "\nSelect a click to forget";
 				}
 				return;
-			} else if (0xFF0000FF == recent) {	// Forget?
+			}
+
+			if (0xFF0000FF == recent) {			// Forget?
 				if (!click.ContainsValue(bName))
 					Model.MidiStatus = $"\n'{bName}' not in click list";
 				else {
@@ -51,27 +46,24 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				recent = 0;
 				return;
 			}
+
 			if (0 == recent)
 			{
-				Model.MidiStatus = "\nMIDI input needed";
+				Model.MidiStatus = "\nMIDI input missing";
 				return;
 			}
-			// search for recent in Settings.midiDevs
-			OKSHmenu.Settings.midiDevs.Add(new MidiDev()
-			{
-				deviceName = MidiIn.DeviceInfo(dev).ProductName,
-				butName = bName,
-				devMessage = recent
-			});
+
 			if (bName != "SB" && !button)
 				Model.MidiStatus = "\nMIDI control >>only<< for slider;  ignored";
 			else if (bName == "SB" && button)
 				Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-			// To Do:  check for latest or bName already in click
-			else
-			{
-				click.Add(latest, bName);
-				Model.MidiStatus = "";
+			else if (click.ContainsValue(bName))
+				Model.MidiStatus = $"\n'{bName}' already in click list;  first Forget it";
+			else if (click.ContainsKey((int)recent))
+				Model.MidiStatus = $"\n{recent:X8} already in click list;  first Forget it";
+			else {
+				click.Add((int)latest, bName);
+				Model.MidiStatus = $"\n'{bName}' {recent:X8} added to click list";
 			}
 		}
 
@@ -108,21 +100,22 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				default:
 					byte value = (byte)(MidiMessage >> 16);
 
-					Model.MidiStatus = $"\nProcess({MidiMessage:X8}) to do";
+					if (learn && 0xB0 != (0xFF00F0 & MidiMessage))	// ignore CC button releases
+						Model.MidiStatus = $"\nclick to learn for ({MidiMessage:X8})";
 					if (recent != (0x0F00FFFF & MidiMessage))
 					{
 						button = 0 == value % 127;
 						recent = 0x0F00FFFF & MidiMessage;
 					}
 					else if (0 != value % 127)
-						button = false;				// Learn() should assign only to slider
-					latest = MidiMessage;
-					if (!learn)						// learn waits for xaml event to Learn()
+						button = false;										// Learn():  assign only to slider
+					latest = MidiMessage;									// Learn():  wait for xaml event
+					if (!learn && (!button || 0xB0 != (0xFF00F0 & latest)))	// ignore CC button release
 					{
-						if (click.ContainsKey(recent))
+						if (click.ContainsKey((int)recent))
 						{
 							Model.MidiStatus = "";
-							ButHandle(click[recent]);
+							ButHandle(click[(int)recent]);
 						}
 						else Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) not learned";
 					}

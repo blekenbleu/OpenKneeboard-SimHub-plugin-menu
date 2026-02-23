@@ -4,6 +4,12 @@ using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
+	public class MidiDev			// must be public for Settings.cs
+	{
+		internal string devName, butName;
+		internal int devMessage;	// lMidiIn index | data2 | data 1 | status
+	}
+
 	internal class Device	// NAudio MidiIn lacks MIDI In device name
 	{
 		internal string id;
@@ -42,8 +48,20 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			lMidiIn.RemoveAt(i);
 		}
 
-		internal static void Stop()
+		internal static void Stop()			// called by OKSHmenu.cs End()
 		{
+			// first, save Settings.midiDevs
+			OKSHmenu.Settings.midiDevs = new List<MidiDev>() { new MidiDev() {} };
+			for (int j = 0; j < Control.click.Count; j++)
+			{
+				int key = Control.click.Keys[j];
+				OKSHmenu.Settings.midiDevs.Add(new MidiDev()
+            	{
+					butName = Control.click.Values[j],
+					devName = MidiIn.DeviceInfo((int)(0x0F & (key >> 12))).ProductName,
+					devMessage = key
+				});
+			}
 			for (int j = lMidiIn.Count -1 ; j >= 0; j--)
 				Stop(j);
 		}
@@ -62,8 +80,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			lMidiIn.Add(new Device { id = ProductName, m = mMidiIn });
 			// deviceNumbers change, depending on available MIDI devices
 			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
-				if (ProductName == OKSHmenu.Settings.midiDevs[i].deviceName)
-					OKSHmenu.Settings.midiDevs[i].devMessage = (uint)(deviceNumber << 24)
+				if (ProductName == OKSHmenu.Settings.midiDevs[i].devName)
+					OKSHmenu.Settings.midiDevs[i].devMessage = (deviceNumber << 24)
 													| (0x0FFF & OKSHmenu.Settings.midiDevs[i].devMessage);
 		}
 
