@@ -31,6 +31,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			OK = plugin;							// Control.xaml button events call OKSHmenu methods
 			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid
+			if (0 < OKSHmenu.Settings.midiDevs.Count)
+				MIDI.Resume(Model);
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -73,10 +75,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				Unlearn();
 			else if (learn)		 // alternative event handling
 				Learn(butName);
-			else ButHandle(butName);
+			else ClickHandle(butName);
 		}
 
-		internal static void ButHandle(string butName)
+		internal static void ClickHandle(string butName)
 		{
 			Model.MidiStatus = "";
 			switch(butName)
@@ -104,11 +106,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					break;
 				case "SL":
 					// MIDI value as if from slider, except 0-127
-					OK.FromSlider((127 & (latest >> 16))/1.27);
+					OK.FromSlider(mVal/1.27);
 					OK.ToSlider();
 					break;
 				default:
-					Model.StatusText = "ButHandle(): unconfigured button '{butName)'";
+					Model.StatusText = "ClickHandle(): unconfigured click '{butName)'";
 					OOpsMB();
 					break;
 			}
@@ -119,24 +121,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			if (learn)	// map a MIDI axis to slider via click list
 			{
-				if (0xFF0000FF == recent) {         // Forget?
-					if (!click.ContainsValue("SL"))
-                    	Model.MidiStatus = $"\n'SL' not in click list";
-                	else {
-                	    click.RemoveAt(click.IndexOfValue("SL"));
-            	        Model.MidiStatus = $"\n'SL' removed";
-        	        }
-    	            recent = 0;
-				} else if (0 == recent)
-    	            Model.MidiStatus = "\nMIDI input missing";
-				else if (button)
+				if (button)
 					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-				else if (click.ContainsValue("SL"))
-					Model.MidiStatus = "\n'SL' already in click list;  first Forget it";
-				else {
-					click.Add((int)recent, "SL");
-					Model.MidiStatus = "\n'SL' {recent:X8} added to click list";
-				}
+				else Ok("SL");
 			}
 			else OK.FromSlider(SL.Value);
 		}
