@@ -1,4 +1,3 @@
-
 using SimHub.Plugins;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu

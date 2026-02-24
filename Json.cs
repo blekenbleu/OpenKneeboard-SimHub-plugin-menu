@@ -11,7 +11,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			bool changed = false;
 			
-			if ((0 > gndx || 0 > cndx))
+			if (0 > gndx || 0 > cndx)
 				if (!SaveSlim())
 					return changed;
 
