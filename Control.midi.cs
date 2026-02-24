@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Windows;
-using NAudio.Midi;
 
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
@@ -11,7 +10,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		// index xaml event strings by devMessages
 		internal static SortedList<uint, string> click = new SortedList<uint, string>() {};
-		static uint recent, mVal;	// MidiDev messages;  recent has (mVal = data2) masked out
+		static uint recent;						// MidiDev messages with data2 masked out
 		static bool button,	_learn = false;		// state variables
 		static bool learn
 		{
@@ -22,7 +21,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 		}
 
-		void Ok(string bName)
+		void ListClick(string bName)
 		{
 			if (0xFF0000FF == recent) {			// Forget?
 				if (!click.ContainsValue(bName))
@@ -50,7 +49,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
 		void Learn(string bName)	// associate MIDI messages with xaml events
 		{
-			if ( "bf" == bName)					// Forget button?
+			if ( "bf" == bName)					// Forget click?
 			{
 				if (0 == click.Count)
 					Model.MidiStatus = "\nNo listed clicks to forget";
@@ -61,7 +60,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 			else if (!button)
 				Model.MidiStatus = "\nMIDI control >>only<< for slider;  ignored";
-			else Ok(bName);
+			else ListClick(bName);
 		}
 
 		void Unlearn()				// handle "bm" == butName
@@ -86,9 +85,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
  ;			var d2 = (MidiMessage >> 16) & 0xff;		// data value
  ;			var dev = (MidiMessage >> 24) & 0x0f;	// NAudio-detected MIDI device list index
  */
-			if (0xB0 == (0xFF00F0 & MidiMessage))	// ignore CC button releases
-				return;
-
 			uint channel_type = 0xF0 & MidiMessage;
 			if (0xB0 > channel_type || 0xD0 < channel_type)
 			{
@@ -96,9 +92,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				return;
 			}
 
-			mVal = 127 & (MidiMessage >> 16);
+			uint mVal = 127 & (MidiMessage >> 16);
 			if (learn) {
-				uint latest = 0x0F00FFFF & MidiMessage;
+				if (0xB0 == (0xFF00F0 & MidiMessage))	// ignore CC button releases
+					return;
+
+				uint latest = 0x0700FFFF & MidiMessage;
 				if (recent != latest)
 				{
 					button = 0 == mVal % 127;
@@ -110,9 +109,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) already in click list;  Forget?";
 				else Model.MidiStatus = $"\nclick to learn for ({MidiMessage:X8})";
 			} else if (click.ContainsKey(recent)) {
-				Model.MidiStatus = "";
-				ClickHandle(click[recent]);
-			} else Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) not learned";
+				if ("SL" == click[recent])					// handle values, including 0, for slider
+				{
+					OK.FromSlider(mVal/1.27);				// MIDI value as if from slider, except 0-127
+					OK.ToSlider();
+				}
+				else if (0xB0 != (0xFF00F0 & MidiMessage))	// ignore CC button 0 values
+					ClickHandle(click[recent]);
+			} else Model.MidiStatus = $"\nProcess({MidiMessage:X8}) not learned";
 		}
 	}
 }

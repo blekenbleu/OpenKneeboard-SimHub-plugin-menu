@@ -1,5 +1,4 @@
-﻿using SimHub.Plugins.DataPlugins.DataCore;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 /* XAML DataContext:  Binding source
@@ -78,7 +77,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			else ClickHandle(butName);
 		}
 
-		internal static void ClickHandle(string butName)
+		internal static void ClickHandle(string butName)	// used by ButEvent(), Process(MidiMessage)
 		{
 			Model.MidiStatus = "";
 			switch(butName)
@@ -104,11 +103,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				case "SB":
 					OK.SliderButtton();
 					break;
-				case "SL":
-					// MIDI value as if from slider, except 0-127
-					OK.FromSlider(mVal/1.27);
-					OK.ToSlider();
-					break;
 				default:
 					Model.StatusText = "ClickHandle(): unconfigured click '{butName)'";
 					OOpsMB();
@@ -123,7 +117,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				if (button)
 					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-				else Ok("SL");
+				else ListClick("SL");
 			}
 			else OK.FromSlider(SL.Value);
 		}

@@ -6,11 +6,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	public class MidiDev			// must be public for Settings.cs
 	{
-		internal string devName, butName;
-		internal int devMessage;	// lMidiIn index | data2 | data 1 | status
+		public string devName, butName;
+		public uint devMessage;	// {4-bit dev = 1-bit button | 3-bit lMidiIn index} | data2 | data 1 | status
 	}
 
-	internal class Device	// NAudio MidiIn lacks MIDI In device name
+	internal class Device			// NAudio MidiIn lacks device name
 	{
 		internal string id;
 		internal MidiIn m;
@@ -26,8 +26,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// an array of MidiIn message event handlers
 		// to distinguish which device sourced each message
 		// https://github.com/naudio/NAudio/NAudio.Midi/Midi/MidiInMessageEventArgs.cs
-		static readonly System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[] RcvArray
-			= new System.EventHandler<NAudio.Midi.MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
+		static readonly EventHandler<MidiInMessageEventArgs>[] RcvArray
+			= new EventHandler<MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
 		internal static ViewModel Model;
 
 		internal static void Start(ViewModel m)
@@ -37,8 +37,54 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			ReadMidi();
 		}
 
+		// populate Control.midi.cs SortedList click from Settings.cs midiDevs
+		// Update MidiDev devMessage 3-bit lMidiIn indices to (j)
+		// for devName matching MidiIn.DeviceInfo(j).ProductName
+		internal static void Resume(ViewModel m)
+		{
+			Control.click.Clear();
+			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
+			{
+				for (int j = 0; j < MidiIn.NumberOfDevices; j++)
+				{
+					if (OKSHmenu.Settings.midiDevs[i].devName == MidiIn.DeviceInfo(j).ProductName)
+					{
+						uint recent = OKSHmenu.Settings.midiDevs[i].devMessage;
+						uint mDev = (uint)j << 24;		// updated 3-bit lMidiIn index
+						uint dev = recent;
+
+						dev &= 0x07000000;				// breaks if 7 < NumberOfDevices
+						recent &= 0xFFFF;
+						recent |= mDev;
+						Control.click.Add(recent, OKSHmenu.Settings.midiDevs[i].butName);
+						for (int k = 1 + i; k < OKSHmenu.Settings.midiDevs.Count; k++)
+						{
+							if (OKSHmenu.Settings.midiDevs[k].devMessage == OKSHmenu.Settings.midiDevs[i].devMessage)
+							{
+								i = k;
+								continue;	// ignore duplicate midiDevs
+							}
+							// likely multiple OKSHmenu.Settings.midiDevs per dev
+							recent = OKSHmenu.Settings.midiDevs[k].devMessage;
+							if (dev == (0x07000000 & recent))
+							{
+								i = k;
+								recent &= 0xFFFF;
+								recent |= mDev;
+								Control.click.Add(recent, OKSHmenu.Settings.midiDevs[i].butName);
+							}
+							else break;
+						}
+						break;
+					}
+				}
+			}
+			OKSHmenu.Info($"Resume():  {Control.click.Count} configured clicks");
+			Start(m);
+		}
+
 // shutting down and restarting between games
-// check out https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L67
+// https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L67
 		internal static void Stop(int i)
 		{
 			lMidiIn[i].m.Stop();
@@ -48,46 +94,44 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			lMidiIn.RemoveAt(i);
 		}
 
-		internal static void Stop()			// called by OKSHmenu.cs End()
+		internal static bool Stop()			// called by OKSHmenu.cs End()
 		{
-			// first, save Settings.midiDevs
-			OKSHmenu.Settings.midiDevs = new List<MidiDev>() { new MidiDev() {} };
+			OKSHmenu.Settings.midiDevs = new List<MidiDev>() {};
 			for (int j = 0; j < Control.click.Count; j++)
 			{
-				int key = Control.click.Keys[j];
+				uint key = Control.click.Keys[j];
+				int i = (int)(0x07000000 & key);
+				i >>= 24;
 				OKSHmenu.Settings.midiDevs.Add(new MidiDev()
             	{
 					butName = Control.click.Values[j],
-					devName = MidiIn.DeviceInfo((int)(0x0F & (key >> 12))).ProductName,
+					devName = MidiIn.DeviceInfo(i).ProductName,
 					devMessage = key
 				});
 			}
+
 			for (int j = lMidiIn.Count -1 ; j >= 0; j--)
 				Stop(j);
+			return 0 < OKSHmenu.Settings.midiDevs.Count;
 		}
 
 		static void InputMidiSetup(int deviceNumber, string ProductName)
 		{
 			int j = lMidiIn.Count;
 
-			if (j > RcvArray.Length)
+			if (j >= RcvArray.Length)
 				return;
-			OKSHmenu.Info("InputMidiSetup(): ");
+
 			MidiIn mMidiIn = new MidiIn(deviceNumber);
 			mMidiIn.MessageReceived += RcvArray[j];
 			mMidiIn.ErrorReceived += MidiIn_ErrorReceived;
 			mMidiIn.Start();
 			lMidiIn.Add(new Device { id = ProductName, m = mMidiIn });
-			// deviceNumbers change, depending on available MIDI devices
-			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
-				if (ProductName == OKSHmenu.Settings.midiDevs[i].devName)
-					OKSHmenu.Settings.midiDevs[i].devMessage = (deviceNumber << 24)
-													| (0x0FFF & OKSHmenu.Settings.midiDevs[i].devMessage);
 		}
 
 		static void InputMidiDevices()
 		{
-			string s = $"\nInputMidiDevices():  NAudio MIDI In device count {MidiIn.NumberOfDevices}";
+			string s = $"InputMidiDevices():  NAudio MidiIn device count {MidiIn.NumberOfDevices}";
 /*
 			if (0 < lMidiIn.Count)
 				for (int i = 0; i < MidiIn.NumberOfDevices; i++)

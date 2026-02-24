@@ -120,10 +120,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				slim.data.gList[gndx].cList[0].Vlist = DefaultCopy();
 			}
 
+			set = set || MIDI.Stop();
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
-			MIDI.Stop();
 			HttpServer.Stop();
 			simValues = new List<Values>();
 
