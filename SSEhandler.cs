@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	// Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
@@ -37,7 +36,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					}
 					else OKSHmenu.Info("SSErespond():  null client!!?");
 
-			} else {
+			} else if (listening) {
 				if (SSEonce)
 					OKSHmenu.Info("SSErespond():  no clients");
 				SSEonce = false;

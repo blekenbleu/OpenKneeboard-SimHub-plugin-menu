@@ -50,7 +50,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				localIP = endPoint.Address.ToString();
 				socket.Close();
 			}
-			OKSHmenu.Info("TcpServer.Open(): launching MultiClientTcpServer");
+//			OKSHmenu.Info("TcpServer.Open(): launching MultiClientTcpServer");
 /*			sseResponse = Encoding.UTF8.GetBytes(Table());
 							$"HTTP/1.1 200 OK\nContent-Length: {ssefile.Length}\n"
 							+ "Content-Type: text/html\nServer: TcpMultiClient\n\n"
