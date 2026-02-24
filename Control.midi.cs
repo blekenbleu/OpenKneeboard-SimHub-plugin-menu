@@ -92,12 +92,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				return;
 			}
 
+			uint latest = 0x0700FFFF & MidiMessage;
 			uint mVal = 127 & (MidiMessage >> 16);
 			if (learn) {
 				if (0xB0 == (0xFF00F0 & MidiMessage))	// ignore CC button releases
 					return;
 
-				uint latest = 0x0700FFFF & MidiMessage;
 				if (recent != latest)
 				{
 					button = 0 == mVal % 127;
@@ -108,15 +108,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (click.ContainsKey(recent))
 					Model.MidiStatus = $"\nProcess.({MidiMessage:X8}) already in click list;  Forget?";
 				else Model.MidiStatus = $"\nclick to learn for ({MidiMessage:X8})";
-			} else if (click.ContainsKey(recent)) {
-				if ("SL" == click[recent])					// handle values, including 0, for slider
+			}
+			else if (click.ContainsKey(latest))
+			{
+				if ("SL" == click[latest])					// handle values, including 0, for slider
 				{
 					OK.FromSlider(mVal/1.27);				// MIDI value as if from slider, except 0-127
 					OK.ToSlider();
 				}
-				else if (0xB0 != (0xFF00F0 & MidiMessage))	// ignore CC button 0 values
-					ClickHandle(click[recent]);
-			} else Model.MidiStatus = $"\nProcess({MidiMessage:X8}) not learned";
+				else if (0xB0 != (0x7F00F0 & MidiMessage))	// ignore CC button 0 values
+					ClickHandle(click[latest]);
+			}
+			else Model.MidiStatus = $"\nProcess({latest:X8}) not learned";
 		}
 	}
 }
