@@ -16,7 +16,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				FullMode = BoundedChannelFullMode.DropOldest
 			},
 			(uint dropped) =>
-					   OKSHmenu.Info($"MIDI.Channel dropped: {dropped:X}")
+			{
+				string drop = $"MIDI.Channel dropped: {dropped:X}";
+				OKSHmenu.Info(drop);
+				Model.MidiStatus = "\n" + drop;
+			}
 		);
 
 		internal static ChannelReader<uint> Reader => _channel.Reader;

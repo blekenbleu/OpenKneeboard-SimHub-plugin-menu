@@ -10,8 +10,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	{
 		// index xaml event strings by devMessages
 		internal static SortedList<uint, string> click = new SortedList<uint, string>() {};
-		static uint recent;							// MidiDev messages with data2 masked out
-		static bool busy, button, _learn = false;	// state variables
+		static uint recent, forget;					// MidiDev messages with data2 masked out
+		internal static bool busy;
+		static bool button, _learn = false;			// state variables
 		static string again = "";
 		static bool learn
 		{
@@ -55,7 +56,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					Model.MidiStatus = "\nNo listed clicks to Forget";
 				else if (0 == forget && "" != again && click.ContainsValue(again))
 				{
-					forget = click.GetKey(click.IndexOfValue(again));
+					forget = click.Keys[click.IndexOfValue(again)];
 					Model.MidiStatus = $"\nclick Forget again to remove {again} for {forget:X8}";
 				}
 				else if (!click.ContainsKey(forget))
