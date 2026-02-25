@@ -117,7 +117,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			{
 				if (button)
 					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-				else ListClick("SL");
+				else ListClick("SL");		// Control.midi.cs
 			}
 			else OK.FromSlider(SL.Value);
 		}
