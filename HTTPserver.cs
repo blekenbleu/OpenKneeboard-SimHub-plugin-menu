@@ -81,7 +81,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 						OKSHmenu.Info($"ClientTask:\n---- {clientId} StreamReader connected ---");
 						connected = true;
 						if (ht && null == keepalive)
-							keepalive = Task.Run(() => SSEtimer());
+						{
+							object lockObject = new object();
+
+							lock (lockObject)							// avoid race for multiple simultaneous connections
+    						{
+        						if (keepalive == null)
+									keepalive = Task.Run(() => SSEtimer());
+							}
+						}
 					}
 
 					while (connected)
@@ -136,7 +144,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		}
 
 //		specific to OpenKneeboard-SimHub-plugin-menu
-		public static string[] urls = { $"http://localhost:{port}/", @"http://127.0.0.1:{port}/", "real IP" };
+		public static string[] urls;
 		public static int pageViews = 0;
 		public static int requestCount = 0;
 		public static string end = "</body></html>";

@@ -40,7 +40,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					int i = 0x07000000 & key;
 					i >>= 24;
 					OKSHmenu.Settings.midiDevs.Add(new MidiDev()
-    	        	{
+					{
 						butName = click.Values[j],
 						devName = NAudio.Midi.MidiIn.DeviceInfo(i).ProductName,
 						devMessage = key
@@ -119,7 +119,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
 		internal static void Process(int MidiMessage)  // called by async Task Channel.ReadAsync()
-        {
+		{
 			busy = true;
 /*			NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
  ;			var channel = 0x0F & MidiMessage;		// most likely always 0 for real control surfaces

@@ -1,4 +1,5 @@
 // https://medium.com/@abhirajgawai/c-channels-explained-from-producer-consumer-basics-to-high-performance-net-systems-f8ab610c0639
+using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
@@ -25,11 +26,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		internal static async Task ReadAsync()
 		{
-			while (await _channel.Reader.WaitToReadAsync())
-				while (_channel.Reader.TryRead(out int item))
-					Control.Process(item);				// Control.midi.cs
+			try	// check for exceptions
+			{
+				while (await _channel.Reader.WaitToReadAsync())
+					while (_channel.Reader.TryRead(out int item))
+						Control.Process(item);				// Control.midi.cs
+			}
+			catch (Exception ex)
+			{
+				OKSHmenu.Info($".ReadAsync() {ex}");
+			}
 
-			OKSHmenu.Info($"ReadAsync() ended");
+			OKSHmenu.Info("ReadAsync() ended");
 		}
 
 		internal static void ReadMidiChannel() { Task.Run(() => ReadAsync()); }

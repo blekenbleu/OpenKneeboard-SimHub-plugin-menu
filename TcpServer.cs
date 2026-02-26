@@ -23,7 +23,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal static double SliderValue;
 		static TcpListener server = null;		// works for any IP addresses
 		internal static ConcurrentDictionary<string, SsClient> clients;
-		static readonly Int32 port = 8765;
 		static Task keepalive;
 		static bool listening = false;
 		static string localIP;
@@ -62,9 +61,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// TcpClient creates a Socket to send and receive data, accessible as TcpClient.Client
 		// Each TcpClient.Client connection seemingly requires its own Task
 		// https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient.client?view=netframework-4.8
-		public static async Task MultiClientTcpServer()
+		public static async Task MultiClientTcpServer(int port = 8765)
 		{
 			clients = new ConcurrentDictionary<string, SsClient>();
+			urls = new string[] { $"http://localhost:{port}/", @"http://127.0.0.1:{port}/", "real IP" };
 
 			try
 			{
