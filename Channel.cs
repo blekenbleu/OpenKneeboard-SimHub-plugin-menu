@@ -7,7 +7,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	internal partial class MIDI
 	{
 		// Multiple producers, single consumer 
-		readonly static Channel<uint> _channel = Channel.CreateBounded(
+		readonly static Channel<int> _channel = Channel.CreateBounded(
 			new BoundedChannelOptions(100)	// Bounded to 100. If full, drop oldest.
 			{
 				SingleReader = true,	// Optimization hint
@@ -15,7 +15,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 				FullMode = BoundedChannelFullMode.DropOldest
 			},
-			(uint dropped) =>
+			(int dropped) =>
 			{
 				string drop = $"MIDI.Channel dropped: {dropped:X}";
 				OKSHmenu.Info(drop);
@@ -23,29 +23,24 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		);
 
-		internal static ChannelReader<uint> Reader => _channel.Reader;
-		internal static ChannelWriter<uint> Writer => _channel.Writer;
-
 		internal static async Task ReadAsync()
 		{
-			while (await Reader.WaitToReadAsync())
-				while (Reader.TryRead(out uint item))
+			while (await _channel.Reader.WaitToReadAsync())
+				while (_channel.Reader.TryRead(out int item))
 					Control.Process(item);				// Control.midi.cs
 
 			OKSHmenu.Info($"ReadAsync() ended");
 		}
 
-		internal static void ReadMidi()
-		{ Task.Run(() => ReadAsync()); }
+		internal static void ReadMidiChannel() { Task.Run(() => ReadAsync()); }
 		
-		internal static void Enque(uint inDevice, uint payload)
 		// https://learn.microsoft.com/en-us/dotnet/core/extensions/channels#producer-patterns
+		internal static void Enque(int inDevice, int payload)
 		{
-			payload |= (inDevice << 24);
+			payload |= inDevice << 24;
 			// Fire-and-forget
-			if (Writer.TryWrite(payload))
-				return;
-			OKSHmenu.Info(lMidiIn[3].id + ".Enqueue(" + payload.ToString() + ") failed");
+			if (!_channel.Writer.TryWrite(payload))
+				OKSHmenu.Info(lMidiIn[(int)inDevice].id + ".Enqueue(" + payload.ToString() + ") failed");
 		}
 	}
 }

@@ -9,12 +9,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 	public partial class Control
 	{
 		// index xaml event strings by devMessages
-		internal static SortedList<uint, string> click = new SortedList<uint, string>() {};
-		static uint recent, forget;					// MidiDev messages with data2 masked out
+		internal static SortedList<int, string> click = new SortedList<int, string>() {};
+		static int recent, forget;					// MidiDev messages with data2 masked out
 		internal static bool busy;
-		static bool button, _learn = false;			// state variables
+		static bool button, changed, _learn = false;			// state variables
 		static string again = "";
-		static bool learn
+		static bool Earn
 		{
 			get { return _learn; }
 			set {
@@ -23,6 +23,32 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				}
 		}
 
+		internal static void Add(int recent, string bName)
+		{
+			click.Add(recent, bName);
+			changed = true;
+		}
+
+		internal static bool Stop()
+		{
+			if (changed)
+			{
+				OKSHmenu.Settings.midiDevs = new List<MidiDev>() {};
+				for (int j = 0; j < click.Count; j++)
+				{
+					int key = click.Keys[j];
+					int i = 0x07000000 & key;
+					i >>= 24;
+					OKSHmenu.Settings.midiDevs.Add(new MidiDev()
+    	        	{
+						butName = click.Values[j],
+						devName = NAudio.Midi.MidiIn.DeviceInfo(i).ProductName,
+						devMessage = key
+					});
+				}
+			}
+			return changed;
+		}
 		void ListClick(string bName)	// checks for slider or buttons
 		{
 			if (0 == recent)
@@ -38,7 +64,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				again = bName;
 			}
 			else {
-				click.Add(recent, bName);
+				Add(recent, bName);
 				Model.MidiStatus = $"\n'{bName}' {recent:X8} added to click list";
 				again = "";
 				forget = recent = 0;
@@ -48,7 +74,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/blob/MIDI/Channel.md#midi-device-name-handling
 		// https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
-		void Learn(string bName)	// associate MIDI messages with xaml events
+		void Learn(string bName)	// associate MIDI messages with xaml button events
 		{
 			if ( "bf" == bName)					// Forget click?
 			{
@@ -68,6 +94,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				else {
 					Model.MidiStatus = $"\nremoving MIDI {forget:X8} for {click[forget]}...";
 					click.Remove(forget);
+					changed = true;
 					forget = 0;
 					again = "";
 				}
@@ -77,22 +104,22 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			else ListClick(bName);
 		}
 
-		void Unlearn()				// handle "bm" == butName
+		void NotEarn()				// handle "bm" == butName
 		{
-			learn = !learn;
-			if (learn)
+			Earn = !Earn;
+			if (!Earn)
 			{
- 				if (null == MIDI.Model)
-					MIDI.Start(Model);
-				Model.MidiStatus = "\n\twaiting for MIDI input";
-			} else Model.MidiStatus = "";
+				forget = 0;
+				again = "";
+			}
+			Model.MidiStatus = (Earn && MIDI.Start(Model)) ?  "\n\twaiting for MIDI input" : "";
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
 		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
-		internal static void Process(uint MidiMessage)
-		{
+		internal static void Process(int MidiMessage)  // called by async Task Channel.ReadAsync()
+        {
 			busy = true;
 /*			NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
  ;			var channel = 0x0F & MidiMessage;		// most likely always 0 for real control surfaces
@@ -100,7 +127,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
  ;			var d2 = (MidiMessage >> 16) & 0xff;		// data value
  ;			var dev = (MidiMessage >> 24) & 0x0f;	// NAudio-detected MIDI device list index
  */
-			uint channel_type = 0xF0 & MidiMessage;
+			int channel_type = 0xF0 & MidiMessage;
 			if (0xB0 > channel_type || 0xD0 < channel_type)
 			{
 				Model.MidiStatus = $"\nProcess({MidiMessage:X8}) ignored";
@@ -108,9 +135,9 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				return;
 			}
 
-			uint latest = 0x0700FFFF & MidiMessage;
-			uint mVal = 127 & (MidiMessage >> 16);
-			if (learn) {
+			int latest = 0x0700FFFF & MidiMessage;
+			int mVal = 127 & (MidiMessage >> 16);
+			if (Earn) {
 				if (0xB0 != (0xFF00F0 & MidiMessage))	// ignore CC button releases
 				{
 					if (recent != latest)

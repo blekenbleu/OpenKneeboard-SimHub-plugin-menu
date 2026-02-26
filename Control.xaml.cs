@@ -23,7 +23,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Model = new ViewModel(this);
 			InitializeComponent();
 			DataContext = Model;					// StaticControl events change Control.xaml binds
-			learn = false;                          // Control.midi.cs
+			changed = Earn = false;					// Control.midi.cs
 		}
 
 		public Control(OKSHmenu plugin) : this()
@@ -71,8 +71,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			string butName = (e.OriginalSource as FrameworkElement).Name;
 
 			if ("bm" == butName)
-				Unlearn();
-			else if (learn)		 // alternative event handling
+				NotEarn();
+			else if (Earn)		 // alternative event handling
 				Learn(butName);
 			else ClickHandle(butName);
 		}
@@ -113,7 +113,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (learn)	// map a MIDI axis to slider via click list
+			if (Earn)	// map a MIDI axis to slider via click list
 			{
 				if (button)
 					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
