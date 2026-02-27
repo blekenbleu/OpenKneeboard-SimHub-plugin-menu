@@ -155,7 +155,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		private string _Text = statusText;
+		public static string SSEtext()
+		{
+			StringBuilder sb = new StringBuilder(_Text);
+			sb.Replace("\n", "<br>");
+			sb.Insert(0, "data: ");
+			return sb.ToString() + "\n";
+		}
+
+		private static string _Text = statusText;
 		public string Text			// must be public for XAML Binding
 		{
 			get { return _Text; }
@@ -165,10 +173,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (value != _Text)
 				{
 					_Text = value;
-					StringBuilder sb = new StringBuilder(value);
-					sb.Replace("\n", "<br>");
-					sb.Insert(0, "data: ");
-					HttpServer.SSErespond(sb.ToString());
+					HttpServer.SSErespond(SSEtext());
 					PropertyChanged?.Invoke(this, Tevent);
 				}
 			}

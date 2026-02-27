@@ -49,11 +49,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n};"
 
 +CustomEvents	// SSEvents.cs
-
+/*
 +"\nsource.onopen = () => {"
 +  "blurt('Connection opened');"
 +"};"
-
+*/
 +"\nsource.onmessage = (event) => {"
 +"\n  msg.innerHTML = event.data;"
 +"\n  console.log('Received message:', event);"

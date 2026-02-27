@@ -130,6 +130,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// Control.xaml action -------------------------------------------------
 		internal void FromSlider(double value)	// Slider_DragCompleted()
 		{
+			Control.Model.MidiStatus = "";
 			CurrentSlider(value);
 			Changed();
 			Control.Model.SliderProperty =  simValues[slider].Name + ":  " + simValues[slider].Current;
