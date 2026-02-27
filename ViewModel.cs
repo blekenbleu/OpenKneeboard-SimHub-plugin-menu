@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text;
 using System.Windows;
 
 /*
@@ -164,6 +165,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (value != _Text)
 				{
 					_Text = value;
+					StringBuilder sb = new StringBuilder(value);
+					sb.Replace("\n", "<br>");
+					sb.Insert(0, "data: ");
+					HttpServer.SSErespond(sb.ToString());
 					PropertyChanged?.Invoke(this, Tevent);
 				}
 			}

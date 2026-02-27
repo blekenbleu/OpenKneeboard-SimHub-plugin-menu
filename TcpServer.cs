@@ -23,7 +23,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal static double SliderValue;
 		static TcpListener server = null;		// works for any IP addresses
 		internal static ConcurrentDictionary<string, SsClient> clients;
-		static Task keepalive;
+//		static Task keepalive;
 		static bool listening = false;
 		static string localIP;
 
@@ -41,7 +41,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			var fun = Task.Run(() => MultiClientTcpServer());
 			js = new JavaScriptSerializer();		// reuse for each SSE
-			keepalive = null;
+//			keepalive = null;
 			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
 			{
 				socket.Connect("8.8.8.8", 65530);

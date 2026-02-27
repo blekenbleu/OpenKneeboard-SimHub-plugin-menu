@@ -49,7 +49,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		// Served page is passive; only SSE from JavaScript is supported.
 		// Any other request gets table<>
-		static async Task ClientTask(TcpClient client, string clientId)
+		static async Task ClientTask(TcpClient client, string clientId)	// invoked by TcpServer.cs MultiClientTcpServer()
 		{
 			try
 			{
@@ -80,6 +80,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 						OKSHmenu.Info($"ClientTask:\n---- {clientId} StreamReader connected ---");
 						connected = true;
+/*
 						if (ht && null == keepalive)
 						{
 							object lockObject = new object();
@@ -90,6 +91,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 									keepalive = Task.Run(() => SSEtimer());
 							}
 						}
+ */
 					}
 
 					while (connected)
