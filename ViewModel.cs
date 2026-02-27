@@ -160,7 +160,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			StringBuilder sb = new StringBuilder(_Text);
 			sb.Replace("\n", "<br>");
 			sb.Insert(0, "data: ");
-			return sb.ToString() + "\n";
+			sb.Append("\n");
+			return sb.ToString();
 		}
 
 		private static string _Text = statusText;

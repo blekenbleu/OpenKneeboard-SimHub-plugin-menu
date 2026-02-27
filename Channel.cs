@@ -18,7 +18,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			},
 			(int dropped) =>
 			{
-				string drop = $"MIDI.Channel dropped: {dropped:X}";
+				string drop = $"MIDI.Channel dropped: {dropped:X}" + (Control.busy ? " busy" : "");
 				OKSHmenu.Info(drop);
 				Model.MidiStatus = "\n" + drop;
 			}
@@ -48,7 +48,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			payload |= inDevice << 24;
 			// Fire-and-forget
 			if (!_channel.Writer.TryWrite(payload))
-				OKSHmenu.Info(lMidiIn[(int)inDevice].id + ".Enqueue(" + payload.ToString() + ") failed");
+				OKSHmenu.Info(lMidiIn[inDevice].id + ".Enqueue(" + payload.ToString() + ") failed");
 		}
 	}
 }

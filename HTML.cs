@@ -16,9 +16,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			builder.Append("\n</table>");
 
 			// add a paragraph for messages
-			builder.Append("\n<p id=msg style='{messageStyle}'><i>messages here</i></p>");				// replace 'messages here'
+			builder.Append("\n<p id=msg style='{messageStyle}'>");
+			builder.Append(ViewModel.SSEtext());
 			// add a slider and label
-			builder.Append("\n<label id=active for='myRange'>unset:</label>");							// replace 'unset:'
+			builder.Append("</p><label id=active for='myRange'>unset:</label>");							// replace 'unset:'
 			builder.Append("\n<input type='range' value='50' id='myRange' style='width:500'>");			// replace	'50'
 			builder.Append(JavaScript);
 			return builder.ToString();

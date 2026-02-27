@@ -107,7 +107,6 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		private void SelectedStatus()			// Select(), CarChange()
 		{
 			Control.Model.SelectedProperty = (0 > View.Selection) ? "unKnown" : simValues[View.Selection].Name;
-			Control.Model.StatusText = Gname + " " + CurrentCar + ":\t" + Control.Model.SelectedProperty;
 		}
 
 		// simValues set methods

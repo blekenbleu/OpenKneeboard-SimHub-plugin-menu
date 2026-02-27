@@ -17,7 +17,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
 		internal  byte Selection;					// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.73";
+		internal static string version = "1.74";
 
 		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);

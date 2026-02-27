@@ -231,7 +231,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				return;
 			}
 			else Msg = "";
-			SelectedStatus();					// CarChange()
+			Control.Model.StatusText = Gname + " " + CurrentCar;					// CarChange()
 			ToSlider();
 			Control.Model.ButtonVisibility = System.Windows.Visibility.Visible;	// ready
 		}	// CarChange()

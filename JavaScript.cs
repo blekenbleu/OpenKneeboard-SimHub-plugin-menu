@@ -36,7 +36,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 // Table Row Background Colors
 +"\nconst tableScroll = (data) => {"
-+"\n  msg.innerHTML = data;"
+//+"\n  msg.innerHTML = data;"
 +"\n  let r = JSON.parse(data).row;"
 +"\n  for(i = 0; i < rows.length; i++)"
 +"\n	rows[i].style.backgroundColor = (r == i) ? '#ffffff' : '#888888';"
