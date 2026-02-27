@@ -8,10 +8,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal static string HTMLtable(List<Values> sV, string tableStyle = "font-size: 25px;",
 				 string messageStyle = "width:600; color:navy; background-color:silver")
 		{
-			StringBuilder builder = new StringBuilder();	// https://jonskeet.uk/csharp/stringbuilder.html
+			StringBuilder builder = new StringBuilder("\n<p id=msg style='{messageStyle}'>");	// https://jonskeet.uk/csharp/stringbuilder.html
 
 			// message paragraph
-			builder.Append("\n<p id=msg style='{messageStyle}'>").Append(ViewModel.SSEtext(false)).Append("</p>");
+			builder.Append(ViewModel.SSEtext(false)).Append("</p>");
 
 			// slider and label
 			builder.Append("<input id='myRange' type='range' value='50' style='width:500'> ");		// replace	'50'

@@ -162,7 +162,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (0 < Msg.Length)
 			{
 				Info("OOpsMB() " + Msg);
-				Msg = "Init() " + Msg + ViewModel.statusText;
+				Msg = "Init() " + Msg + ViewModel.staticText;
 				View.Dispatcher.Invoke(() => Control.OOpsMB());
 				Msg = "";
 			}

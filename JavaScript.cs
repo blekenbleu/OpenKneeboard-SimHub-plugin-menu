@@ -21,7 +21,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			View = v;
 		}
-			
+
 		// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
 		static string j = "\n<script>"
 +"\nconst source = new EventSource('SSE');"
@@ -32,8 +32,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\nlet rows = table.getElementsByTagName('tr');"
 
 +"\nconst blurt = (string) => {"
-+	"console.log(string); "
-+	"msg.innerHTML = string;"
++"	console.log(string); "
++"	msg.innerHTML = string;"
 +"};"
 
 +"\nconst tableUpdate = (data) => {"
@@ -43,10 +43,15 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n  table.rows[r].cells[c].innerHTML = obj.val;"
 +"\n};"
 
-// Table Row Background Colors
+// Table Background Colors row, slider property name, value
 +"\nfunction RowColor(r)\n{"
 +"\n  for(i = 0; i < rows.length; i++)"
 +"\n    rows[i].style.backgroundColor = (r == i) ? '#ffffff' : '#888888';\n}"
+
++"\nfunction RowColorSlider(r, slider, val)\n{"
++"\n  label.innerHTML = slider;"
++"\n  slider.value = val;"
++"\n  RowColor(r);\n}"
 
 +"\nconst tableScroll = (data) => {"
 +"\n  RowColor(JSON.parse(data).row); };"
@@ -57,35 +62,29 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n  slider.value = obj.val;"
 +"\n};"
 
-+CustomEvents	// SSEvents.cs
-/*
-+"\nsource.onopen = () => {"
-+  "blurt('Connection opened');"
-+"};"
-*/
++CustomEvents  // SSEvents.cs
+
 +"\nsource.onmessage = (event) => {"
 +"\n  msg.innerHTML = event.data;"
 +"\n  console.log('Received message:', event);"
 +"\n};"
 
 +"\nsource.onerror = (e) => {"
-//+"\n  let oops = 'Error: ' + JSON.parse(e);"
 +"\n  let oops = 'Error: ' + e;"
 +"\n  console.error(oops);"
 +"\n  msg.innerHTML = oops;"
 +"\n  if (source.readyState === EventSource.CONNECTING)"
 +"\n	blurt('Reconnecting...');"
-+"\n};";
++"\n};"
 
-		internal static string JavaScript()
++"\ndocument.addEventListener('DOMContentLoaded', function() {";
+
+        internal static string JavaScript()
 		{
-			StringBuilder s = new StringBuilder();
-			s.Append(j);
-			s.Append("\ndocument.addEventListener('DOMContentLoaded', function() {");
-			s.Append($"\n  RowColor({1 + View.Selection});");
-			s.Append("\n}, false);");
-			s.Append("\n</script>");
+			StringBuilder s = new StringBuilder(j);
+			s.Append($"\n  RowColorSlider({1 + View.Selection}, '{SliderProperty}', {SliderValue});");
+			s.Append("\n}, false);\n</script>");
 			return s.ToString();
 		}
-	}	   // class
-}		   // namespace
+	}		 // class
+}			 // namespace

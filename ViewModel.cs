@@ -123,7 +123,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		private string _midi_status = "";
+		private string _midi_status = " ";
 		public string MidiStatus			// must be public for XAML Binding
 		{
 			get { return _midi_status; }
@@ -165,7 +165,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			return sb.ToString();
 		}
 
-		private static string _Text = statusText;
+		private static string _Text = staticText;
 		public string Text			// must be public for XAML Binding
 		{
 			get { return _Text; }
@@ -175,14 +175,16 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (value != _Text)
 				{
 					_Text = value;
-					HttpServer.SSErespond(SSEtext(true));
+					string s = SSEtext(true);
+
+                    HttpServer.SSErespond(s);
 					PropertyChanged?.Invoke(this, Tevent);
 				}
 			}
 		}
 
-		static internal readonly string statusText = "To enable:  launch game or Replay";
-		private string _statusText = statusText;
+		static internal readonly string staticText = "To enable, launch game or Replay";
+		private string _statusText = staticText;
 		public string StatusText			// must be public for XAML Binding
 		{
 			get { return _statusText; }

@@ -79,7 +79,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		internal static void ClickHandle(string butName)	// used by ButEvent(), Process(MidiMessage)
 		{
-			Model.MidiStatus = "";
+			Model.MidiStatus = " ";
 			switch(butName)
 			{
 				case "b0":

@@ -13,7 +13,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		static int recent, forget;					// MidiDev messages with data2 masked out
 		internal static bool busy;
 		static bool button, changed, _learn = false;			// state variables
-		static string again = "";
+		static string again = " ";
 		static bool Earn
 		{
 			get { return _learn; }
@@ -112,7 +112,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				forget = 0;
 				again = "";
 			}
-			Model.MidiStatus = (Earn && MIDI.Start(Model)) ?  "\n\twaiting for MIDI input" : "";
+			Model.MidiStatus = (Earn && MIDI.Start(Model)) ?  "\n\twaiting for MIDI input" : " ";
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
