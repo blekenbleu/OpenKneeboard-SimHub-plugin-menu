@@ -17,7 +17,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
 		internal  byte Selection;					// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.71";
+		internal static string version = "1.72";
 
 		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);
@@ -119,7 +119,11 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
 				else ListClick("SL");		// Control.midi.cs
 			}
-			else OK.FromSlider(SL.Value);
+			else
+			{
+				Model.MidiStatus = "";
+				OK.FromSlider(SL.Value);
+			}
 		}
 	}
 }
