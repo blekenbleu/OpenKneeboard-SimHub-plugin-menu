@@ -1,7 +1,10 @@
+using System.Text;
+
 namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
+		static Control View;
 
 /*		Using server-sent events https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
 			https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events
@@ -13,8 +16,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		JavaScript minification:  https://github.com/trullock/NUglify
 		JavaScript Debugging:  https://www.w3schools.com/js/js_debugging.asp
 */
-	// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
-		public static string JavaScript = "\n<script>"
+
+		internal static void Init(Control v)
+		{
+			View = v;
+		}
+			
+		// https://www.milanjovanovic.tech/blog/server-sent-events-in-aspnetcore-and-dotnet-10#consuming-server-sent-events-in-javascript
+		static string j = "\n<script>"
 +"\nconst source = new EventSource('SSE');"
 +"\nconst msg = document.getElementById('msg');"
 +"\nconst label = document.getElementById('active');"
@@ -35,12 +44,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n};"
 
 // Table Row Background Colors
-+"\nconst tableScroll = (data) => {"
-//+"\n  msg.innerHTML = data;"
-+"\n  let r = JSON.parse(data).row;"
++"\nfunction RowColor(r)\n{"
 +"\n  for(i = 0; i < rows.length; i++)"
-+"\n	rows[i].style.backgroundColor = (r == i) ? '#ffffff' : '#888888';"
-+"\n};"
++"\n    rows[i].style.backgroundColor = (r == i) ? '#ffffff' : '#888888';\n}"
+
++"\nconst tableScroll = (data) => {"
++"\n  RowColor(JSON.parse(data).row); };"
 
 +"\nconst slide = (data) => {"
 +"\n  let obj = JSON.parse(data);"
@@ -66,8 +75,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 +"\n  msg.innerHTML = oops;"
 +"\n  if (source.readyState === EventSource.CONNECTING)"
 +"\n	blurt('Reconnecting...');"
-+"\n};"
-+"\n</script>";			// string JavaScript
++"\n};";
 
+		internal static string JavaScript()
+		{
+			StringBuilder s = new StringBuilder();
+			s.Append(j);
+			s.Append("\ndocument.addEventListener('DOMContentLoaded', function() {");
+			s.Append($"\n  RowColor({1 + View.Selection});");
+			s.Append("\n}, false);");
+			s.Append("\n</script>");
+			return s.ToString();
+		}
 	}	   // class
 }		   // namespace

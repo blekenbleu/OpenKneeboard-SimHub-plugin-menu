@@ -155,11 +155,12 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		public static string SSEtext()
+		public static string SSEtext(bool data)
 		{
 			StringBuilder sb = new StringBuilder(_Text);
 			sb.Replace("\n", "<br>");
-			sb.Insert(0, "data: ");
+			if (data)
+				sb.Insert(0, "data: ");
 			sb.Append("\n");
 			return sb.ToString();
 		}
@@ -174,7 +175,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				if (value != _Text)
 				{
 					_Text = value;
-					HttpServer.SSErespond(SSEtext());
+					HttpServer.SSErespond(SSEtext(true));
 					PropertyChanged?.Invoke(this, Tevent);
 				}
 			}

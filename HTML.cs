@@ -10,18 +10,17 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			StringBuilder builder = new StringBuilder();	// https://jonskeet.uk/csharp/stringbuilder.html
 
-			builder.Append("<table id=tok style='").Append(tableStyle).Append("'>\n<tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>");
+			// message paragraph
+			builder.Append("\n<p id=msg style='{messageStyle}'>").Append(ViewModel.SSEtext(false)).Append("</p>");
+
+			// slider and label
+			builder.Append("<input id='myRange' type='range' value='50' style='width:500'> ");		// replace	'50'
+			builder.Append("<label id=active for='myRange'>unset</label>");							// replace 'unset'
+
+			builder.Append("\n<table id=tok style='").Append(tableStyle).Append("'>\n<br><tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>");
 			foreach (var row in sV)
 				builder.Append($"\n<tr><td>{row.Name}</td><td>{row.Current}</td><td>{row.Previous}</td><td>{row.Default}</td></tr>");
-			builder.Append("\n</table>");
-
-			// add a paragraph for messages
-			builder.Append("\n<p id=msg style='{messageStyle}'>");
-			builder.Append(ViewModel.SSEtext());
-			// add a slider and label
-			builder.Append("</p><label id=active for='myRange'>unset:</label>");							// replace 'unset:'
-			builder.Append("\n<input type='range' value='50' id='myRange' style='width:500'>");			// replace	'50'
-			builder.Append(JavaScript);
+			builder.Append("\n</table>").Append(JavaScript());
 			return builder.ToString();
 		}
 	}
