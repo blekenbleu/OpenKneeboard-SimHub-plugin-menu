@@ -29,15 +29,17 @@ namespace blekenbleu.SimHub_Remote_menu
 		static readonly EventHandler<MidiInMessageEventArgs>[] RcvArray
 			= new EventHandler<MidiInMessageEventArgs>[3] { MidiIn0, MidiIn1, MidiIn2 };
 		static ViewModel Model;
+		static Control View;
 
-		internal static bool Start(ViewModel m)
+		internal static bool Start(ViewModel m, Control c)
 		{
 			Model = m;
+			View = c;
 			if (null == lMidiIn)
 			{
 				lMidiIn = new List<Device> { };
 				InputMidiDevices();
-				ReadMidiChannel();
+//				ReadMidiChannel();
 			}
 			return true;
 		}
@@ -45,7 +47,7 @@ namespace blekenbleu.SimHub_Remote_menu
 		// populate Control.midi.cs SortedList click from Settings.cs midiDevs
 		// Update MidiDev devMessage 3-bit lMidiIn indices to (j)
 		// for devName matching MidiIn.DeviceInfo(j).ProductName
-		internal static void Resume(ViewModel m)
+		internal static void Resume(ViewModel m, Control c)
 		{
 			Control.click.Clear();
 			for (int i = 0; i < OKSHmenu.Settings.midiDevs.Count; i++)
@@ -85,7 +87,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				}
 			}
 			OKSHmenu.Info($"Resume():  {Control.click.Count} configured clicks");
-			Start(m);
+			Start(m, c);
 		}
 
 // shutting down and restarting between games
@@ -142,22 +144,19 @@ namespace blekenbleu.SimHub_Remote_menu
 		}
 
 		// e.MidiEvent = FromRawMessage(e.RawMessage);
-		static void MidiIn0(object sender, MidiInMessageEventArgs e)
+		static async void MidiIn0(object sender, MidiInMessageEventArgs e)
 		{
-			Enque(0, e.RawMessage);
-//			OKSHmenu.Info(lMidiIn[0].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			await View.EventHandler("MIDI", e.RawMessage);
 		}
 
-		static void MidiIn1(object sender, MidiInMessageEventArgs e)
+		static async void MidiIn1(object sender, MidiInMessageEventArgs e)
 		{
-			Enque(1, e.RawMessage);
-//			OKSHmenu.Info(lMidiIn[1].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			await View.EventHandler("MIDI", e.RawMessage | (1 << 24));
 		}
 
-		static void MidiIn2(object sender, MidiInMessageEventArgs e)
+		static async void MidiIn2(object sender, MidiInMessageEventArgs e)
 		{
-			Enque(2, e.RawMessage);
-//			OKSHmenu.Info(lMidiIn[2].id + String.Format(" Msg 0x{0:X8} Event {1}", e.RawMessage, e.MidiEvent));
+			await View.EventHandler("MIDI", e.RawMessage | (2 << 24));
 		}
 
 		static void MidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)

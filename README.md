@@ -58,6 +58,9 @@ HTML table updates should have lower processing overhead than graphical overlay.
 - [scrolling TextBlock](https://stackoverflow.com/a/40626596)
 - Click handler:&nbsp; [`var jumptbl = new SortedList<uint, Func<string, string> >();`](https://stackoverflow.com/a/7181866)  
 	- [SortedList Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8)
+- [SemaphoreSlim](https://learn.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim?view=netframework-4.8)
+	- replaces [`System.Threading.Channels BoundedChannel`](Channel.md); queues tasks instead of MIDI payloads
+	- avoids potential race condition among XAML `RoutedEvents` and NAudio `MidiInMessageEvents`:&nbsp; `Earn` may change.  
 
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  

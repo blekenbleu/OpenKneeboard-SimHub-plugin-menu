@@ -83,8 +83,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions.cs" />
-    <Compile Include="Channel.cs" />
     <Compile Include="Control.midi.cs" />
+    <Compile Include="SemaphoreSlim.cs" />
     <Compile Include="SSEvents.cs" />
     <Compile Include="HTML.cs" />
     <Compile Include="HTTPserver.cs" />

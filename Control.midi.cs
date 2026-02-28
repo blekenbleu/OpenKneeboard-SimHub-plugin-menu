@@ -14,6 +14,7 @@ namespace blekenbleu.SimHub_Remote_menu
 		internal static bool busy;
 		static bool button, changed, _learn = false;			// state variables
 		static string again = " ";
+
 		static bool Earn
 		{
 			get { return _learn; }
@@ -112,7 +113,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				forget = 0;
 				again = "";
 			}
-			Model.MidiStatus = (Earn && MIDI.Start(Model)) ?  "\n\twaiting for MIDI input" : " ";
+			Model.MidiStatus = (Earn && MIDI.Start(Model, this)) ?  "\n\twaiting for MIDI input" : " ";
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
