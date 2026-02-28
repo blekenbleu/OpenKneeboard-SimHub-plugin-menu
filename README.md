@@ -1,9 +1,12 @@
 ## [SimHub](https://www.simhubdash.com)-[Remote-menu](https://github.com/blekenbleu/SimHub-Remote-menu/wiki) for [OpenKneeboard](https://openkneeboard.com/)
-*[SimHub plugin properties](https://github.com/blekenbleu/JSONio) HTTP table for e.g.
+*Web page server for HTTP table of [SimHub plugin properties](https://github.com/blekenbleu/JSONio) to multiple clients, e.g.
 [OpenKneeboard](https://github.com/OpenKneeboard/OpenKneeboard)*  
+Remote control of property values via e.g. button box or MIDI control surfaces  
 ![](example.png)  
 WPF plugin user interface employs 7 buttons and one slider:  
 ![](plugin.png)  
+- scroll vertically among custom SimHub properties  
+- modify, swap with previous for comparing muliple setting changes  
 
 ### background
 Currently, access from SteamVR to SimHub (and its plugin menus) is by e.g.
@@ -15,12 +18,12 @@ overlays](https://www.madmikeplays.com/free-downloads#block-yui_3_17_2_1_1742822
 
 ### wanted
 A dedicated menu display always visible in VR  
-for tweaking e.g. harness tensioner or haptics settings (properties).  
+for tweaking e.g. harness tensioner or haptics settings (SimHub properties).  
 - instead of invoking a computationally expensive overlay GUI,
-	- update HTML table properties and values
+	- update HTML table text for property values
 	- table navigation and changes by e.g. rotary encoders, sliders, buttons
 
-HTML table updates should have lower processing overhead than graphical overlay..  
+HTML text updates should have lower processing overhead than for graphical overlay..  
 
 ### resources
 - from [JSONio](https://github.com/blekenbleu/JSONio):
@@ -43,24 +46,25 @@ HTML table updates should have lower processing overhead than graphical overlay.
 - generate an [HTML `<table>`](HTML.md) from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
 - hand-code [JavaScript](JavaScript.md) for `<table>` updates by Server-Sent Events
 - make [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page available to client browsers
-- send Server-Sent Events for `<table>` cell property values and e.g. scroll actions - **working**
+- send Server-Sent Events for `<table>` cell property value changes and e.g. scroll actions - **working**
 	- *replaced* TCPserver.cs content with [TcpMultiClient](https://github.com/blekenbleu/TcpMultiClient) `Program.cs` Main() + MultiClientTcpServer()
 	- *replaced* HTTPserver.cs content with IsHttp() + ClientTask()
-- set HTML scroll and (*to do*) slider with car change; do not wait for WPF menu open
-- *to do*: [MIDI input support](Channel.md) for `<table>` changes
+- set HTML scroll and slider with car change; do not wait for WPF menu open
+- [MIDI input support](Channel.md) for remote `<table>` changes
 
 ### new-to-me tricks  
 - handle all button events in one method by [`(e.OriginalSource as FrameworkElement).Name`](https://stackoverflow.com/a/26938950)
 - [NAudio `MidiIn.NumberOfDevices`, `MidiIn(deviceNumber)`](https://github.com/naudio/NAudio/blob/master/NAudioDemo/MidiInDemo/MidiInPanel.cs#L24)
 	- [`ConcurrentDictionary<>`](https://www.dotnetperls.com/concurrentdictionary)  
-	- [System.Threading.Channels FIFO queue](Channel.md)  
-- [`TcpListener` Web Server](TcpListener.md)
+	- [System.Threading.Channels FIFO queue](Channel.md) - *my implementation failed randomly* 
+- [`TcpListener` Web Server](TcpListener.md)  
 - [scrolling TextBlock](https://stackoverflow.com/a/40626596)
 - Click handler:&nbsp; [`var jumptbl = new SortedList<uint, Func<string, string> >();`](https://stackoverflow.com/a/7181866)  
 	- [SortedList Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8)
 - [SemaphoreSlim](https://learn.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim?view=netframework-4.8)
-	- replaces [`System.Threading.Channels BoundedChannel`](Channel.md); queues tasks instead of MIDI payloads
-	- avoids `Earn` change race condition between XAML `RoutedEvents` and NAudio `MidiInMessageEvents`
+	- replaced [`System.Threading.Channels BoundedChannel`](Channel.md)
+		- queues tasks instead of MIDI payloads
+	- avoids race conditions between XAML `RoutedEvents` and NAudio `MidiInMessageEvents`
 
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  

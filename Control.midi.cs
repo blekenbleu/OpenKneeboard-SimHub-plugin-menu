@@ -166,7 +166,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				else if (0xB0 != (0x7F00F0 & MidiMessage))	// ignore CC button 0 values
 					ClickHandle(click[latest]);
 			}
-			else Model.MidiStatus = $"\nProcess({latest:X8}) not learned";
+			else Model.MidiStatus = $"\nMIDI({latest:X8}) not learned";
 			busy = false;
 		}
 	}
