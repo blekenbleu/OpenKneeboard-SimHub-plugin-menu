@@ -60,7 +60,7 @@ HTML table updates should have lower processing overhead than graphical overlay.
 	- [SortedList Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8)
 - [SemaphoreSlim](https://learn.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim?view=netframework-4.8)
 	- replaces [`System.Threading.Channels BoundedChannel`](Channel.md); queues tasks instead of MIDI payloads
-	- avoids potential race condition among XAML `RoutedEvents` and NAudio `MidiInMessageEvents`:&nbsp; `Earn` may change.  
+	- avoids `Earn` change race condition between XAML `RoutedEvents` and NAudio `MidiInMessageEvents`
 
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  

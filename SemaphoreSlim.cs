@@ -5,7 +5,7 @@ namespace blekenbleu.SimHub_Remote_menu
 {
 	public partial class Control
 	{
-		SemaphoreSlim semaphore = new SemaphoreSlim(1); // Only allow 1 task at a time
+		SemaphoreSlim semaphore = new SemaphoreSlim(1);		// Only 1 task at a time
 
 		internal async Task EventHandler(string name, int payload)
 		{
