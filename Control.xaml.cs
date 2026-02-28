@@ -16,8 +16,8 @@ namespace blekenbleu.SimHub_Remote_menu
 	{
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
-		internal  byte Selection;					// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.74";
+		internal byte Selection;					// changes only in OKSHmenu.Select() on UI thread
+		internal static string version = "1.75";
 
 		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);
@@ -31,7 +31,7 @@ namespace blekenbleu.SimHub_Remote_menu
 			OK = plugin;							// Control.xaml button events call OKSHmenu methods
 			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid
 			if (0 < OKSHmenu.Settings.midiDevs.Count)
-				MIDI.Resume(Model);
+				MIDI.Resume(Model, this);
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -66,15 +66,11 @@ namespace blekenbleu.SimHub_Remote_menu
 		}
 
 		// handle all button events in one method
-		internal void ButEvent(object sender, RoutedEventArgs e)
+		internal async void ButEvent(object sender, RoutedEventArgs e)
 		{
 			string butName = (e.OriginalSource as FrameworkElement).Name;
 
-			if ("bm" == butName)
-				NotEarn();
-			else if (Earn)		 // alternative event handling
-				Learn(butName);
-			else ClickHandle(butName);
+			await EventHandler(butName, -1);
 		}
 
 		internal static void ClickHandle(string butName)	// used by ButEvent(), Process(MidiMessage)
@@ -111,15 +107,9 @@ namespace blekenbleu.SimHub_Remote_menu
 		}
 
 		// handle slider changes
-		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private async void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (Earn)	// map a MIDI axis to slider via click list
-			{
-				if (button)
-					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-				else ListClick("SL");		// Control.midi.cs
-			}
-			else OK.FromSlider(SL.Value);
+			await EventHandler("SL", (int)(0.5 + 10 * SL.Value));
 		}
 	}
 }

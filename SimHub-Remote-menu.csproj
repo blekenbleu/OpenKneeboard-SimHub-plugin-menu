@@ -29,7 +29,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OutputPath>$(SIMHUB_INSTALL_PATH)</OutputPath>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SIMHUB_INSTALL_PATH)SimHubWPF.exe</StartProgram>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -83,8 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions.cs" />
-    <Compile Include="Channel.cs" />
     <Compile Include="Control.midi.cs" />
+    <Compile Include="SemaphoreSlim.cs" />
     <Compile Include="SSEvents.cs" />
     <Compile Include="HTML.cs" />
     <Compile Include="HTTPserver.cs" />

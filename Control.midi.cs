@@ -14,6 +14,7 @@ namespace blekenbleu.SimHub_Remote_menu
 		internal static bool busy;
 		static bool button, changed, _learn = false;			// state variables
 		static string again = " ";
+
 		static bool Earn
 		{
 			get { return _learn; }
@@ -55,7 +56,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				Model.MidiStatus = "\nMIDI input missing";
 			else if (click.ContainsKey(recent))
 			{
-				Model.MidiStatus = $"\nMIDI {recent:X8} already in click list for {click[recent]};  first Forget it";
+				Model.MidiStatus = $"\nMIDI {recent:X8} already click {click[recent]};  first Forget it";
 				forget = recent;
 			}
 			else if (click.ContainsValue(bName) && again != bName)
@@ -112,13 +113,13 @@ namespace blekenbleu.SimHub_Remote_menu
 				forget = 0;
 				again = "";
 			}
-			Model.MidiStatus = (Earn && MIDI.Start(Model)) ?  "\n\twaiting for MIDI input" : " ";
+			Model.MidiStatus = (Earn && MIDI.Start(Model, this)) ?  "\n\twaiting for MIDI input" : " ";
 		}
 
 		// Handle Control Change (0xB0), Patch Change (0xC0) and Bank Select (0xB0) channel messages
 		// https://github.com/naudio/NAudio/blob/master/NAudio.Midi/Midi/MidiEvent.cs#L24
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
-		internal static void Process(int MidiMessage)  // called by async Task Channel.ReadAsync()
+		internal static void ProcessMIDI(int MidiMessage)  // called by async Task Channel.ReadAsync()
 		{
 			busy = true;
 /*			NAudio bytes are reversed from e.g. MidiView and WetDry:  Status byte is least significant..
@@ -160,7 +161,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				if ("SL" == click[latest])					// handle values, including 0, for slider
 				{
 					OK.FromSlider(mVal/1.27);				// MIDI value as if from slider, except 0-127
-					OK.ToSlider();
+					OK.ToSlider();							// update WPF slider position
 				}
 				else if (0xB0 != (0x7F00F0 & MidiMessage))	// ignore CC button 0 values
 					ClickHandle(click[latest]);
