@@ -17,7 +17,7 @@ namespace blekenbleu.SimHub_Remote_menu
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
 		internal byte Selection;					// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.74";
+		internal static string version = "1.75";
 
 		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);
@@ -71,13 +71,6 @@ namespace blekenbleu.SimHub_Remote_menu
 			string butName = (e.OriginalSource as FrameworkElement).Name;
 
 			await EventHandler(butName, -1);
-/*
-			if ("bm" == butName)
-				NotEarn();
-			else if (Earn)		 // alternative event handling
-				Learn(butName);
-			else ClickHandle(butName);
- */
 		}
 
 		internal static void ClickHandle(string butName)	// used by ButEvent(), Process(MidiMessage)
@@ -114,15 +107,9 @@ namespace blekenbleu.SimHub_Remote_menu
 		}
 
 		// handle slider changes
-		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		private async void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			if (Earn)	// map a MIDI axis to slider via click list
-			{
-				if (button)
-					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
-				else ListClick("SL");		// Control.midi.cs
-			}
-			else OK.FromSlider(SL.Value);
+			await EventHandler("SL", (int)(0.5 + 10 * SL.Value));
 		}
 	}
 }

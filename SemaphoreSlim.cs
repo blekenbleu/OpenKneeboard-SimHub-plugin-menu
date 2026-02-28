@@ -7,6 +7,7 @@ namespace blekenbleu.SimHub_Remote_menu
 	{
 		SemaphoreSlim semaphore = new SemaphoreSlim(1);		// Only 1 task at a time
 
+		// WPF events by name;  MIDI events by payload
 		internal async Task EventHandler(string name, int payload)
 		{
 			await semaphore.WaitAsync();
@@ -16,7 +17,7 @@ namespace blekenbleu.SimHub_Remote_menu
 			}
 			catch
 			{
-                System.Windows.Forms.MessageBox.Show($"EventHandler({name}, {payload}", "Exception");
+                System.Windows.Forms.MessageBox.Show($"Remote-menu.EventHandler({name}, {payload})", "Exception");
 			}
 			finally
 			{
@@ -27,24 +28,24 @@ namespace blekenbleu.SimHub_Remote_menu
 		void PayloadHandler(string name, int payload)
 		{
 			if ("MIDI" == name)
-				Process(payload);
-			else if (-1 == payload)
+				ProcessMIDI(payload);
+			else if (-1 == payload)			// WPF RoutedEvent
 			{
-				if ("bm" == name)
+				if ("bm" == name)			// [MIDI learn] button
 					NotEarn();
-				else if (Earn)				// alternative event handling
+				else if (Earn)				// learning events
 					Learn(name);
-				else ClickHandle(name);
+				else ClickHandle(name);		// "live" events
 			}
-			else if (-2 == payload)
+			else 							// System.Windows.Input.Mouse event
 			{
-				if (Earn)	// map a MIDI axis to slider via click list
+				if (Earn)					// learn slider map
 				{
-					if (button)
+					if (button)				// only 0 or 127 values?
 						Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
 					else ListClick(name);	// Control.midi.cs
 				}
-				else OK.FromSlider(SL.Value);
+				else OK.FromSlider(0.1 * payload);
 			}
 		}
 	}
