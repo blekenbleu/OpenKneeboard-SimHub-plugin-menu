@@ -14,6 +14,10 @@ namespace blekenbleu.SimHub_Remote_menu
 			{
 				await Task.Run(() => PayloadHandler(name, payload));
 			}
+			catch
+			{
+                System.Windows.Forms.MessageBox.Show($"EventHandler({name}, {payload}", "Exception");
+			}
 			finally
 			{
 				semaphore.Release();

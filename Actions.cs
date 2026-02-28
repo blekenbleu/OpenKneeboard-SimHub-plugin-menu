@@ -106,7 +106,8 @@ namespace blekenbleu.SimHub_Remote_menu
 
 		private void SelectedStatus()			// Select(), CarChange()
 		{
-			Control.Model.SelectedProperty = (0 > View.Selection) ? "unKnown" : simValues[View.Selection].Name;
+			Control.Model.SelectedProperty = (0 > View.Selection) ? "unKnown"
+											: simValues[View.Selection].Name;
 		}
 
 		// simValues set methods
@@ -122,8 +123,22 @@ namespace blekenbleu.SimHub_Remote_menu
 			if(0 > slider)
 				return;
 
-			Control.Model.SliderProperty = HttpServer.SliderProperty = simValues[slider].Name + ":  " + simValues[slider].Current;
-			Control.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * System.Convert.ToDouble(simValues[slider].Current);
+			double stuff = 0;
+
+			Control.Model.SliderProperty = HttpServer.SliderProperty
+							= simValues[slider].Name + ":  " + simValues[slider].Current;
+			try
+			{
+				stuff = System.Convert.ToDouble(simValues[slider].Current);
+			}
+			catch
+			{
+				OOps("ToSlider(): bad Current value '{simValues[slider].Current}'");
+			}
+			finally
+			{
+				Control.Model.SliderValue = HttpServer.SliderValue = SliderFactor[1] * stuff;
+			}
 		}
 
 		// Control.xaml action -------------------------------------------------
