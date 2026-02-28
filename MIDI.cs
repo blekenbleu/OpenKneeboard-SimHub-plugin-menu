@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using NAudio.Midi;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	public class MidiDev			// must be public for Settings.cs
 	{

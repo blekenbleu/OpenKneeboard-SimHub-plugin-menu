@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
@@ -145,7 +145,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-//		specific to OpenKneeboard-SimHub-plugin-menu
+//		specific to SimHub-Remote-menu
 		public static string[] urls;
 		public static int pageViews = 0;
 		public static int requestCount = 0;

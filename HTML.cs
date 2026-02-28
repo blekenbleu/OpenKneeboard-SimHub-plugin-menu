@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{

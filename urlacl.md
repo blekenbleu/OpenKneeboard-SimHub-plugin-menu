@@ -13,7 +13,7 @@ URL reservation successfully added
 [2026-01-27 06:00:43,051] INFO - OKSHpm.Serve(): HttpListenerException transaction System.Net.HttpListenerException (0x80004005): Access is denied
    at System.Net.HttpListener.AddAllPrefixes()
    at System.Net.HttpListener.Start()
-   at blekenbleu.OpenKneeboard_SimHub_plugin_menu.HttpServer.Serve() in D:\my\SimHub\PluginSdk\OpenKneeboard-SimHub-plugin-menu\HTTPserver.cs:line 147 
+   at blekenbleu.SimHub_Remote_menu.HttpServer.Serve() in https://github.com/blekenbleu/HTTPserver.cs:line 147 
 ```
 To restore local function:
 ```

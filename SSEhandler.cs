@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	// Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
 	//			https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8

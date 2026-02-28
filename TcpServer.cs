@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	internal class SsClient
 	{

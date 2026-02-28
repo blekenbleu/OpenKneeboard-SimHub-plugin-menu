@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Windows;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	/// <summary>
 	/// MIDI interaction code for Control.xaml
@@ -71,7 +71,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-		// https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/blob/MIDI/Channel.md#midi-device-name-handling
+		// https://github.com/blekenbleu/SimHub-Remote-menu/blob/MIDI/Channel.md#midi-device-name-handling
 		// https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8
 		// https://www.hobbytronics.co.uk/wp-content/uploads/2023/07/9_MIDI_code.pdf
 		void Learn(string bName)	// associate MIDI messages with xaml button events

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	public partial class OKSHmenu
 	{

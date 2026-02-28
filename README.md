@@ -1,4 +1,4 @@
-## [OpenKneeboard](https://openkneeboard.com/)-[SimHub](https://www.simhubdash.com)-[plugin-menu](https://github.com/blekenbleu/OpenKneeboard-SimHub-plugin-menu/wiki)
+## [SimHub](https://www.simhubdash.com)-[Remote-menu](https://github.com/blekenbleu/SimHub-Remote-menu/wiki) for [OpenKneeboard](https://openkneeboard.com/)
 *[SimHub plugin properties](https://github.com/blekenbleu/JSONio) HTTP table for e.g.
 [OpenKneeboard](https://github.com/OpenKneeboard/OpenKneeboard)*  
 ![](example.png)  
@@ -24,7 +24,7 @@ HTML table updates should have lower processing overhead than graphical overlay.
 
 ### resources
 - from [JSONio](https://github.com/blekenbleu/JSONio):
-	- in `OpenKneeboard-SimHub-plugin-menu.csproj`:  
+	- in `SimHub-Remote-menu.csproj`:  
 	 could not get [ReferencePath](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/project-build/troubleshooting-broken-references)
 	 working;&nbsp; copied JSONio `HintPath`s  
 	- SimHub confused `OKSHmenu` with `JSONio` plugin until renaming `class JSONio`.  

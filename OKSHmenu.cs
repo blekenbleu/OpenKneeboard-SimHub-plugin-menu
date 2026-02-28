@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	[PluginDescription("JSONio properties displayed in HTTP table")]
 	[PluginAuthor("blekenbleu")]

@@ -3,7 +3,7 @@ using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	internal partial class MIDI
 	{

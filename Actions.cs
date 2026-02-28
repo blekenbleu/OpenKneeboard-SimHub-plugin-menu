@@ -1,6 +1,6 @@
 using SimHub.Plugins;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	public partial class OKSHmenu
 	{
