@@ -1,25 +1,26 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
-    partial class HttpServer    // works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
-    {
-		internal static string HTMLtable(List<Values> sV)
+	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
+	{
+		internal static string HTMLtable(List<Values> sV, string tableStyle = "font-size: 25px;",
+				 string messageStyle = "width:600; color:navy; background-color:silver")
 		{
-			StringBuilder builder = new StringBuilder();	// https://jonskeet.uk/csharp/stringbuilder.html
+			StringBuilder builder = new StringBuilder("\n<p id=msg style='{messageStyle}'>");	// https://jonskeet.uk/csharp/stringbuilder.html
 
-			builder.Append("<table id=tok style='font-size: 25px;'>\n<tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>");
-			for (int i = 0; i < sV.Count; i++)
-				builder.Append($"\n<tr><td>{sV[i].Name}</td><td>{sV[i].Current}</td><td>{sV[i].Previous}</td><td>{sV[i].Default}</td></tr>");
-			builder.Append("\n</table>");
+			// message paragraph
+			builder.Append(ViewModel.SSEtext(false)).Append("</p>");
 
-			// add a paragraph for messages
-			builder.Append("\n<p id=msg style='width:600; color:navy; background-color:silver'><i>messages here</i></p>");	// replace 'messages here'
-			// add a slider and label
-			builder.Append("\n<label id=active for='myRange'>unset:</label>");		// replace 'unset:'
-			builder.Append("\n<input type='range' value='50' id='myRange' style='width:500'>");			// replace	'50'
-			builder.Append(JavaScript);
+			// slider and label
+			builder.Append("<input id='myRange' type='range' value='50' style='width:500'> ");		// replace	'50'
+			builder.Append("<label id=active for='myRange'>unset</label>");							// replace 'unset'
+
+			builder.Append("\n<table id=tok style='").Append(tableStyle).Append("'>\n<br><tr><th>Property</th><th>Current</th><th>Previous</th><th>Default</th></tr>");
+			foreach (var row in sV)
+				builder.Append($"\n<tr><td>{row.Name}</td><td>{row.Current}</td><td>{row.Previous}</td><td>{row.Default}</td></tr>");
+			builder.Append("\n</table>").Append(JavaScript());
 			return builder.ToString();
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	public class Property	   // must be public for DataPluginSettings
 	{
@@ -18,6 +18,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// each current Value stored as string of integer 10x actual value
 			new Property() {}	// Current per-car, then per-game, then global
 		};
+
+		public List<MidiDev> midiDevs = new List<MidiDev>() {};
 
 		// global default property values
 		public List<Property> gDefaults = new List<Property>() {};

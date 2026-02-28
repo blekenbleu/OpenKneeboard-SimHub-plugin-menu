@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu.Properties {
+namespace blekenbleu.SimHub_Remote_menu.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("blekenbleu.OpenKneeboard_SimHub_plugin_menu.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("blekenbleu.SimHub_Remote_menu.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

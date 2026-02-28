@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	internal class SsClient
 	{
@@ -23,8 +23,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		internal static double SliderValue;
 		static TcpListener server = null;		// works for any IP addresses
 		internal static ConcurrentDictionary<string, SsClient> clients;
-		static readonly Int32 port = 8765;
-		static Task keepalive;
+//		static Task keepalive;
 		static bool listening = false;
 		static string localIP;
 
@@ -42,7 +41,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		{
 			var fun = Task.Run(() => MultiClientTcpServer());
 			js = new JavaScriptSerializer();		// reuse for each SSE
-			keepalive = null;
+//			keepalive = null;
 			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
 			{
 				socket.Connect("8.8.8.8", 65530);
@@ -50,7 +49,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				localIP = endPoint.Address.ToString();
 				socket.Close();
 			}
-			OKSHmenu.Info("TcpServer.Open(): launching MultiClientTcpServer");
+//			OKSHmenu.Info("TcpServer.Open(): launching MultiClientTcpServer");
 /*			sseResponse = Encoding.UTF8.GetBytes(Table());
 							$"HTTP/1.1 200 OK\nContent-Length: {ssefile.Length}\n"
 							+ "Content-Type: text/html\nServer: TcpMultiClient\n\n"
@@ -62,9 +61,10 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		// TcpClient creates a Socket to send and receive data, accessible as TcpClient.Client
 		// Each TcpClient.Client connection seemingly requires its own Task
 		// https://learn.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient.client?view=netframework-4.8
-		public static async Task MultiClientTcpServer()
+		public static async Task MultiClientTcpServer(int port = 8765)
 		{
 			clients = new ConcurrentDictionary<string, SsClient>();
+			urls = new string[] { $"http://localhost:{port}/", @"http://127.0.0.1:{port}/", "real IP" };
 
 			try
 			{

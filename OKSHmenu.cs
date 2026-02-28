@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	[PluginDescription("JSONio properties displayed in HTTP table")]
 	[PluginAuthor("blekenbleu")]
 	[PluginName("OKSHmenu")]
 	public partial class OKSHmenu : IPlugin, IDataPlugin, IWPFSettingsV2
 	{
-		public DataPluginSettings Settings;
+		public static DataPluginSettings Settings;
 		public string NewCar = "false";
 
 		internal static string Msg = "";
@@ -50,7 +50,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		void OOpsMB()
 		{
 			Info("OOpsMB(): " + Msg);
-			View?.Dispatcher.Invoke(() => View.OOpsMB());
+			View?.Dispatcher.Invoke(() => Control.OOpsMB());
 			Msg = "";
 		}
 
@@ -73,7 +73,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		/// <summary>
 		/// Short plugin title to show in left menu. Return null to use the PluginName attribute.
 		/// </summary>
-		public string LeftMenuTitle => "OKSHmenu " + Control.version;
+		public string LeftMenuTitle => "WebMenu " + Control.version;
 
 		/// <summary>
 		/// Called one time per game data update, contains all normalized game data,
@@ -120,13 +120,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				slim.data.gList[gndx].cList[0].Vlist = DefaultCopy();
 			}
 
+			set = set || MIDI.Stop();
 			if (set)	// .ini mismatches Settings or game run
 				this.SaveCommonSettings("GeneralSettings", Settings);
 
 			HttpServer.Stop();
-            simValues = new List<Values>();
+			simValues = new List<Values>();
 
-            if (!write)				// End()
+			if (!write)				// End()
 				return;
 
 			string sjs = Newtonsoft.Json.JsonConvert.SerializeObject(slim.data,
@@ -145,7 +146,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			CarChange(pm.GetPropertyValue("CarID")?.ToString(),
 					  pm.GetPropertyValue("DataCorePlugin.CurrentGame")?.ToString(),
 					  true);				// disable popup
-        }
+		}
 
 		/// <summary>
 		/// Returns settings control or null if not required
@@ -155,19 +156,19 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 		private Control View;	// instance of Control.xaml.cs Control()
 		public System.Windows.Controls.Control GetWPFSettingsControl(PluginManager pluginManager)
 		{
-			View = new Control(this);		// invoked *after* Init()
-			SetSlider();
-            Task.Run(() => HttpServer.OpenAsync());
+			HttpServer.Init(View = new Control(this));		// invoked *after* Init()
+			SliderButtton();
+			Task.Run(() => HttpServer.OpenAsync());
 			if (0 < Msg.Length)
 			{
 				Info("OOpsMB() " + Msg);
-				Msg = "Init() " + Msg + ViewModel.statusText;
-				View.Dispatcher.Invoke(() => View.OOpsMB());
+				Msg = "Init() " + Msg + ViewModel.staticText;
+				View.Dispatcher.Invoke(() => Control.OOpsMB());
 				Msg = "";
 			}
 			// assignment preempts Compiler Warning CS4014
 //			Info("GetWPFSettingsControl():  delayTask");
-            Task delayTask = AsyncRunningGame(pluginManager, 1000);
+			Task delayTask = AsyncRunningGame(pluginManager, 1000);
 			return View;
 		}
 
@@ -343,20 +344,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			// SimHub properties by AttachDelegate get evaluated "on demand"
 			foreach (Values p in simValues)
 				this.AttachDelegate(p.Name, () => p.Current);
-			this.AttachDelegate("Selected", () => View.Model.SelectedProperty);
+			this.AttachDelegate("Selected", () => Control.Model.SelectedProperty);
 			this.AttachDelegate("New Car", () => NewCar);
 			this.AttachDelegate("Car", () => CurrentCar);
 			this.AttachDelegate("Game", () => Gname);
 			this.AttachDelegate("Msg", () => Msg);
 
 			// Declare an event and corresponding action
-			this.AddAction("IncrementSelectedProperty", (a, b) => Ment(1));
-			this.AddAction("DecrementSelectedProperty", (a, b) => Ment(-1));
-			this.AddAction("NextProperty",				(a, b) => Select(true)	);
-			this.AddAction("PreviousProperty",			(a, b) => Select(false)	);
-			this.AddAction("SwapCurrentPrevious",		(a, b) => Swap()		);
-			this.AddAction("CurrentAsDefaults",			(a, b) => SetDefault());
-			this.AddAction("SelectedAsSlider",			(a, b) => SelectSlider());
+			Actions();
 			this.AddAction("ChangeProperties",			(a, b) => CarChange(	// SimHub triggers by ExternalScript.CarChange event
 					pluginManager.GetPropertyValue("CarID")?.ToString(),
 					pluginManager.GetPropertyValue("DataCorePlugin.CurrentGame")?.ToString(),

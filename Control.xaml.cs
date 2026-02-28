@@ -7,28 +7,31 @@ using System.Windows.Controls;
  ;	alternatively, DataContext in XAML	https://dev.to/mileswatson/a-beginners-guide-to-mvvm-using-c-wpf-241b
  */
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	/// <summary>
 	/// Interaction code for Control.xaml
 	/// </summary>
 	public partial class Control : UserControl
 	{
-		public OKSHmenu OK { get; }
-		public ViewModel Model;							// reference XAML controls
-		internal byte Selection;						// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.60";
+		public static OKSHmenu OK;
+		public static ViewModel Model;				// reference XAML controls
+		internal  byte Selection;					// changes only in OKSHmenu.Select() on UI thread
+		internal static string version = "1.74";
 
-		public Control() {								// called before simValues are initialized
+		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);
 			InitializeComponent();
-			this.DataContext = Model;					// StaticControl events change Control.xaml binds
+			DataContext = Model;					// StaticControl events change Control.xaml binds
+			changed = Earn = false;					// Control.midi.cs
 		}
 
 		public Control(OKSHmenu plugin) : this()
 		{
-			this.OK = plugin;							// Control.xaml button events call OKSHmenu methods
-			dg.ItemsSource = OKSHmenu.simValues;		// bind XAML DataGrid to OKSHmenu.cs List<Values> simValues
+			OK = plugin;							// Control.xaml button events call OKSHmenu methods
+			dg.ItemsSource = OKSHmenu.simValues;	// bind XAML DataGrid
+			if (0 < OKSHmenu.Settings.midiDevs.Count)
+				MIDI.Resume(Model);
 		}
 
 		private void Hyperlink_RequestNavigate(object sender,
@@ -37,14 +40,14 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
 		}
 
-		internal void OOpsMB()
+		internal static void OOpsMB()
 		{
 			Model.StatusText = OKSHmenu.Msg;
 			System.Windows.Forms.MessageBox.Show(OKSHmenu.Msg, "OKSHmenu");
 		}
 
 		// highlights selected property cell
-		internal void Selected()						// crashes if called from other threads
+		internal void Selected()					// crashes if called from other threads
 		{
 			if ((dg.Items.Count > Selection) && (dg.Columns.Count > 2))
 			{
@@ -62,45 +65,61 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			Selected();
 		}
 
+		// handle all button events in one method
+		internal void ButEvent(object sender, RoutedEventArgs e)
+		{
+			string butName = (e.OriginalSource as FrameworkElement).Name;
+
+			if ("bm" == butName)
+				NotEarn();
+			else if (Earn)		 // alternative event handling
+				Learn(butName);
+			else ClickHandle(butName);
+		}
+
+		internal static void ClickHandle(string butName)	// used by ButEvent(), Process(MidiMessage)
+		{
+			Model.MidiStatus = " ";
+			switch(butName)
+			{
+				case "b0":
+					OK.Select(false);
+					break;
+				case "b1":
+					OK.Select(true);
+					break;
+				case "b2":
+					OK.Ment(1);
+					break;
+				case "b3":
+					OK.Ment(-1);
+					break;
+				case "b4":
+					OK.Swap();
+					break;
+				case "b5":
+					OK.SetDefault();
+					break;
+				case "SB":
+					OK.SliderButtton();
+					break;
+				default:
+					Model.StatusText = "ClickHandle(): unconfigured click '{butName)'";
+					OOpsMB();
+					break;
+			}
+		}
+
 		// handle slider changes
 		private void Slider_DragCompleted(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			OK.FromSlider(0.5 + SL.Value);
-		}
-
-		private void Slider_Click(object sender, RoutedEventArgs e)	// handle button clicks
-		{
-			OK.SelectSlider();
-		}
-
-		private void Prior_Click(object sender, RoutedEventArgs e)	// handle button clicks
-		{
-			OK.Select(false);
-		}
-
-		private void Next_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Select(true);
-		}
-
-		private void Inc_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Ment(1);
-		}
-
-		private void Dec_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Ment(-1);
-		}
-
-		private void Swap_Click(object sender, RoutedEventArgs e)
-		{
-			OK.Swap();
-		}
-
-		private void Def_Click(object sender, RoutedEventArgs e)
-		{
-			OK.SetDefault();
+			if (Earn)	// map a MIDI axis to slider via click list
+			{
+				if (button)
+					Model.MidiStatus = "\nMIDI control >>only<< for button; ignored";
+				else ListClick("SL");		// Control.midi.cs
+			}
+			else OK.FromSlider(SL.Value);
 		}
 	}
 }

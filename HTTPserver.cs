@@ -4,14 +4,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	partial class HttpServer	// works in .NET Framework 4.8 WPF User Control library (SimHub plugin)
 	{
 		// adapted from https://github.com/blekenbleu/TcpMultiClient
 		static readonly byte[] ok = Encoding.UTF8.GetBytes(
 			"HTTP/1.1 200 OK\nContent-Type: text/event-stream; charset=UTF-8\n\n\n"
-			+ "event: scroll\ndata:{\"row\": \"1\"}\n\n"
+			+ ViewModel.SSEtext(true)
 		);
 		static readonly byte[] not = Encoding.UTF8.GetBytes("HTTP/1.1 404 NOT FOUND\n\n");
 
@@ -49,7 +49,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		// Served page is passive; only SSE from JavaScript is supported.
 		// Any other request gets table<>
-		static async Task ClientTask(TcpClient client, string clientId)
+		static async Task ClientTask(TcpClient client, string clientId)	// invoked by TcpServer.cs MultiClientTcpServer()
 		{
 			try
 			{
@@ -80,8 +80,18 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 						OKSHmenu.Info($"ClientTask:\n---- {clientId} StreamReader connected ---");
 						connected = true;
+/*
 						if (ht && null == keepalive)
-							keepalive = Task.Run(() => SSEtimer());
+						{
+							object lockObject = new object();
+
+							lock (lockObject)							// avoid race for multiple simultaneous connections
+    						{
+        						if (keepalive == null)
+									keepalive = Task.Run(() => SSEtimer());
+							}
+						}
+ */
 					}
 
 					while (connected)
@@ -135,8 +145,8 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			}
 		}
 
-//		specific to OpenKneeboard-SimHub-plugin-menu
-		public static string[] urls = { $"http://localhost:{port}/", @"http://127.0.0.1:{port}/", "real IP" };
+//		specific to SimHub-Remote-menu
+		public static string[] urls;
 		public static int pageViews = 0;
 		public static int requestCount = 0;
 		public static string end = "</body></html>";
@@ -159,7 +169,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 
 		static string Table ()
 		{
-            string data = head + HTMLtable(OKSHmenu.simValues) + end;
+			string data = head + HTMLtable(OKSHmenu.simValues) + end;
 			string sw =
 			"HTTP/1.1 200 OK\n"
 			+ "Content-Type:text/html; charset=UTF-8\n"

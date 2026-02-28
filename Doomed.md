@@ -50,11 +50,11 @@ Writes source of server-sent events to destination stream.
 
 <details><summary><b>.NET 9.0 WPF Class Library - doomed for SimHub</b></summary>
 Unrecognized as a plugin by SimHubWPF.exe;&nbsp;  <a href=https://dotnet.microsoft.com/en-us/download/visual-studio-sdks>.NET 8 and newer are cross-platform, open-source</a><ul>
-<li> created a new Visual Studio .NET 9.0 WPF Class Library named <code>OpenKneeboard-SimHub-plugin-menu</code><ul>
-	<li> copied those <code>OpenKneeboard-SimHub-plugin-menu.csproj OpenKneeboard-SimHub-plugin-menu.sln</code> into this repository
+<li> created a new Visual Studio .NET 9.0 WPF Class Library named <code>SimHub-Remote-menu</code><ul>
+	<li> copied those <code>SimHub-Remote-menu.csproj SimHub-Remote-menu.sln</code> into this repository
 	<li>from <code>SimHub/PluginSdk/JSONio</code>, copied <code>Control.xaml  Control.xaml.cs  JSONio.cs Properties Settings.cs  Slim.cs  Values.cs  ViewModel.cs  bin  js.cs sdkmenuicon.png</code>
-	<li>renamed <code>namespace</code> to </code>blekenbleu.OpenKneeboard_SimHub_plugin_menu</coe>
-	<li>deleted <code>GlobalSection(ExtensibilityGlobals)</code> in <code>OpenKneeboard-SimHub-plugin-menu.sln</code></ul></ul>
+	<li>renamed <code>namespace</code> to </code>blekenbleu.SimHub_Remote_menu</coe>
+	<li>deleted <code>GlobalSection(ExtensibilityGlobals)</code> in <code>SimHub-Remote-menu.sln</code></ul></ul>
 To debug executible from Visual Studio UI, hacked into <code>.csproj</code>:<br>
 <code>  &lt;PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"&gt;
     &lt;OutputPath&gt;$(SIMHUB_INSTALL_PATH)&lt;/OutputPath&gt;

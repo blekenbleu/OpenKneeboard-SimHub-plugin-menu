@@ -2,8 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
+namespace blekenbleu.SimHub_Remote_menu
 {
 	// Source - https://stackoverflow.com/questions/28899954/net-server-sent-events-using-httphandler-not-working
 	//			https://learn.microsoft.com/en-us/dotnet/api/system.io.stream?view=netframework-4.8
@@ -20,24 +19,24 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 			if (null != clients && 0 < clients.Count)
 			{
 				SSEonce = true;
-                byte[] togo = Encoding.UTF8.GetBytes($"{responseText}\n\n");
+				byte[] togo = Encoding.UTF8.GetBytes($"{responseText}\n\n");
 
-                foreach (var c in clients)
+				foreach (var c in clients)
 					if (c.Value.Tc.Connected)
-                    {
+					{
 						try
 						{
 							NetworkStream clientStream = c.Value.Tc.GetStream();
 							await clientStream.WriteAsync(togo, 0, togo.Length);
 						}
 						catch
-                        { // Remove disconnected client
-                            clients.TryRemove(c.Key, out _);
-                        }
-                    }
+						{ // Remove disconnected client
+							clients.TryRemove(c.Key, out _);
+						}
+					}
 					else OKSHmenu.Info("SSErespond():  null client!!?");
 
-            } else {
+			} else if (listening) {
 				if (SSEonce)
 					OKSHmenu.Info("SSErespond():  no clients");
 				SSEonce = false;
@@ -61,7 +60,7 @@ namespace blekenbleu.OpenKneeboard_SimHub_plugin_menu
 				await Task.Delay(15000);
 			}
 			OKSHmenu.Info("SSEtimer(): exiting");
-			keepalive = null;
+//			keepalive = null;
 		}
 	}		// class
 }			// namespace
