@@ -1,4 +1,3 @@
-using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,22 +10,17 @@ namespace blekenbleu.SimHub_Remote_menu
 		internal async Task EventHandler(string name, int payload)
 		{
 			await semaphore.WaitAsync();
-			_ = Task.Run(() =>
+			try
 			{
-				Task<int> task = new Task<int>(() => PayloadHandler(name, payload));
-				try
-				{
-					task.Start();
-					task.Wait();
-				}
-				finally
-				{
-					semaphore.Release();
-				}
-			});
+				await Task.Run(() => PayloadHandler(name, payload));
+			}
+			finally
+			{
+				semaphore.Release();
+			}
 		}
 
-		int PayloadHandler(string name, int payload)
+		void PayloadHandler(string name, int payload)
 		{
 			if ("MIDI" == name)
 				Process(payload);
@@ -48,7 +42,6 @@ namespace blekenbleu.SimHub_Remote_menu
 				}
 				else OK.FromSlider(SL.Value);
 			}
-			return 0;
 		}
 	}
 }
