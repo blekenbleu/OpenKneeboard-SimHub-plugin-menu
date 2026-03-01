@@ -43,11 +43,12 @@ HTML table updates should have lower processing overhead than graphical overlay.
 - generate an [HTML `<table>`](HTML.md) from `NCalcScripts/OKSHpm.ini` JSON properties during `Init()`
 - hand-code [JavaScript](JavaScript.md) for `<table>` updates by Server-Sent Events
 - make [HTML](HTML.cs) + [JavaScript](JavaScript.cs) page available to client browsers
-- send Server-Sent Events for `<table>` cell property values and e.g. scroll actions - **working**
+- [Server-Sent Events](SSE.md) for `<table>` cell property values and e.g. scroll actions - **working**
 	- *replaced* TCPserver.cs content with [TcpMultiClient](https://github.com/blekenbleu/TcpMultiClient) `Program.cs` Main() + MultiClientTcpServer()
-	- *replaced* HTTPserver.cs content with IsHttp() + ClientTask()
-- set HTML scroll and (*to do*) slider with car change; do not wait for WPF menu open
-- *to do*: [MIDI input support](Channel.md) for `<table>` changes
+	- *replaced* [HTTPserver](https://github.com/blekenbleu/HttpServer) content with `IsHttp()` and `ClientTask()`
+- current HTML scroll and slider set with car changes, not waiting for WPF menu open
+- [multiple MIDI input device support](Channel.md) *with learning* for `<table>` changes
+- *to do*:&nbsp; maintain client web sessions across game changes
 
 ### new-to-me tricks  
 - handle all button events in one method by [`(e.OriginalSource as FrameworkElement).Name`](https://stackoverflow.com/a/26938950)
@@ -59,9 +60,9 @@ HTML table updates should have lower processing overhead than graphical overlay.
 - Click handler:&nbsp; [`var jumptbl = new SortedList<uint, Func<string, string> >();`](https://stackoverflow.com/a/7181866)  
 	- [SortedList Class](https://learn.microsoft.com/en-us/dotnet/api/system.collections.sortedlist?view=netframework-4.8)
 - [SemaphoreSlim](https://learn.microsoft.com/en-us/dotnet/api/system.threading.semaphoreslim?view=netframework-4.8)
-	- replaces [`System.Threading.Channels BoundedChannel`](Channel.md); queues tasks instead of MIDI payloads
-	- avoids `Earn` change race condition between XAML `RoutedEvents` and NAudio `MidiInMessageEvents`
-
+	- replaces [`System.Threading.Channels BoundedChannel`](Channel.md), queuing tasks instead of MIDI payloads
+	- avoids race condition between XAML `RoutedEvents` and NAudio `MidiInMessageEvents`
+---
 #### [SimHub plugins](https://github.com/SHWotever/SimHub/wiki/Plugin-and-extensions-SDKs) are .NET Framework 4.8 WPF User Control libraries
 - [SimHub plugin build process](https://blekenbleu.github.io/static/SimHub/)  
 	- [.NET Framework v4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48)  
