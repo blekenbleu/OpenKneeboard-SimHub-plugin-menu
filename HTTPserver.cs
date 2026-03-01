@@ -30,11 +30,7 @@ namespace blekenbleu.SimHub_Remote_menu
 							: "/SSE" == actionLine[1] ? ok
 							: "/" == actionLine[1] ? Encoding.UTF8.GetBytes(Table())
 							: not;
-					for (string line = sr.ReadLine(); null != line && 0 < line.Length; line = sr.ReadLine())
-/*						if (not != which)
-							OKSHmenu.Info("IsHttp: " + line)
- */
-						;
+					for (string line = sr.ReadLine(); null != line && 0 < line.Length; line = sr.ReadLine());
 				}
 				if (not == which)
 					OKSHmenu.Info("IsHttp:\tHTTP/1.1 404 NOT FOUND\n");
@@ -80,18 +76,6 @@ namespace blekenbleu.SimHub_Remote_menu
 
 						OKSHmenu.Info($"ClientTask:\n---- {clientId} StreamReader connected ---");
 						connected = true;
-/*
-						if (ht && null == keepalive)
-						{
-							object lockObject = new object();
-
-							lock (lockObject)							// avoid race for multiple simultaneous connections
-    						{
-        						if (keepalive == null)
-									keepalive = Task.Run(() => SSEtimer());
-							}
-						}
- */
 					}
 
 					while (connected)

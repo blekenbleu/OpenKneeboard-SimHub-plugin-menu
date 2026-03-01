@@ -7,14 +7,14 @@ namespace blekenbleu.SimHub_Remote_menu
 		static Control View;
 
 /*		Using server-sent events https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events
-			https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events
-		Custom SSE events
-			https://medium.com/pon-tech-talk/a-simple-guide-to-server-sent-events-sse-and-eventsource-9de19c23645b
-			https://github.com/omer-pon/sse-eventsource
-
-		https://www.w3schools.com/Js/js_json_parse.asp
-		JavaScript minification:  https://github.com/trullock/NUglify
-		JavaScript Debugging:  https://www.w3schools.com/js/js_debugging.asp
+ ;			https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events
+ ;		Custom SSE events
+ ;			https://medium.com/pon-tech-talk/a-simple-guide-to-server-sent-events-sse-and-eventsource-9de19c23645b
+ ;			https://github.com/omer-pon/sse-eventsource
+ ;
+ ;		https://www.w3schools.com/Js/js_json_parse.asp
+ ;		JavaScript minification:  https://github.com/trullock/NUglify
+ ;		JavaScript Debugging:  https://www.w3schools.com/js/js_debugging.asp
 */
 
 		internal static void Init(Control v)

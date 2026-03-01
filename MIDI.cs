@@ -39,7 +39,6 @@ namespace blekenbleu.SimHub_Remote_menu
 			{
 				lMidiIn = new List<Device> { };
 				InputMidiDevices();
-//				ReadMidiChannel();
 			}
 			return true;
 		}
@@ -136,8 +135,7 @@ namespace blekenbleu.SimHub_Remote_menu
 				s += ("\n\t" + input);
 				if (input.StartsWith("loopMIDI") || input.StartsWith("AudioBox"))
 					s += "\tignored";
-				else //if ("nanoKONTROL2" == input || input.StartsWith("USB-Midi"))
-					s += InputMidiSetup(i, input) ? "\thandled" : "\tfailed";
+				else s += InputMidiSetup(i, input) ? "\thandled" : "\tfailed";
 			}
 			OKSHmenu.Info(s);
 			Model.MidiStatus = "\n" + s;

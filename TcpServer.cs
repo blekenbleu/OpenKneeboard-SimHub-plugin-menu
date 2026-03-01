@@ -23,7 +23,6 @@ namespace blekenbleu.SimHub_Remote_menu
 		internal static double SliderValue;
 		static TcpListener server = null;		// works for any IP addresses
 		internal static ConcurrentDictionary<string, SsClient> clients;
-//		static Task keepalive;
 		static bool listening = false;
 		static string localIP;
 
@@ -41,7 +40,6 @@ namespace blekenbleu.SimHub_Remote_menu
 		{
 			var fun = Task.Run(() => MultiClientTcpServer());
 			js = new JavaScriptSerializer();		// reuse for each SSE
-//			keepalive = null;
 			using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
 			{
 				socket.Connect("8.8.8.8", 65530);
@@ -49,12 +47,6 @@ namespace blekenbleu.SimHub_Remote_menu
 				localIP = endPoint.Address.ToString();
 				socket.Close();
 			}
-//			OKSHmenu.Info("TcpServer.Open(): launching MultiClientTcpServer");
-/*			sseResponse = Encoding.UTF8.GetBytes(Table());
-							$"HTTP/1.1 200 OK\nContent-Length: {ssefile.Length}\n"
-							+ "Content-Type: text/html\nServer: TcpMultiClient\n\n"
-							+ Encoding.UTF8.GetString(ssefile));
- */
 			await fun;
 		}
 

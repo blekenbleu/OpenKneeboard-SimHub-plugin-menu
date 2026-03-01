@@ -17,7 +17,7 @@ namespace blekenbleu.SimHub_Remote_menu
 		public static OKSHmenu OK;
 		public static ViewModel Model;				// reference XAML controls
 		internal byte Selection;					// changes only in OKSHmenu.Select() on UI thread
-		internal static string version = "1.75";
+		internal static string version = "1.76";
 
 		public Control() {							// called before simValues are initialized
 			Model = new ViewModel(this);

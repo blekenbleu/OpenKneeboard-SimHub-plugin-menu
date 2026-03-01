@@ -60,7 +60,6 @@ namespace blekenbleu.SimHub_Remote_menu
 				await Task.Delay(15000);
 			}
 			OKSHmenu.Info("SSEtimer(): exiting");
-//			keepalive = null;
 		}
 	}		// class
 }			// namespace
