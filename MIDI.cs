@@ -134,9 +134,9 @@ namespace blekenbleu.SimHub_Remote_menu
 			{
 				string input = MidiIn.DeviceInfo(i).ProductName;
 				s += ("\n\t" + input);
-				if (input.StartsWith("loopMIDI"))
+				if (input.StartsWith("loopMIDI") || input.StartsWith("AudioBox"))
 					s += "\tignored";
-				else if ("nanoKONTROL2" == input || input.StartsWith("USB-Midi"))
+				else //if ("nanoKONTROL2" == input || input.StartsWith("USB-Midi"))
 					s += InputMidiSetup(i, input) ? "\thandled" : "\tfailed";
 			}
 			OKSHmenu.Info(s);
